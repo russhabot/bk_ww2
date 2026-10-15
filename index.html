@@ -2813,7 +2813,10 @@
         attemptAudioPlayback();
       });
       attemptAudioPlayback();
-      const retryOnGesture = () => {
+      const retryOnGesture = (event) => {
+        // Let the music control handle its own gesture to avoid immediately
+        // starting and pausing playback on the same click.
+        if (event?.target?.closest?.('#audio-toggle')) return;
         if (!isAudioPlaying) attemptAudioPlayback();
         if (isAudioPlaying) {
           document.removeEventListener('pointerdown', retryOnGesture);
