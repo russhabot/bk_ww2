@@ -386,6 +386,10 @@ async def main():
     app = web.Application()
     app.router.add_get("/health", health_handler)
     app.router.add_get("/", index_handler)
+    STATIC_DIR = os.path.join(BASE_DIR, "static")
+    if os.path.exists(STATIC_DIR):
+        app.router.add_static("/static/", STATIC_DIR, name="static")
+
     app.router.add_get("/world_geo.json", geojson_handler)
     app.router.add_route("OPTIONS", "/api/{a}", options_handler)
     app.router.add_post("/api/{a}", api_handler)
