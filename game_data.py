@@ -1,47 +1,74 @@
-"""Game data and constants for Burnt Kingdoms: WW2 (1930 Edition)."""
+# -*- coding: utf-8 -*-
+"""
+WW2 1930 Historical Countries, Factions, and Ideologies
+Burnt Kingdoms WW2
+"""
 
-DEFAULT_MUSIC_URL = "https://ia800501.us.archive.org/31/items/ww2-epic-military-march/ww2_march.mp3"
 
 FACTIONS = {
-  "axis": {
-    "name": "محور (Axis)",
-    "badge": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iYXhnIiBjeD0iNTAlIiBjeT0iNDAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM0YTBmMTIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxOTA0MDYiLz48L3JhZGlhbEdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnb2xkIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZTI3YSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSIjZDRhZjM3Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjOTE2ZjFjIi8+PC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHBvbHlnb24gcG9pbnRzPSI1MCw0IDkyLDE4IDg0LDcyIDUwLDk2IDE2LDcyIDgsMTgiIGZpbGw9InVybCgjYXhnKSIgc3Ryb2tlPSJ1cmwoI2dvbGQpIiBzdHJva2Utd2lkdGg9IjMuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxnIGZpbGw9IiMxYTFhMWEiIHN0cm9rZT0idXJsKCNnb2xkKSIgc3Ryb2tlLXdpZHRoPSIxLjUiPgogICAgPHBhdGggZD0iTTQyLDIyIEw1OCwyMiBMNTQsNDIgTDU4LDQyIEw1OCw1OCBMNTQsNTggTDU4LDc4IEw0Miw3OCBMNDYsNTggTDQyLDU4IEw0Miw0MiBMNDYsNDIgWiIvPgogICAgPHBhdGggZD0iTTIyLDQyIEwyMiw1OCBMNDIsNTQgTDQyLDU4IEw1OCw1OCBMNTgsNTQgTDc4LDU4IEw3OCw0MiBMNTgsNDYgTDU4LDQyIEw0Miw0MiBMNDIsNDYgWiIvPgogIDwvZz4KICA8ZyBmaWxsPSJ1cmwoI2dvbGQpIj4KICAgIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjE0IiBmaWxsPSIjODAwYzE0IiBzdHJva2U9InVybCgjZ29sZCkiIHN0cm9rZS13aWR0aD0iMiIvPgogICAgPHBvbHlnb24gcG9pbnRzPSI1MCw0MiA1Myw0OCA1OSw0OCA1NCw1MiA1Niw1OCA1MCw1NCA0NCw1OCA0Niw1MiA0MSw0OCA0Nyw0OCIvPgogICAgPHBhdGggZD0iTTMwLDM0IFE1MCwyNiA1MCwzOCBRNTAsMjYgNzAsMzQgUTU4LDQ0IDUwLDQ0IFE0Miw0NCAzMCwzNCBaIi8+CiAgPC9nPgo8L3N2Zz4=",
-    "color": "#ff4d5a"
-  },
-  "allies": {
-    "name": "متفقین (Allies)",
-    "badge": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iYWxnIiBjeD0iNTAlIiBjeT0iNDAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMxNTM2NjQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNzEzMjYiLz48L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0idXJsKCNhbGcpIiBzdHJva2U9IiNlNmYwZmYiIHN0cm9rZS13aWR0aD0iMyIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjM4IiBmaWxsPSJub25lIiBzdHJva2U9IiM2OGI0ZmYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtZGFzaGFycmF5PSI0LDIiLz4KICA8cGF0aCBkPSJNMjAsNTQgUTIyLDc2IDUwLDg0IFE3OCw3NiA4MCw1NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZkMTY2IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI1MCwxOCA1OCwzNiA3OCwzNyA2Miw1MCA2Nyw3MCA1MCw1OCAzMyw3MCAzOCw1MCAyMiwzNyA0MiwzNiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjMTUzNjY0IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNDYiIHI9IjUiIGZpbGw9IiNmZmQxNjYiLz4KPC9zdmc+",
-    "color": "#4da6ff"
-  },
-  "comintern": {
-    "name": "کمینترن (Comintern)",
-    "badge": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iY21nIiBjeD0iNTAlIiBjeT0iNDAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNhODBlMTQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMzYjAzMDYiLz48L3JhZGlhbEdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJjR29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmYyNzUiLz48c3RvcCBvZmZzZXQ9IjYwJSIgc3RvcC1jb2xvcj0iI2Y1YjMwMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2IwN2QwMCIvPjwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjQ1IiBmaWxsPSJ1cmwoI2NtZykiIHN0cm9rZT0idXJsKCNjR29sZCkiIHN0cm9rZS13aWR0aD0iMyIvPgogIDxwYXRoIGQ9Ik0yMiw2MCBDMjAsMzAgMzUsMTYgNTAsMTQgQzY1LDE2IDgwLDMwIDc4LDYwIEM3NCw4MCA1MCw4NiA1MCw4NiBDNTAsODYgMjYsODAgMjIsNjAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2NHb2xkKSIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1kYXNoYXJyYXk9IjUsMyIvPgogIDxwb2x5Z29uIHBvaW50cz0iNTAsMTYgNTIsMjIgNTgsMjIgNTMsMjYgNTUsMzIgNTAsMjggNDUsMzIgNDcsMjYgNDIsMjIgNDgsMjIiIGZpbGw9InVybCgjY0dvbGQpIi8+CiAgPGcgZmlsbD0idXJsKCNjR29sZCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQsNCkiPgogICAgPHBhdGggZD0iTTM2LDM2IEExOCwxOCAwIDEsMSA1Niw2MCBMNTEsNTUgQTEyLDEyIDAgMSwwIDQyLDQyIFoiLz4KICAgIDxyZWN0IHg9IjQ5IiB5PSI1OCIgd2lkdGg9IjYiIGhlaWdodD0iMTUiIHJ4PSIyIiB0cmFuc2Zvcm09InJvdGF0ZSgzMCA0OSA1OCkiLz4KICAgIDxyZWN0IHg9IjI1IiB5PSI0OCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjYiIHJ4PSIyIiB0cmFuc2Zvcm09InJvdGF0ZSgtNDUgMjUgNDgpIi8+CiAgICA8cmVjdCB4PSI0MiIgeT0iMjYiIHdpZHRoPSIxNCIgaGVpZ2h0PSI4IiByeD0iMS41IiB0cmFuc2Zvcm09InJvdGF0ZSgtNDUgNDIgMjYpIi8+CiAgPC9nPgo8L3N2Zz4=",
-    "color": "#ff3344"
-  },
-  "neutral": {
-    "name": "غیرمتعهد / بی‌طرف",
-    "badge": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0ibnRnIiBjeD0iNTAlIiBjeT0iNDAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMyYTNiNTAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwZjE2MjAiLz48L3JhZGlhbEdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJzaWx2ZXIiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0b3AtY29sb3I9IiNiMGM0ZGUiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM1YTZmODgiLz48L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJuR29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmU2OTkiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiODg2MGIiLz48L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cG9seWdvbiBwb2ludHM9IjUwLDYgODgsMTggODAsNjggNTAsOTQgMjAsNjggMTIsMTgiIGZpbGw9InVybCgjbnRnKSIgc3Ryb2tlPSJ1cmwoI3NpbHZlcikiIHN0cm9rZS13aWR0aD0iMyIvPgogIDxnIHN0cm9rZT0idXJsKCNuR29sZCkiIHN0cm9rZS13aWR0aD0iMi41IiBmaWxsPSJub25lIj4KICAgIDxsaW5lIHgxPSI1MCIgeTE9IjI0IiB4Mj0iNTAiIHkyPSI3NiIvPjxsaW5lIHgxPSI0MCIgeTE9Ijc2IiB4Mj0iNjAiIHkyPSI3NiIgc3Ryb2tlLXdpZHRoPSIzLjUiLz4KICAgIDxsaW5lIHgxPSIyNiIgeTE9IjM2IiB4Mj0iNzQiIHkyPSIzNiIgc3Ryb2tlLXdpZHRoPSIzIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSIyNCIgcj0iMyIgZmlsbD0idXJsKCNuR29sZCkiLz4KICAgIDxsaW5lIHgxPSIyNiIgeTE9IjM2IiB4Mj0iMjAiIHkyPSI1MiIvPjxsaW5lIHgxPSIyNiIgeTE9IjM2IiB4Mj0iMzIiIHkyPSI1MiIvPjxsaW5lIHgxPSI3NCIgeTE9IjM2IiB4Mj0iNjgiIHkyPSI1MiIvPjxsaW5lIHgxPSI3NCIgeTE9IjM2IiB4Mj0iODAiIHkyPSI1MiIvPgogICAgPHBhdGggZD0iTTE4LDUyIFEyNiw2MiAzNCw1MiBaIiBmaWxsPSJ1cmwoI25Hb2xkKSIvPjxwYXRoIGQ9Ik02Niw1MiBRNzQsNjIgODIsNTIgWiIgZmlsbD0idXJsKCNuR29sZCkiLz4KICA8L2c+Cjwvc3ZnPg==",
-    "color": "#b0c4de"
-  }
+    "axis": {
+        "id": "axis",
+        "fa": "محور",
+        "en": "Axis Powers",
+        "color": "#ef4444",
+        "bg": "rgba(239, 68, 68, 0.15)",
+        "desc": "متحدین محور (آلمان، ژاپن، ایتالیا و متحدانشان در اروپا و آسیا)"
+    },
+    "allies": {
+        "id": "allies",
+        "fa": "متفقین",
+        "en": "Allies",
+        "color": "#3b82f6",
+        "bg": "rgba(59, 130, 246, 0.15)",
+        "desc": "ائتلاف متفقین (بریتانیا، آمریکا، فرانسه، کشورهای مشترک‌المنافع و شوروی)"
+    },
+    "comintern": {
+        "id": "comintern",
+        "fa": "کمینترن",
+        "en": "Comintern",
+        "color": "#f97316",
+        "bg": "rgba(249, 115, 22, 0.15)",
+        "desc": "انترناسیونال کمونیستی به رهبری اتحاد جماهیر شوروی سوسیالیستی"
+    },
+    "neutral": {
+        "id": "neutral",
+        "fa": "غیرمتعهد / بی‌طرف",
+        "en": "Non-Aligned",
+        "color": "#94a3b8",
+        "bg": "rgba(148, 163, 184, 0.15)",
+        "desc": "کشورهای بی‌طرف، مستقل یا غیروابسته در توازن قوای جهانی"
+    }
 }
 
 IDEOLOGIES = {
-  "fascism": {
-    "name": "فاشیسم و اقتدارگرایی",
-    "badge": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImZnIiBjeD0iNTAlIiBjeT0iNDAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMzZDFiMWIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxNDA4MDgiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0idXJsKCNmZykiIHN0cm9rZT0iI2Q0YWYzNyIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICA8ZyBmaWxsPSIjYzlhODRiIiBzdHJva2U9IiM3MDUyMTQiIHN0cm9rZS13aWR0aD0iMSI+CiAgICA8cmVjdCB4PSI0NCIgeT0iMTYiIHdpZHRoPSIxMiIgaGVpZ2h0PSI2OCIgcng9IjIiIGZpbGw9IiM4ZjZiMjQiLz4KICAgIDxyZWN0IHg9IjQyIiB5PSIyNCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjUiIGZpbGw9IiNjMDIwMjYiLz48cmVjdCB4PSI0MiIgeT0iNDgiIHdpZHRoPSIxNiIgaGVpZ2h0PSI1IiBmaWxsPSIjYzAyMDI2Ii8+PHJlY3QgeD0iNDIiIHk9IjcyIiB3aWR0aD0iMTYiIGhlaWdodD0iNSIgZmlsbD0iI2MwMjAyNiIvPgogICAgPHBhdGggZD0iTTU2LDMwIFE3NCwzOCA3Miw1MiBRNjIsNjAgNTYsNTggWiIgZmlsbD0iI2IwYzRkZSIgc3Ryb2tlPSIjNGE1ZDc4IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDwvZz4KPC9zdmc+"
-  },
-  "communism": {
-    "name": "کمونیسم و سوسیالیسم",
-    "badge": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImNnIiBjeD0iNTAlIiBjeT0iNDAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM1NDA4MGIiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYzAyMDQiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0idXJsKCNjZykiIHN0cm9rZT0iI2ZmZDcwMCIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDRhZjM3IiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1kYXNoYXJyYXk9IjYsNCIvPgogIDxwYXRoIGQ9Ik0zOCwzNiBBMTUsMTUgMCAxLDEgNTUsNTYgTDUxLDUyIEExMCwxMCAwIDEsMCA0Myw0MSBaIiBmaWxsPSIjZmZkNzAwIi8+CiAgPHJlY3QgeD0iNDgiIHk9IjU1IiB3aWR0aD0iNSIgaGVpZ2h0PSIxMiIgcng9IjEuNSIgdHJhbnNmb3JtPSJyb3RhdGUoMzAgNDggNTUpIiBmaWxsPSIjZmZkNzAwIi8+CiAgPHJlY3QgeD0iMzAiIHk9IjQ2IiB3aWR0aD0iMjgiIGhlaWdodD0iNSIgcng9IjEuNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTQ1IDMwIDQ2KSIgZmlsbD0iI2ZmZDcwMCIvPgogIDxyZWN0IHg9IjQ0IiB5PSIyOCIgd2lkdGg9IjExIiBoZWlnaHQ9IjciIHJ4PSIxIiB0cmFuc2Zvcm09InJvdGF0ZSgtNDUgNDQgMjgpIiBmaWxsPSIjZmZkNzAwIi8+Cjwvc3ZnPg=="
-  },
-  "democracy": {
-    "name": "دموکراسی پارلمانی",
-    "badge": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImRnIiBjeD0iNTAlIiBjeT0iNDAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMxNDJjNGMiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNTBlMWEiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0idXJsKCNkZykiIHN0cm9rZT0iIzY0ZDZkMCIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMCwyKSI+CiAgICA8cGF0aCBkPSJNNDAsMTYgUTUyLDI0IDQ0LDM2IFEzOCw0NCA0MCw0NiBRMzQsMzYgMzgsMjggUTMyLDI0IDQwLDE2IFoiIGZpbGw9IiNmZjk5MDAiLz4KICAgIDxwYXRoIGQ9Ik00MCwyNCBRNDYsMjggNDIsMzQgUTM5LDM4IDQwLDQwIFEzNywzNCAzOSwzMCBaIiBmaWxsPSIjZmZlYTAwIi8+CiAgICA8cG9seWdvbiBwb2ludHM9IjMyLDQ2IDQ4LDQ2IDQ0LDU2IDM2LDU2IiBmaWxsPSIjZDRhZjM3Ii8+CiAgICA8cmVjdCB4PSIzOCIgeT0iNTYiIHdpZHRoPSI0IiBoZWlnaHQ9IjI0IiByeD0iMS41IiBmaWxsPSIjZDRhZjM3Ii8+CiAgICA8Y2lyY2xlIGN4PSI0MCIgY3k9IjgyIiByPSIzLjUiIGZpbGw9IiNkNGFmMzciLz4KICA8L2c+Cjwvc3ZnPg=="
-  },
-  "nonaligned": {
-    "name": "غیرمتعهد و سلطنت سنتی",
-    "badge": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9Im5nIiBjeD0iNTAlIiBjeT0iNDAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMyODM0NDQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwYzExMTciLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0idXJsKCNuZykiIHN0cm9rZT0iI2EwYjNjNiIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICA8ZyBmaWxsPSIjZmZkNzAwIiBzdHJva2U9IiM4YTczMTQiIHN0cm9rZS13aWR0aD0iMS4yIj4KICAgIDxwYXRoIGQ9Ik0yNiw2MiBMMjQsNDIgTDM4LDUwIEw1MCwzNCBMNjIsNTAgTDc2LDQyIEw3NCw2MiBaIi8+CiAgICA8cmVjdCB4PSIyNSIgeT0iNjIiIHdpZHRoPSI1MCIgaGVpZ2h0PSI3IiByeD0iMiIgZmlsbD0iI2M0OWIxOCIvPgogICAgPGNpcmNsZSBjeD0iNTAiIGN5PSI0MiIgcj0iMyIgZmlsbD0iI2ZmMzM0NCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjAuOCIvPgogICAgPGNpcmNsZSBjeD0iMzQiIGN5PSI1MyIgcj0iMi41IiBmaWxsPSIjMzM5OWZmIi8+PGNpcmNsZSBjeD0iNjYiIGN5PSI1MyIgcj0iMi41IiBmaWxsPSIjMzM5OWZmIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjY1LjUiIHI9IjIiIGZpbGw9IiMwMGNjODgiLz48Y2lyY2xlIGN4PSIzNyIgY3k9IjY1LjUiIHI9IjIiIGZpbGw9IiNmZjMzNDQiLz48Y2lyY2xlIGN4PSI2MyIgY3k9IjY1LjUiIHI9IjIiIGZpbGw9IiNmZjMzNDQiLz4KICA8L2c+Cjwvc3ZnPg=="
-  }
+    "fascism": {
+        "id": "fascism",
+        "fa": "فاشیسم / نظامی‌گری",
+        "en": "Fascism",
+        "color": "#a855f7",
+        "desc": "حکومت توتالیتر، اقتدارگرای نظامی و ناسیونالیسم افراطی"
+    },
+    "communism": {
+        "id": "communism",
+        "fa": "کمونیسم",
+        "en": "Communism",
+        "color": "#ef4444",
+        "desc": "مارکسیسم-لنینیسم، اقتصاد متمرکز اشتراکی و تک‌حزبی"
+    },
+    "democracy": {
+        "id": "democracy",
+        "fa": "دموکراسی",
+        "en": "Democracy",
+        "color": "#38bdf8",
+        "desc": "دموکراسی پارلمانی، حاکمیت قانون و اقتصاد بازار آزاد"
+    },
+    "neutral": {
+        "id": "neutral",
+        "fa": "پادشاهی / مستقل",
+        "en": "Monarchy / Non-Aligned",
+        "color": "#f59e0b",
+        "desc": "سلطنت مشروطه، نظام‌های سنتی یا حکومت‌های موقت بی‌طرف"
+    }
 }
 
 LEADER_FALLBACK = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0OCIgZmlsbD0iIzE3MjMzOCIgc3Ryb2tlPSIjZjZjODZiIiBzdHJva2Utd2lkdGg9IjMiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjM4IiByPSIxOCIgZmlsbD0iIzlhYWFjMiIvPjxwYXRoIGQ9Ik0yMiw4MiBRNTAsNTYgNzgsODIgWiIgZmlsbD0iIzlhYWFjMiIvPjxwb2x5Z29uIHBvaW50cz0iNTAsNjIgNTMsNzAgNjEsNzAgNTUsNzUgNTcsODMgNTAsNzggNDMsODMgNDUsNzUgMzksNzAgNDcsNzAiIGZpbGw9IiNmNmM4NmIiLz48L3N2Zz4="
@@ -766,33 +793,67 @@ COUNTRIES = {
     "leader": "مانوئل ال. کوئزون",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Manuel_Quezon_%28cropped%29.jpg/250px-Manuel_Quezon_%28cropped%29.jpg",
     "flag_url": "https://flagcdn.com/w160/ph.png"
+  },
+  "SK": {
+    "name_fa": "جمهوری اسلواکی",
+    "name_en": "Slovakia",
+    "code": "SK",
+    "faction": "axis",
+    "ideology": "fascism",
+    "capital": "براتیسلاوا",
+    "leader": {
+      "name": "یوزف تیسو",
+      "title": "رئیس‌جمهور",
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Jozef_Tiso_1940.jpg/480px-Jozef_Tiso_1940.jpg"
+    },
+    "flag": "https://flagcdn.com/w160/sk.png",
+    "desc": "دولت اقماری نوپای محور پس از تجزیه چکسلواکی در مارس ۱۹۳۹."
+  },
+  "CP": {
+    "name_fa": "جمهوری شورایی چین (یان‌آن)",
+    "name_en": "Communist China",
+    "code": "CP",
+    "faction": "comintern",
+    "ideology": "communism",
+    "capital": "یان‌آن",
+    "leader": {
+      "name": "مائو تسه‌تونگ",
+      "title": "رئیس حزب کمونیست",
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Mao_Zedong_1938.jpg/480px-Mao_Zedong_1938.jpg"
+    },
+    "flag": "https://flagcdn.com/w160/cn.png",
+    "desc": "پایگاه ارتش سرخ چین در غارهای یان‌آن پس از راهپیمایی طولانی و آغاز نبردهای چریکی علیه ژاپن."
+  },
+  "TU": {
+    "name_fa": "جمهوری خلق تووا",
+    "name_en": "Tannu Tuva",
+    "code": "TU",
+    "faction": "comintern",
+    "ideology": "communism",
+    "capital": "کیزیل",
+    "leader": {
+      "name": "سالچاک توکا",
+      "title": "دبیرکل حزب تووا",
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Salchak_Toka_1940s.jpg/480px-Salchak_Toka_1940s.jpg"
+    },
+    "flag": "https://flagcdn.com/w160/ru.png",
+    "desc": "جمهوری کوهستانی آسیای میانه و نخستین کشوری که در کنار مسکو علیه آلمان اعلان جنگ داد."
+  },
+  "MZ": {
+    "name_fa": "امپراتوری منچوکوئو",
+    "name_en": "Manchukuo",
+    "code": "MZ",
+    "faction": "axis",
+    "ideology": "fascism",
+    "capital": "شین‌جینگ",
+    "leader": {
+      "name": "پویی (امپراتور کانگ‌ده)",
+      "title": "امپراتور منچوکوئو",
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Puyi_Manchukuo_emperor.jpg/480px-Puyi_Manchukuo_emperor.jpg"
+    },
+    "flag": "https://flagcdn.com/w160/cn.png",
+    "desc": "دولت اقماری صنعتی در شمال شرق چین به رهبری آخرین امپراتور چین با معادن غنی زغال‌سنگ و آهن."
   }
 }
 
 COUNTRY_CODES = list(COUNTRIES.keys())
-
-def _building(category, name, cost, **details):
-    return {"cat": category, "fa": name, "cost": cost, **details}
-
-BUILDINGS = {
-    "f_light": _building("factory", "کارخانه صنایع سبک", 60_000, income=85_000),
-    "f_steel": _building("factory", "ذوب‌آهن و کارخانه مهمات", 180_000, income=230_000),
-    "f_oil": _building("factory", "پالایشگاه نفت و سوخت جنگی", 450_000, income=540_000),
-    "f_chip": _building("factory", "مرکز مخابرات و رمزنگاری", 750_000, income=900_000),
-    "bank": _building("bank", "بانک ملی", 25_000, income=36_000),
-    "farm_s": _building("food", "مزارع غلات راهبردی", 15_000, food=450),
-    "farm_l": _building("food", "سیلو و زنجیره آذوقه", 45_000, food=1_500),
-    "bunker": _building("mil", "سنگر بتنی و خطوط دفاعی", 80_000, def_bonus=0.15),
-    "radar": _building("mil", "ایستگاه رادار تاکتیکی", 120_000, def_bonus=0.25),
-    "dock": _building("logistics", "اسکله بارگیری ناوگان", 90_000, trade_cap=5_000),
-}
-
-UNITS = {
-    "inf": {"fa": "پیاده‌نظام مسلح", "cost": 1_200, "upkeep": 45, "atk": 12, "def": 18, "speed": 1},
-    "tank": {"fa": "لشکر تانک زرهی", "cost": 8_500, "upkeep": 280, "atk": 65, "def": 50, "speed": 2},
-    "arty": {"fa": "توپخانه صحرایی سنگین", "cost": 4_200, "upkeep": 150, "atk": 48, "def": 30, "speed": 1},
-    "fighter": {"fa": "جنگنده هوایی شکاری", "cost": 12_000, "upkeep": 420, "atk": 85, "def": 60, "speed": 4},
-    "bomber": {"fa": "بمب‌افکن استراتژیک", "cost": 18_000, "upkeep": 600, "atk": 120, "def": 35, "speed": 3},
-    "sub": {"fa": "زیردریایی اژدرافکن", "cost": 15_000, "upkeep": 500, "atk": 90, "def": 40, "speed": 2},
-    "bb": {"fa": "رزم‌ناو سنگین کلاس نبرد", "cost": 45_000, "upkeep": 1_600, "atk": 220, "def": 190, "speed": 2},
-}
