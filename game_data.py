@@ -857,3 +857,5 @@ COUNTRIES = {
 }
 
 COUNTRY_CODES = list(COUNTRIES.keys())
+
+DEFAULT_MUSIC_URL = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Holst_The_Planets_Mars_the_Bringer_of_War_USAF_Band.ogg"
