@@ -2347,10 +2347,11 @@
             <div class="dossier-field">
               <span class="dossier-label">نظام ایدئولوژیک</span>
               <span class="dossier-value">
-                <img src="${ideo.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                ${ideo.fa || ''}
+                <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
+                ${ideo.fa || 'غیرمتعهد'}
               </span>
             </div>
+            ${isMonarchy(c, S.p.c) ? '<div class="dossier-field"><span class="dossier-label">نوع حکومت</span><span class="dossier-value"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span></div>' : ''}
             <div class="dossier-field">
               <span class="dossier-label">رهبر تاریخی (۱۹۳۰)</span>
               <span class="dossier-value">${c.leader_fa || ''}</span>
