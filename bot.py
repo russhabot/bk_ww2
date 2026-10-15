@@ -110,14 +110,20 @@ def find_player_by_country(code):
 
 
 def auth(init_data):
+    # Never accept a missing Telegram initData when a real bot token is configured.
+    # The old fallback let unauthenticated requests act as the shared test user (1001).
     if not init_data:
+        if TOKEN:
+            return None
         return {"id": 1001, "first_name": "فرمانده آزمایشی", "username": "commander_dev"}
 
+    # Tokenless mode is only for local UI development; it is not secure for public hosting.
     if not TOKEN:
         try:
-            fields = dict(parse_qsl(init_data, keep_blank_values=True))
+            fields = dict(parse_qsl(init_data, keep_blank_values=True, max_num_fields=64))
             if "user" in fields:
-                return json.loads(fields["user"])
+                user = json.loads(fields["user"])
+                return user if isinstance(user, dict) and str(user.get("id", "")).isdigit() else None
         except Exception:
             pass
         return {"id": 1001, "first_name": "فرمانده", "username": "commander"}
@@ -170,8 +176,9 @@ async def check_user_membership(uid: int):
             print(f"[membership-check] @{ch['username']} for {uid}: {e}")
             if "not found" in err_msg or "left" in err_msg or "kicked" in err_msg:
                 missing.append(ch)
-            # If bot itself is not added as admin to channel yet, avoid totally blocking all users
-            # unless it clearly reports user not present.
+            # Fail closed on unexpected membership-check errors. Otherwise a Telegram API
+            # or permission failure could accidentally allow a non-member into the game.
+            missing.append(ch)
 
     return len(missing) == 0, missing
 
