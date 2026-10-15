@@ -238,7 +238,7 @@ async def api_handler(request):
         if action == "state":
             pass
 
-        elif action == "pick":
+        elif action in ("pick", "claim"):
             # Mandatory channel check
             if not is_member:
                 ch_names = " و ".join(f"@{ch['username']}" for ch in missing_channels)
@@ -251,7 +251,7 @@ async def api_handler(request):
                     "s": get_api_state(uid, player, season, membership_info)
                 })
 
-            code = str(body.get("c", "")).strip().upper()
+            code = str(body.get("c", "") or body.get("country", "")).strip().upper()
             if not code or code not in COUNTRIES:
                 error = "کد کشور نامعتبر است."
             elif player and player.get("c"):
@@ -295,7 +295,7 @@ async def send_channel_announcement(name, username, country_name, faction_name):
         return
     try:
         user_tag = f"@{username}" if username else name
-        text = f"📢 <b>اعلان ستاد کل جنگ جهانی دوم</b>\n\nفرمانده <b>{user_tag}</b> رسماً زمام امور کشور <b>{country_name}</b> را در ائتلاف <b>{faction_name}</b> به دست گرفت!\n\n⚡ نیروها در حالت آماده‌باش قرار گرفتند."
+        text = f"[اعلان] <b>اعلان ستاد کل جنگ جهانی دوم</b>\n\nفرمانده <b>{user_tag}</b> رسماً زمام امور کشور <b>{country_name}</b> را در ائتلاف <b>{faction_name}</b> به دست گرفت!\n\n نیروها در حالت آماده‌باش قرار گرفتند."
         await bot.send_message(ANNOUNCE_CHANNEL, text, parse_mode="HTML")
     except Exception as exc:
         print("[announce-error]", exc)
@@ -310,10 +310,10 @@ if dp:
     async def cmd_start(msg: Message):
         kb = InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text="⚔️ ورود به کارزار جنگ جهانی دوم (Mini App)", web_app=WebAppInfo(url=URL))]
+                [InlineKeyboardButton(text=" ورود به کارزار جنگ جهانی دوم (Mini App)", web_app=WebAppInfo(url=URL))]
             ]
         ) if URL else None
-        text = "⚔️ <b>به کارزار جهانی دوم ۱۹۳۹ (Burnt Kingdoms WW2) خوش آمدید!</b>\n\nدر این بازی شما در نقش رهبران و فرمانروایان کشورهای جهان در آستانه جنگ جهانی دوم قرار می‌گیرید.\n\n🎖️ <b>مرحله فعلی:</b> انتخاب کشور و اتاق آماده‌باش سیزن\n🗺️ ۷۵ کشور تاریخی با پرچم‌های ۱۹۳۰، رهبران واقعی، ائتلاف‌ها و نقشه تعاملی جهان.\n⚠️ <b>توجه:</b> جهت ورود، عضویت در کانال‌های @Burnt_kingdoms و @bk_chatt الزامی است.\n\nجهت انتخاب کشور خود و مشاهده نقشه، روی دکمه زیر کلیک کنید:"
+        text = " <b>به کارزار جهانی دوم ۱۹۳۰ (Burnt Kingdoms WW2) خوش آمدید!</b>\n\nدر این بازی شما در نقش رهبران و فرمانروایان کشورهای جهان در آستانه جنگ جهانی دوم قرار می‌گیرید.\n\n️ <b>مرحله فعلی:</b> انتخاب کشور و اتاق آماده‌باش سیزن\n️ ۷۵ کشور تاریخی با پرچم‌های ۱۹۳۰، رهبران واقعی، ائتلاف‌ها و نقشه تعاملی جهان.\n️ <b>توجه:</b> جهت ورود، عضویت در کانال‌های @Burnt_kingdoms و @bk_chatt الزامی است.\n\nجهت انتخاب کشور خود و مشاهده نقشه، روی دکمه زیر کلیک کنید:"
         await msg.answer(text, reply_markup=kb, parse_mode="HTML")
 
     @dp.message(Command("season"))
@@ -325,12 +325,12 @@ if dp:
             return await msg.answer("استفاده: /season wait | pick | live")
         kset("season", p[1])
         lbl = {"wait": "اتاق انتظار سیزن", "pick": "انتخاب کشورها", "live": "سیزن فعال"}
-        await msg.answer(f"✅ وضعیت سیزن به «{lbl[p[1]]}» تغییر یافت.")
+        await msg.answer(f"[تأیید] وضعیت سیزن به «{lbl[p[1]]}» تغییر یافت.")
 
     @dp.message(Command("status"))
     async def cmd_status(msg: Message):
         pl = all_players()
-        lines = [f"📊 <b>آمار سیزن:</b> {len(pl)} از {len(COUNTRIES)} کشور تصاحب شده"]
+        lines = [f"[آمار] <b>آمار سیزن:</b> {len(pl)} از {len(COUNTRIES)} کشور تصاحب شده"]
         for uid, p in pl:
             code = p.get("c", "")
             c_name = COUNTRIES.get(code, {}).get("name_fa", code)
@@ -349,10 +349,10 @@ if dp:
         uid, _ = find_player_by_country(t)
         if uid:
             pdel(uid)
-            return await msg.answer(f"✅ کشور {t} آزاد شد.")
+            return await msg.answer(f"[تأیید] کشور {t} آزاد شد.")
         if t.isdigit():
             pdel(int(t))
-            return await msg.answer(f"✅ کاربر {t} ریست شد.")
+            return await msg.answer(f"[تأیید] کاربر {t} ریست شد.")
         await msg.answer("کشور یا کاربری یافت نشد.")
 
 
