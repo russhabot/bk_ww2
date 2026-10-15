@@ -33,6 +33,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INDEX_PATH = os.path.join(BASE_DIR, "index.html")
 GEOJSON_PATH = os.path.join(BASE_DIR, "world_geo.json")
 DB_PATH = os.environ.get("DB_PATH", os.path.join(BASE_DIR, "bk_ww2.db"))
+# Ensure custom DB_PATH parent directories exist (e.g. /data/bk_ww2.db on a mounted volume).
+os.makedirs(os.path.dirname(os.path.abspath(DB_PATH)), exist_ok=True)
 
 BACKGROUND_MUSIC_URL = os.environ.get("BACKGROUND_MUSIC_URL", DEFAULT_MUSIC_URL).strip()
 
@@ -386,9 +388,9 @@ async def main():
     app = web.Application()
     app.router.add_get("/health", health_handler)
     app.router.add_get("/", index_handler)
-    STATIC_DIR = os.path.join(BASE_DIR, "static")
-    if os.path.exists(STATIC_DIR):
-        app.router.add_static("/static/", STATIC_DIR, name="static")
+    static_dir = os.path.join(BASE_DIR, "static")
+    if os.path.isdir(static_dir):
+        app.router.add_static("/static/", static_dir, name="static")
 
     app.router.add_get("/world_geo.json", geojson_handler)
     app.router.add_route("OPTIONS", "/api/{a}", options_handler)
@@ -397,22 +399,24 @@ async def main():
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", PORT)
-    await site.start()
-    print(f"[*] WW2 Web server running on http://0.0.0.0:{PORT}")
 
-    if bot and dp:
-        try:
+    try:
+        await site.start()
+        print(f"[*] WW2 Web server running on http://0.0.0.0:{PORT}")
+
+        if bot and dp:
             bot_me = await bot.get_me()
             print(f"[*] Telegram Bot @{bot_me.username} connected successfully!")
-            await dp.start_polling(bot)
-        except Exception as e:
-            print(f"[!] Telegram polling error: {e}")
-            while True:
-                await asyncio.sleep(3600)
-    else:
-        print("[*] Running in standalone web server mode (No BOT_TOKEN configured)")
-        while True:
-            await asyncio.sleep(3600)
+            # Do not swallow polling errors. TelegramConflictError means another process
+            # is polling this token; exit visibly instead of leaving a web-only half-alive app.
+            await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+        else:
+            print("[*] Running in standalone web server mode (No BOT_TOKEN configured)")
+            await asyncio.Event().wait()
+    finally:
+        await runner.cleanup()
+        if bot:
+            await bot.session.close()
 
 
 if __name__ == "__main__":
