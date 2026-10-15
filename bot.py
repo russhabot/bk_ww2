@@ -14,11 +14,9 @@ from aiogram.filters import Command
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, WebAppInfo
 from dotenv import load_dotenv
 
-try:
-    from game_data import COUNTRIES, COUNTRY_CODES, DEFAULT_MUSIC_URL, FACTIONS, IDEOLOGIES
-except ImportError:
-    from game_data import COUNTRIES, COUNTRY_CODES, FACTIONS, IDEOLOGIES
-    DEFAULT_MUSIC_URL = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Holst_The_Planets_Mars_the_Bringer_of_War_USAF_Band.ogg"
+# COUNTRY_CODES was removed from game_data.py and is not used by this bot.
+# Import only symbols that the current game_data module actually exports.
+from game_data import COUNTRIES, DEFAULT_MUSIC_URL, FACTIONS, IDEOLOGIES
 
 
 load_dotenv()
