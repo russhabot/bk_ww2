@@ -484,6 +484,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center 22%;
     }
 
     .leader-meta {
@@ -923,13 +924,13 @@
 
         <div class="filter-chips">
           <div class="chip active" onclick="setFilter('all', this)">همه</div>
-          <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/neutral.svg" class="badge-icon-img"> متحدین محور</div>
-          <div class="chip" onclick="setFilter('allies', this)"><img src="static/badges/neutral.svg" class="badge-icon-img"> ائتلاف متفقین</div>
+          <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> متحدین محور</div>
+          <div class="chip" onclick="setFilter('allies', this)"><img src="static/badges/allies.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</div>
           <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن">  کمینترن</div>
           <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/neutral.svg" class="badge-icon-img" alt="غیرمتعهد">  غیرمتعهد</div>
-          <div class="chip" onclick="setFilter('fascism', this)"><img src="static/badges/neutral.svg" class="badge-icon-img"> فاشیست</div>
-          <div class="chip" onclick="setFilter('communism', this)"><img src="static/badges/neutral.svg" class="badge-icon-img"> کمونیست</div>
-          <div class="chip" onclick="setFilter('democracy', this)"><img src="static/badges/neutral.svg" class="badge-icon-img"> دموکراتیک</div>
+          <div class="chip" onclick="setFilter('fascism', this)"><img src="static/badges/fascism.svg" class="badge-icon-img" alt="فاشیسم"> فاشیست</div>
+          <div class="chip" onclick="setFilter('communism', this)"><img src="static/badges/communism.svg" class="badge-icon-img" alt="کمونیسم"> کمونیست</div>
+          <div class="chip" onclick="setFilter('democracy', this)"><img src="static/badges/democracy.svg" class="badge-icon-img" alt="دموکراسی"> دموکراتیک</div>
           <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی">  پادشاهی / مستقل</div>
           <div class="chip" onclick="setFilter('free_only', this)"><svg class="ui-icon" viewBox="0 0 24 24" width="10" height="10" fill="#10b981"><circle cx="12" cy="12" r="8"/></svg> فقط کشورهای آزاد</div>
         </div>
@@ -1063,7 +1064,7 @@
     "leader": "بنیتو موسولینی",
     "leader_fa": "بنیتو موسولینی",
     "leader_title": "دوچه فاشیسم",
-    "leader_img": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Mussolini_mezzobusto.jpg/250px-Mussolini_mezzobusto.jpg",
+    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Mussolini_mezzobusto.jpg/250px-Mussolini_mezzobusto.jpg",
     "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Mussolini_mezzobusto.jpg/250px-Mussolini_mezzobusto.jpg",
     "flag_url": "static/flags/IT.svg",
     "desc": "کشور پادشاهی ایتالیا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده بنیتو موسولینی بود."
@@ -2180,7 +2181,7 @@
       taken: [],
       owners: {},
       membership: { ok: true, missing: [], channels: [] },
-      bg_music: 'https://upload.wikimedia.org/wikipedia/commons/8/85/Holst-_mars.ogg'
+      bg_music: 'https://archive.org/download/the-planets_202501/01%20-%20I.%20Mars%2C%20the%20Bringer%20of%20War.mp3'
     };
 
     let currentFilter = 'all';
@@ -2318,7 +2319,7 @@
       if (S.p && S.p.c) {
         const c = COUNTRIES[S.p.c] || {};
         const fac = FACTIONS[c.faction] || {};
-        const ideo = IDEOLOGIES[c.ideology] || {};
+        const ideo = getIdeology(c);
         
         dossier.innerHTML = `
           <div class="dossier-header">
@@ -2393,6 +2394,24 @@
       if (geojsonLayer) updateMapStyles();
     }
 
+    // Explicit historical monarchy list. Some constitutional monarchies have democratic
+    // ideology, so regime tags must not be inferred from ideology alone.
+    const MONARCHY_CODES = new Set([
+      'IT','JP','HU','RO','BG','TH','GB','CA','AU','NZ','NL','BE','NO','DK',
+      'GR','YU','LU','IR','SE','AF','SA','IQ','EG','ET','TB','NP','BT','YE',
+      'OM','AL','ES','IS'
+    ]);
+
+    function isMonarchy(c, code) {
+      return MONARCHY_CODES.has(code) ||
+        /پادشاهی|امپراتوری|شاهنشاهی|سلطنت|سلطنتی/.test(String(c?.name_fa || '')) ||
+        /kingdom|empire|sultanate/i.test(String(c?.name_en || ''));
+    }
+
+    function getIdeology(c) {
+      return IDEOLOGIES[c?.ideology] || (c?.ideology === 'nonaligned' ? IDEOLOGIES.neutral : {});
+    }
+
     function matchesFilter(c, code) {
       const taken = S.taken.includes(code);
       if (currentFilter === 'free_only' && taken) return false;
@@ -2403,7 +2422,7 @@
       if (currentFilter === 'fascism' && c.ideology !== 'fascism') return false;
       if (currentFilter === 'communism' && c.ideology !== 'communism') return false;
       if (currentFilter === 'democracy' && c.ideology !== 'democracy') return false;
-      if (currentFilter === 'monarchy' && c.ideology !== 'neutral') return false;
+      if (currentFilter === 'monarchy' && !isMonarchy(c, code)) return false;
 
       if (searchQuery) {
         const text = `${c.name_fa} ${c.name_en} ${c.leader_fa} ${c.leader_en} ${c.capital_fa} ${c.code} ${c.iso3}`.toLowerCase();
@@ -2446,10 +2465,11 @@
                     <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
                     ${fac.fa || ''}
                   </span>
-                  <span class="tactical-badge badge-${c.ideology === 'neutral' ? 'monarchy' : c.ideology}">
-                    <img src="${ideo.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                    ${ideo.fa || ''}
+                  <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'monarchy' : c.ideology}">
+                    <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
+                    ${ideo.fa || 'غیرمتعهد'}
                   </span>
+                  ${isMonarchy(c, code) ? '<span class="tactical-badge badge-monarchy"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span>' : ''}
                 </div>
               </div>
             </div>
@@ -2558,6 +2578,9 @@
 
           if (country) {
             const baseColor = getFactionColor(country.faction);
+            if (!matchesFilter(country, code)) {
+              return { fillColor: '#0b1220', weight: 0.1, opacity: 0.08, color: '#0b1220', fillOpacity: 0.025 };
+            }
             return {
               fillColor: isTaken ? '#334155' : baseColor,
               weight: 1.2,
@@ -2639,10 +2662,11 @@
                 <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
                 ${fac.fa || ''}
               </span>
-              <span class="tactical-badge badge-${c.ideology === 'neutral' ? 'monarchy' : c.ideology}">
-                <img src="${ideo.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                ${ideo.fa || ''}
+              <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'monarchy' : c.ideology}">
+                <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
+                ${ideo.fa || 'غیرمتعهد'}
               </span>
+              ${isMonarchy(c, code) ? '<span class="tactical-badge badge-monarchy"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span>' : ''}
             </div>
           </div>
         </div>
@@ -2753,24 +2777,58 @@
       }, 3200);
     }
 
-    // Audio Orchestral March Player
+    // Background march: attempt autoplay immediately, then retry on the first
+    // user interaction if the browser/WebView blocks autoplay without a gesture.
+    const FALLBACK_MUSIC_URL = 'https://archive.org/download/the-planets_202501/01%20-%20I.%20Mars%2C%20the%20Bringer%20of%20War.mp3';
+
+    async function attemptAudioPlayback() {
+      const audio = document.getElementById('march-audio');
+      if (!audio || isAudioPlaying) return;
+      try {
+        await audio.play();
+        isAudioPlaying = !audio.paused;
+        updateAudioUI();
+      } catch (err) {
+        isAudioPlaying = false;
+        updateAudioUI();
+        console.info('Autoplay needs a user gesture in this browser:', err?.message || err);
+      }
+    }
+
     function setupAudio() {
       const audio = document.getElementById('march-audio');
-      audio.src = S.bg_music;
+      audio.loop = true;
+      audio.autoplay = true;
+      audio.preload = 'auto';
       audio.volume = 0.55;
+      audio.src = S.bg_music || FALLBACK_MUSIC_URL;
+      audio.addEventListener('play', () => { isAudioPlaying = true; updateAudioUI(); });
+      audio.addEventListener('pause', () => { isAudioPlaying = false; updateAudioUI(); });
+      audio.addEventListener('error', () => {
+        if (audio.dataset.fallbackTried === '1') return;
+        audio.dataset.fallbackTried = '1';
+        audio.src = FALLBACK_MUSIC_URL;
+        audio.load();
+        attemptAudioPlayback();
+      });
+      attemptAudioPlayback();
+      const retryOnGesture = () => {
+        if (!isAudioPlaying) attemptAudioPlayback();
+        if (isAudioPlaying) {
+          document.removeEventListener('pointerdown', retryOnGesture);
+          document.removeEventListener('keydown', retryOnGesture);
+        }
+      };
+      document.addEventListener('pointerdown', retryOnGesture, { passive: true });
+      document.addEventListener('keydown', retryOnGesture);
     }
 
     function toggleAudio() {
       const audio = document.getElementById('march-audio');
-      if (isAudioPlaying) {
+      if (isAudioPlaying || !audio.paused) {
         audio.pause();
-        isAudioPlaying = false;
       } else {
-        audio.play().then(() => {
-          isAudioPlaying = true;
-        }).catch(err => {
-          console.log('Audio autoplay prevented:', err);
-        });
+        attemptAudioPlayback();
       }
       updateAudioUI();
     }
