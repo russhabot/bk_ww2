@@ -174,10 +174,8 @@ async def check_user_membership(uid: int):
         except Exception as e:
             err_msg = str(e).lower()
             print(f"[membership-check] @{ch['username']} for {uid}: {e}")
-            if "not found" in err_msg or "left" in err_msg or "kicked" in err_msg:
-                missing.append(ch)
-            # Fail closed on unexpected membership-check errors. Otherwise a Telegram API
-            # or permission failure could accidentally allow a non-member into the game.
+            # Fail closed on membership-check errors. Otherwise a Telegram API or
+            # permission failure could accidentally allow a non-member into the game.
             missing.append(ch)
 
     return len(missing) == 0, missing
