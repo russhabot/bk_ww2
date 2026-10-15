@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>کارزار جهانی دوم ۱۹۳۹ | Burnt Kingdoms WW2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root {
+      --bg: #070b12;
+      --bg-panel: #0d1524;
+      --bg-card: #111c30;
+      --bg-card-hover: #16243d;
+      --border: #1f2f4d;
+      --border-bright: #2d436d;
+      --text: #e2e8f0;
+      --text-muted: #8c9cb8;
+      --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.25);
+      --cyan: #38bdf8;
+      --cyan-glow: rgba(56, 189, 248, 0.2);
+      --axis: #ef4444;
+      --axis-bg: rgba(239, 68, 68, 0.15);
+      --allies: #3b82f6;
+      --allies-bg: rgba(59, 130, 246, 0.15);
+      --comintern: #f97316;
+      --comintern-bg: rgba(249, 115, 22, 0.15);
+      --neutral: #94a3b8;
+      --neutral-bg: rgba(148, 163, 184, 0.15);
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(30, 58, 138, 0.18) 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.08) 0%, transparent 40%),
+        linear-gradient(rgba(15, 23, 42, 0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.5) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      color: var(--text);
+      font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, Tahoma, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Custom Tactical Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #080d18; }
+    ::-webkit-scrollbar-thumb { background: #263b5c; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+    /* Layout & Header */
+    .app-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 12px 14px 40px;
+    }
+
+    header.tactical-header {
+      background: rgba(13, 21, 36, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, #b91c1c, #991b1b);
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+      border: 1px solid #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.35);
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-text p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: #142138;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn:hover {
+      background: #1c2e4e;
+      border-color: var(--cyan);
+      transform: translateY(-1px);
+    }
+
+    .btn.active {
+      background: linear-gradient(135deg, #1e3a8a, #1e40af);
+      border-color: var(--cyan);
+      color: #fff;
+      box-shadow: 0 0 14px var(--cyan-glow);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      border-color: var(--gold);
+      color: #fff;
+      box-shadow: 0 0 15px var(--gold-glow);
+    }
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.45);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      border-color: #ef4444;
+      color: #fff;
+    }
+
+    /* Audio Pill */
+    .audio-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #09111e;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 4px 12px;
+      font-size: 12px;
+    }
+
+    .audio-waves {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+    }
+
+    .audio-wave-bar {
+      width: 3px;
+      background: var(--gold);
+      border-radius: 2px;
+      height: 4px;
+      transition: height 0.2s ease;
+    }
+
+    .playing .audio-wave-bar:nth-child(1) { animation: bounce 0.8s infinite alternate ease-in-out; }
+    .playing .audio-wave-bar:nth-child(2) { animation: bounce 0.6s infinite alternate ease-in-out 0.2s; }
+    .playing .audio-wave-bar:nth-child(3) { animation: bounce 0.9s infinite alternate ease-in-out 0.4s; }
+    @keyframes bounce {
+      0% { height: 4px; }
+      100% { height: 14px; }
+    }
+
+    /* Global Tension & Balance Stats */
+    .tension-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      background: rgba(9, 15, 26, 0.6);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      border: 1px solid rgba(31, 47, 77, 0.5);
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .stat-pill.axis { background: var(--axis-bg); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
+    .stat-pill.allies { background: var(--allies-bg); border: 1px solid rgba(59, 130, 246, 0.3); color: #93c5fd; }
+    .stat-pill.comintern { background: var(--comintern-bg); border: 1px solid rgba(249, 115, 22, 0.3); color: #fdba74; }
+    .stat-pill.neutral { background: var(--neutral-bg); border: 1px solid rgba(148, 163, 184, 0.3); color: #cbd5e1; }
+
+    /* Search & Filter Section */
+    .filter-panel {
+      background: rgba(13, 21, 36, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .search-box-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      background: #09111e;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      padding: 11px 42px 11px 16px;
+      outline: none;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px var(--cyan-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 14px;
+      color: var(--text-muted);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .filter-chips {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .filter-chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      white-space: nowrap;
+      background: #0d1728;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chip:hover {
+      background: #17253d;
+      color: #fff;
+      border-color: var(--border-bright);
+    }
+
+    .chip.active {
+      background: var(--gold);
+      color: #000;
+      border-color: var(--gold);
+      font-weight: 700;
+    }
+
+    /* Country Cards Grid */
+    .countries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 14px;
+    }
+
+    .country-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .country-card:hover:not(.taken) {
+      background: var(--bg-card-hover);
+      border-color: var(--cyan);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.6), 0 0 16px var(--cyan-glow);
+    }
+
+    .country-card.taken {
+      opacity: 0.55;
+      filter: grayscale(0.5);
+      border-color: #334155;
+      background: #0a111e;
+    }
+    .country-card.taken:hover {
+      opacity: 0.7;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .flag-box {
+      width: 68px;
+      height: 46px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #000;
+      flex-shrink: 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+
+    .flag-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .country-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .country-name-fa {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .country-name-en {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      direction: ltr;
+      text-align: right;
+    }
+
+    .card-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .tactical-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .badge-axis { background: var(--axis-bg); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    .badge-allies { background: var(--allies-bg); border: 1px solid rgba(59, 130, 246, 0.4); color: #93c5fd; }
+    .badge-comintern { background: var(--comintern-bg); border: 1px solid rgba(249, 115, 22, 0.4); color: #fdba74; }
+    .badge-neutral { background: var(--neutral-bg); border: 1px solid rgba(148, 163, 184, 0.4); color: #cbd5e1; }
+
+    .badge-fascism { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); color: #d8b4fe; }
+    .badge-communism { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    .badge-democracy { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #7dd3fc; }
+    .badge-monarchy { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde68a; }
+
+    .leader-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(9, 15, 26, 0.5);
+      border-radius: 8px;
+      padding: 6px 10px;
+      border: 1px solid rgba(31, 47, 77, 0.4);
+    }
+
+    .leader-photo {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1.5px solid var(--gold);
+      flex-shrink: 0;
+      background: #000;
+    }
+
+    .leader-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .leader-meta {
+      flex: 1;
+      min-width: 0;
+      font-size: 11px;
+    }
+    .leader-title { color: var(--text-muted); font-size: 10px; margin: 0; }
+    .leader-name { font-weight: 700; color: #f1f5f9; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .card-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      margin-top: auto;
+      padding-top: 6px;
+      border-top: 1px solid rgba(31, 47, 77, 0.5);
+    }
+
+    .owner-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    .owner-tag span.ruler-name {
+      color: var(--gold);
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .claim-btn {
+      width: 100%;
+      padding: 9px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+      color: #fff;
+      border: 1px solid #3b82f6;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .claim-btn:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+    }
+
+    /* Map View Container */
+    #map-view-container {
+      background: #090e18;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      height: 620px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      background: #070c14;
+    }
+
+    .map-legend {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      z-index: 1000;
+      background: rgba(13, 21, 36, 0.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: var(--shadow);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .legend-color {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Season Waiting Room (اتاق انتظار سیزن) */
+    .waiting-room-panel {
+      background: rgba(13, 21, 36, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .radar-pulse-wrap {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .radar-circle {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      opacity: 0.7;
+      animation: pulseRadar 2.5s infinite linear;
+    }
+    .radar-circle:nth-child(2) { animation-delay: 0.8s; }
+    .radar-circle:nth-child(3) { animation-delay: 1.6s; }
+
+    @keyframes pulseRadar {
+      0% { transform: scale(0.3); opacity: 0.9; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    .radar-icon {
+      font-size: 36px;
+      z-index: 2;
+    }
+
+    .command-dossier {
+      background: #0b1322;
+      border: 1.5px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 18px;
+      max-width: 620px;
+      margin: 0 auto;
+      width: 100%;
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.15);
+      text-align: right;
+    }
+
+    .dossier-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+
+    .dossier-flag {
+      width: 90px;
+      height: 60px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .dossier-flag img { width: 100%; height: 100%; object-fit: cover; }
+
+    .dossier-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .dossier-field {
+      background: #111c30;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .dossier-label { color: var(--text-muted); font-size: 10px; display: block; }
+    .dossier-value { color: #fff; font-weight: 700; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--bg-panel);
+      border: 1.5px solid var(--border-bright);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 20px var(--gold-glow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-backdrop.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      background: #09111e;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-header h3 { margin: 0; font-size: 16px; color: var(--gold); }
+
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      background: #09111e;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0f172a;
+      color: #fff;
+      border: 1px solid var(--cyan);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      border-radius: 30px;
+      padding: 10px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 10000;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 640px) {
+      .app-container { padding: 8px 8px 30px; }
+      .countries-grid { grid-template-columns: 1fr; }
+      #map-view-container { height: 480px; }
+      .dossier-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Audio Element -->
+  <audio id="bg-audio" loop preload="auto" src="https://upload.wikimedia.org/wikipedia/commons/8/85/Holst-_mars.ogg"></audio>
+
+  <div class="app-container">
+    
+    <!-- Tactical Header -->
+    <header class="tactical-header">
+      <div class="header-top">
+        <div class="brand-title">
+          <span class="brand-badge">WW2 1939</span>
+          <div class="brand-text">
+            <h1>⚔️ کارزار جهانی دوم</h1>
+            <p>سامانه استراتژیک انتخاب کشور و اتاق فرماندهی جنگ</p>
+          </div>
+        </div>
+
+        <div class="header-controls">
+          <!-- View switcher -->
+          <button class="btn active" id="btn-view-cards" onclick="setViewMode('cards')">
+            🗂️ نمای کارتی
+          </button>
+          <button class="btn" id="btn-view-map" onclick="setViewMode('map')">
+            🗺️ نقشه جهان
+          </button>
+
+          <!-- Audio Player Pill -->
+          <div class="audio-pill" id="audio-toggle" onclick="toggleAudio()" title="پخش / توقف مارش جنگی">
+            <span id="audio-icon">🎵</span>
+            <div class="audio-waves" id="audio-waves">
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+            </div>
+            <span id="audio-label">موسیقی</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Global Power Balance -->
+      <div class="tension-bar" id="tension-bar">
+        <div class="stat-pill axis">
+          <span>🦅 متحدین محور</span>
+          <strong id="stat-axis-count">0</strong>
+        </div>
+        <div class="stat-pill allies">
+          <span>⭐ ائتلاف متفقین</span>
+          <strong id="stat-allies-count">0</strong>
+        </div>
+        <div class="stat-pill comintern">
+          <span>🚩 کمینترن</span>
+          <strong id="stat-comintern-count">0</strong>
+        </div>
+        <div class="stat-pill neutral">
+          <span>🕊️ غیرمتعهد</span>
+          <strong id="stat-neutral-count">0</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area: Switch between Selection View & Season Wait Room -->
+    <main id="main-content">
+      
+      <!-- WAITING ROOM (Shown if season is 'wait' or player already has country) -->
+      <section id="section-waiting-room" style="display: none;" class="waiting-room-panel">
+        <div class="radar-pulse-wrap">
+          <div class="radar-circle"></div>
+          <div class="radar-circle"></div>
+          <div class="radar-circle"></div>
+          <span class="radar-icon">📡</span>
+        </div>
+
+        <div>
+          <h2 style="margin: 0; color: var(--gold); font-size: 22px;">اتاق آماده‌باش ستاد کل قوا</h2>
+          <p style="color: var(--text-muted); font-size: 13px; margin: 4px 0 0;">
+            سیزن در حالت انتظار است. کلیه واحدها در سنگرهای مرزی آماده‌باش کامل هستند.
+          </p>
+        </div>
+
+        <div id="player-command-dossier" class="command-dossier">
+          <!-- Populated by JS -->
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 8px;">
+          <button class="btn btn-gold" onclick="showAllNationsView()">
+            🗺️ مشاهده جدول کلی کشورها و نقشه
+          </button>
+        </div>
+      </section>
+
+      <!-- SELECTION & ROSTER VIEW -->
+      <section id="section-selection">
+        
+        <!-- Search & Filter Controls -->
+        <div class="filter-panel">
+          <div class="search-box-wrap">
+            <span class="search-icon">🔍</span>
+            <input 
+              type="text" 
+              id="search-input" 
+              class="search-input" 
+              placeholder="جستجوی نام کشور، رهبر تاریخی، ائتلاف، ایدئولوژی یا پایتخت..."
+              oninput="handleSearch(this.value)"
+            >
+          </div>
+
+          <div class="filter-chips">
+            <div class="chip active" onclick="setFilter('all', this)">همه کشورها</div>
+            <div class="chip" onclick="setFilter('axis', this)">🦅 متحدین محور</div>
+            <div class="chip" onclick="setFilter('allies', this)">⭐ ائتلاف متفقین</div>
+            <div class="chip" onclick="setFilter('comintern', this)">🚩 کمینترن</div>
+            <div class="chip" onclick="setFilter('neutral_fac', this)">🕊️ غیرمتعهد</div>
+            <div class="chip" onclick="setFilter('fascism', this)">⚡ فاشیست</div>
+            <div class="chip" onclick="setFilter('communism', this)">☭ کمونیست</div>
+            <div class="chip" onclick="setFilter('democracy', this)">⚖️ دموکراتیک</div>
+            <div class="chip" onclick="setFilter('monarchy', this)">👑 پادشاهی / مستقل</div>
+            <div class="chip" onclick="setFilter('free_only', this)">🟢 فقط کشورهای آزاد</div>
+          </div>
+        </div>
+
+        <!-- View 1: Card Grid -->
+        <div id="cards-view-wrap">
+          <div class="countries-grid" id="countries-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- View 2: Leaflet Interactive Tactical Map -->
+        <div id="map-view-container" style="display: none;">
+          <div id="map"></div>
+          <div class="map-legend">
+            <strong style="color: var(--gold); margin-bottom: 2px;">راهنمای ائتلاف‌های جهان (۱۹۳۹)</strong>
+            <div class="legend-item"><div class="legend-color" style="background: var(--axis);"></div> <span>محور (آلمان، ژاپن، ایتالیا و متحدان)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: var(--allies);"></div> <span>متفقین (بریتانیا، فرانسه، آمریکا، لهستان)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: var(--comintern);"></div> <span>کمینترن (اتحاد جماهیر شوروی، مغولستان)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: var(--neutral);"></div> <span>کشورهای غیرمتعهد و بی‌طرف</span></div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Tactical Confirmation Modal -->
+  <div class="modal-backdrop" id="claim-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">فرمانروایی بر کشور</h3>
+        <button class="btn" style="padding: 4px 10px;" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal()">انصراف</button>
+        <button class="btn btn-gold" id="modal-confirm-btn" onclick="confirmClaim()">
+          تأیید و تصاحب کشور ⚔️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Element -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Embedded Data
+    const COUNTRIES = {"DE": {"code": "DE", "iso3": "DEU", "name_fa": "آلمان (رایش سوم)", "name_en": "German Reich", "faction": "axis", "ideology": "fascism", "leader_fa": "آدولف هیتلر", "leader_en": "Adolf Hitler", "capital_fa": "برلین", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_Germany_%281935%E2%80%931945%29.svg/330px-Flag_of_Germany_%281935%E2%80%931945%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Hitler_portrait_crop.jpg/330px-Hitler_portrait_crop.jpg", "desc": "قدرت صنعتی و نظامی پیشرو در قاره اروپا، مجهز به دکترین جنگ برق‌آسا (بلیکسکریگ) و لشکرهای زرهی پانزر."}, "SO": {"code": "SO", "iso3": "RUS", "name_fa": "اتحاد جماهیر شوروی", "name_en": "Soviet Union", "faction": "comintern", "ideology": "communism", "leader_fa": "ژوزف استالین", "leader_en": "Joseph Stalin", "capital_fa": "مسکو", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Flag_of_the_Soviet_Union.svg/330px-Flag_of_the_Soviet_Union.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/StalinCropped1943.jpg/330px-StalinCropped1943.jpg", "desc": "بزرگ‌ترین سرزمین جهان با منابع عظیم انسانی و طبیعی، ارتش سرخ و صنایع سنگین پشت کوه‌های اورال."}, "GB": {"code": "GB", "iso3": "GBR", "name_fa": "بریتانیای کبیر", "name_en": "United Kingdom", "faction": "allies", "ideology": "democracy", "leader_fa": "وینستون چرچیل", "leader_en": "Winston Churchill", "capital_fa": "لندن", "flag_url": "https://flagcdn.com/w320/gb.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Sir_Winston_Churchill_-_190823-N-N0101-110.jpg/330px-Sir_Winston_Churchill_-_190823-N-N0101-110.jpg", "desc": "امپراتوری دریایی جهان با نیروی دریایی سلطنتی بی‌رقیب، مستعمرات گسترده و نیروی هوایی RAF."}, "US": {"code": "US", "iso3": "USA", "name_fa": "ایالات متحده آمریکا", "name_en": "United States", "faction": "allies", "ideology": "democracy", "leader_fa": "فرانکلین دی. روزولت", "leader_en": "Franklin D. Roosevelt", "capital_fa": "واشنگتن دی‌سی", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Flag_of_the_United_States_%281912-1959%29.svg/330px-Flag_of_the_United_States_%281912-1959%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/FDR-1944-Campaign-Portrait.jpg/330px-FDR-1944-Campaign-Portrait.jpg", "desc": "غول اقتصادی و صنعتی جهان با ظرفیت تولید نامحدود، ناوگان‌های اقیانوس آرام و اطلس و ثروت عظیم."}, "JP": {"code": "JP", "iso3": "JPN", "name_fa": "امپراتوری ژاپن", "name_en": "Empire of Japan", "faction": "axis", "ideology": "fascism", "leader_fa": "هیدکی توجو / هیروهیتو", "leader_en": "Hideki Tojo", "capital_fa": "توکیو", "flag_url": "https://flagcdn.com/w320/jp.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Hirohito_in_dress_uniform.jpg/330px-Hirohito_in_dress_uniform.jpg", "desc": "قدرت برتر شرق آسیا با ناوگان مدرن هواپیمابر، ارتش مصمم سامورایی و جاه‌طلبی در اقیانوس آرام."}, "IT": {"code": "IT", "iso3": "ITA", "name_fa": "پادشاهی ایتالیا", "name_en": "Kingdom of Italy", "faction": "axis", "ideology": "fascism", "leader_fa": "بنیتو موسولینی", "leader_en": "Benito Mussolini", "capital_fa": "رم", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Flag_of_Italy_%281861%E2%80%931946%29.svg/330px-Flag_of_Italy_%281861%E2%80%931946%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Mussolini_mezzobusto.jpg/330px-Mussolini_mezzobusto.jpg", "desc": "رهبر فاشیسم در حوزه مدیترانه با ارتش میلیونی رجیا مارینا و ادعای احیای امپراتوری روم باستان."}, "FR": {"code": "FR", "iso3": "FRA", "name_fa": "جمهوری فرانسه", "name_en": "France", "faction": "allies", "ideology": "democracy", "leader_fa": "شارل دو گل / ادوار دالادیه", "leader_en": "Charles de Gaulle", "capital_fa": "پاریس", "flag_url": "https://flagcdn.com/w320/fr.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/De_Gaulle-OWI_%28cropped%29.jpg/330px-De_Gaulle-OWI_%28cropped%29.jpg", "desc": "قدرت بزرگ قاره با خط دفاعی ماژینو، ارتش پرشمار و ناوگان گسترده در مدیترانه و مستعمرات جهانی."}, "CN": {"code": "CN", "iso3": "CHN", "name_fa": "جمهوری چین (ملی‌گرا)", "name_en": "Republic of China", "faction": "allies", "ideology": "neutral", "leader_fa": "چیانگ کای‌شک", "leader_en": "Chiang Kai-shek", "capital_fa": "نانجینگ / چونگ‌کینگ", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/Flag_of_the_Republic_of_China.svg/330px-Flag_of_the_Republic_of_China.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/%E8%94%A3%E4%B8%AD%E6%AD%A3.jpg/330px-%E8%94%A3%E4%B8%AD%E6%AD%A3.jpg", "desc": "سرزمین پهناور با جمعیت صدها میلیونی، خط مقدم مبارزه سرسختانه زمینی علیه پیشروی ژاپن در آسیا."}, "IR": {"code": "IR", "iso3": "IRN", "name_fa": "شاهنشاهی ایران", "name_en": "Imperial State of Iran", "faction": "neutral", "ideology": "neutral", "leader_fa": "رضاشاه پهلوی", "leader_en": "Reza Shah", "capital_fa": "تهران", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/State_flag_of_Iran_%281933%E2%80%931964%29.svg/330px-State_flag_of_Iran_%281933%E2%80%931964%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Reza_shah_uniform.jpg/330px-Reza_shah_uniform.jpg", "desc": "پل پیروزی خاورمیانه؛ دارای منابع راهبردی نفت، راه‌آهن سراسری شمال به جنوب و موقعیت سوق‌الجیشی بی‌نظیر."}, "PL": {"code": "PL", "iso3": "POL", "name_fa": "جمهوری دوم لهستان", "name_en": "Poland", "faction": "allies", "ideology": "democracy", "leader_fa": "ولادیسلاو سیکورسکی", "leader_en": "Władysław Sikorski", "capital_fa": "ورشو", "flag_url": "https://flagcdn.com/w320/pl.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Wladyslaw_Sikorski.jpg/330px-Wladyslaw_Sikorski.jpg", "desc": "دژ مرکزی اروپا میان آلمان و شوروی با سواره‌نظام فداکار و عزم پولادین در دفاع از استقلال."}, "CA": {"code": "CA", "iso3": "CAN", "name_fa": "دومینیون کانادا", "name_en": "Canada", "faction": "allies", "ideology": "democracy", "leader_fa": "مکنزی کینگ", "leader_en": "Mackenzie King", "capital_fa": "اوتاوا", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Flag_of_Canada_%281921%E2%80%931957%29.svg/330px-Flag_of_Canada_%281921%E2%80%931957%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/William_Lyon_Mackenzie_King_1938.jpg/330px-William_Lyon_Mackenzie_King_1938.jpg", "desc": "متحد کلیدی اطلس شمالی، تأمین‌کننده غلات، اسکورت کاروان‌های دریایی و اعزام‌کننده نیروهای زبده."}, "AU": {"code": "AU", "iso3": "AUS", "name_fa": "استرالیا", "name_en": "Australia", "faction": "allies", "ideology": "democracy", "leader_fa": "جان کرتین", "leader_en": "John Curtin", "capital_fa": "کانبرا", "flag_url": "https://flagcdn.com/w320/au.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/John_Curtin_1941.jpg/330px-John_Curtin_1941.jpg", "desc": "پایگاه اصلی عملیات متفقین در جنوب غربی اقیانوس آرام با سربازان شجاع در جبهه‌های شمال آفریقا و گینه نو."}, "IN": {"code": "IN", "iso3": "IND", "name_fa": "راج بریتانیا (هند)", "name_en": "British Raj", "faction": "allies", "ideology": "neutral", "leader_fa": "لرد لینلیتگو", "leader_en": "Lord Linlithgow", "capital_fa": "دهلی نو", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/British_Raj_Red_Ensign.svg/330px-British_Raj_Red_Ensign.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Victor_Alexander_John_Hope%2C_2nd_Marquess_of_Linlithgow.jpg/330px-Victor_Alexander_John_Hope%2C_2nd_Marquess_of_Linlithgow.jpg", "desc": "بزرگ‌ترین ارتش داوطلب تاریخ جنگ با ۲.۵ میلیون سرباز در برمه، شمال آفریقا و ایتالیا."}, "RO": {"code": "RO", "iso3": "ROU", "name_fa": "پادشاهی رومانی", "name_en": "Kingdom of Romania", "faction": "axis", "ideology": "fascism", "leader_fa": "یون آنتونسکو", "leader_en": "Ion Antonescu", "capital_fa": "بخارست", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Flag_of_Romania_%281867-1947%29.svg/330px-Flag_of_Romania_%281867-1947%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Ion_Antonescu.jpg/330px-Ion_Antonescu.jpg", "desc": "قلب نفتی ارتش محور در میدان‌های پلویشتی و مشارکت‌کننده پرشمار در جبهه شرق علیه شوروی."}, "HU": {"code": "HU", "iso3": "HUN", "name_fa": "پادشاهی مجارستان", "name_en": "Kingdom of Hungary", "faction": "axis", "ideology": "fascism", "leader_fa": "میکلوش هورتی", "leader_en": "Miklós Horthy", "capital_fa": "بوداپست", "flag_url": "https://flagcdn.com/w320/hu.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Mikl%C3%B3s_Horthy_1939.jpg/330px-Mikl%C3%B3s_Horthy_1939.jpg", "desc": "متحد محوری در اروپای مرکزی با ارتش سلطنتی و سودای بازیابی اراضی پیمان تریانون."}, "FI": {"code": "FI", "iso3": "FIN", "name_fa": "جمهوری فنلاند", "name_en": "Finland", "faction": "neutral", "ideology": "democracy", "leader_fa": "کارل مانرهیم", "leader_en": "Carl Gustaf Emil Mannerheim", "capital_fa": "هلسینکی", "flag_url": "https://flagcdn.com/w320/fi.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Mannerheim1940.jpg/330px-Mannerheim1940.jpg", "desc": "استادان نبرد زمستانی در جنگل‌های برفی با خط دفاعی مانرهیم و تاکتیک‌های کوبنده موتی علیه ارتش سرخ."}, "BG": {"code": "BG", "iso3": "BGR", "name_fa": "پادشاهی بلغارستان", "name_en": "Kingdom of Bulgaria", "faction": "axis", "ideology": "fascism", "leader_fa": "تزار بوریس سوم", "leader_en": "Boris III", "capital_fa": "صوفیه", "flag_url": "https://flagcdn.com/w320/bg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Tsar_Boris_III_of_Bulgaria.jpg/330px-Tsar_Boris_III_of_Bulgaria.jpg", "desc": "پادشاهی بالکان با ارتش منظم و موقعیت سوق‌الجیشی تسلط بر تنگه‌های دریای سیاه و اژه."}, "YU": {"code": "YU", "iso3": "SRB", "name_fa": "پادشاهی یوگسلاوی", "name_en": "Kingdom of Yugoslavia", "faction": "neutral", "ideology": "neutral", "leader_fa": "شاه پیتر دوم", "leader_en": "Peter II", "capital_fa": "بلگراد", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Flag_of_Yugoslavia_%281918-1941%29.svg/330px-Flag_of_Yugoslavia_%281918-1941%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Peter_II_of_Yugoslavia.jpg/330px-Peter_II_of_Yugoslavia.jpg", "desc": "چهارراه پرتنش بالکان با مقاومت سرسخت پارتیزانی و کوهستان‌های غیرقابل تسخیر."}, "GR": {"code": "GR", "iso3": "GRC", "name_fa": "پادشاهی یونان", "name_en": "Kingdom of Greece", "faction": "allies", "ideology": "neutral", "leader_fa": "یوآنیس متکساس", "leader_en": "Ioannis Metaxas", "capital_fa": "آتن", "flag_url": "https://flagcdn.com/w320/gr.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Ioannis_Metaxas.jpg/330px-Ioannis_Metaxas.jpg", "desc": "دفاع جانانه در برابر تهاجم ارتش ایتالیا در کوه‌های آلبانی با شعار تاریخی اوخی (نه)."}, "TR": {"code": "TR", "iso3": "TUR", "name_fa": "جمهوری ترکیه", "name_en": "Republic of Turkey", "faction": "neutral", "ideology": "neutral", "leader_fa": "عصمت اینونو", "leader_en": "İsmet İnönü", "capital_fa": "آنکارا", "flag_url": "https://flagcdn.com/w320/tr.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Ismet_Inonu_1939.jpg/330px-Ismet_Inonu_1939.jpg", "desc": "نگهبان تنگه‌های بسفر و داردانل با دیپلماسی زیرکانه بی‌طرفی مسلح در میان دو جبهه نبرد."}, "ES": {"code": "ES", "iso3": "ESP", "name_fa": "اسپانیا (ملی‌گرا)", "name_en": "Nationalist Spain", "faction": "neutral", "ideology": "fascism", "leader_fa": "فرانسیسکو فرانکو", "leader_en": "Francisco Franco", "capital_fa": "مادرید", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Flag_of_Spain_%281938%E2%80%931945%29.svg/330px-Flag_of_Spain_%281938%E2%80%931945%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Francisco_Franco_1940.jpg/330px-Francisco_Franco_1940.jpg", "desc": "تازه رها شده از جنگ داخلی با لشکر داوطلب آبی در روسیه و کنترل کلیدی بر تنگه جبل‌الطارق."}, "SE": {"code": "SE", "iso3": "SWE", "name_fa": "پادشاهی سوئد", "name_en": "Sweden", "faction": "neutral", "ideology": "democracy", "leader_fa": "پر آلبین هانسون", "leader_en": "Per Albin Hansson", "capital_fa": "استکهلم", "flag_url": "https://flagcdn.com/w320/se.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Per_Albin_Hansson.jpg/330px-Per_Albin_Hansson.jpg", "desc": "بی‌طرف مسلح اسکاندیناوی، صادرکننده کلیدی سنگ‌آهن باکیفیت و دارنده صنایع دفاعی پیشرفته بوفورس."}, "CH": {"code": "CH", "iso3": "CHE", "name_fa": "کنفدراسیون سوئیس", "name_en": "Switzerland", "faction": "neutral", "ideology": "democracy", "leader_fa": "ژنرال هانری گیزان", "leader_en": "Henri Guisan", "capital_fa": "برن", "flag_url": "https://flagcdn.com/w320/ch.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Guisan_Visp_1942_D2.8916.jpg/330px-Guisan_Visp_1942_D2.8916.jpg", "desc": "قلعه نفوذناپذیر آلپ با دکترین دژ ملی و سیستم دفاعی همه‌جانبه در قلب اروپای محاصره شده."}, "PT": {"code": "PT", "iso3": "PRT", "name_fa": "پرتغال (استادو نووو)", "name_en": "Portugal", "faction": "neutral", "ideology": "neutral", "leader_fa": "آنتونیو سالازار", "leader_en": "António de Oliveira Salazar", "capital_fa": "لیسبون", "flag_url": "https://flagcdn.com/w320/pt.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Ant%C3%B3nio_de_Oliveira_Salazar_%281938%29.jpg/330px-Ant%C3%B3nio_de_Oliveira_Salazar_%281938%29.jpg", "desc": "پایتخت جاسوسی جهان در لیسبون، تأمین‌کننده ولفرام (تنگستن) راهبردی و دارنده جزایر استراتژیک آزور."}, "NL": {"code": "NL", "iso3": "NLD", "name_fa": "پادشاهی هلند", "name_en": "Netherlands", "faction": "allies", "ideology": "democracy", "leader_fa": "ملکه ویلهلمینا", "leader_en": "Queen Wilhelmina", "capital_fa": "آمستردام", "flag_url": "https://flagcdn.com/w320/nl.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Koningin_Wilhelmina_%281942%29.jpg/330px-Koningin_Wilhelmina_%281942%29.jpg", "desc": "دولت در تبعید لندن با منابع بی‌نظیر کائوچو و نفت در هند شرقی هلند (اندونزی)."}, "BE": {"code": "BE", "iso3": "BEL", "name_fa": "پادشاهی بلژیک", "name_en": "Belgium", "faction": "allies", "ideology": "democracy", "leader_fa": "شاه لئوپولد سوم", "leader_en": "Leopold III", "capital_fa": "بروکسل", "flag_url": "https://flagcdn.com/w320/be.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Leopold_III_of_Belgium_1934.jpg/330px-Leopold_III_of_Belgium_1934.jpg", "desc": "سنگر دفاعی معبر آردنن و دارنده معادن راهبردی اورانیوم و کبالت در کنگو."}, "NO": {"code": "NO", "iso3": "NOR", "name_fa": "پادشاهی نروژ", "name_en": "Norway", "faction": "allies", "ideology": "democracy", "leader_fa": "شاه هوکون هفتم", "leader_en": "Haakon VII", "capital_fa": "اسلو", "flag_url": "https://flagcdn.com/w320/no.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/King_Haakon_VII_of_Norway_in_1942.jpg/330px-King_Haakon_VII_of_Norway_in_1942.jpg", "desc": "ناوگان عظیم تجاری، سواحل صخره‌ای راهبردی اقیانوس اطلس و پایگاه آب سنگین تلارک."}, "DK": {"code": "DK", "iso3": "DNK", "name_fa": "پادشاهی دانمارک", "name_en": "Denmark", "faction": "allies", "ideology": "democracy", "leader_fa": "شاه کریستین دهم", "leader_en": "Christian X", "capital_fa": "کپنهاگ", "flag_url": "https://flagcdn.com/w320/dk.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Christian_X_of_Denmark_1940.jpg/330px-Christian_X_of_Denmark_1940.jpg", "desc": "کنترل‌کننده مدخل دریای بالتیک، تولیدکننده عمده لبنیات و محصولات کشاورزی اروپا."}, "CZ": {"code": "CZ", "iso3": "CZE", "name_fa": "جمهوری چکسلواکی", "name_en": "Czechoslovakia", "faction": "allies", "ideology": "democracy", "leader_fa": "ادوارد بنش", "leader_en": "Edvard Beneš", "capital_fa": "پراگ", "flag_url": "https://flagcdn.com/w320/cz.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Edvard_Benes_1938.jpg/330px-Edvard_Benes_1938.jpg", "desc": "قلب صنعتی تسلیحات سنگین با کارخانجات مشهور اشکودا و تانک‌های پرقدرت LT-35/38."}, "BR": {"code": "BR", "iso3": "BRA", "name_fa": "ایالات متحده برزیل", "name_en": "Brazil", "faction": "allies", "ideology": "neutral", "leader_fa": "ژتولیو بارگاس", "leader_en": "Getúlio Vargas", "capital_fa": "ریودوژانیرو", "flag_url": "https://flagcdn.com/w320/br.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Getulio_vargas.jpg/330px-Getulio_vargas.jpg", "desc": "بزرگ‌ترین قدرت آمریکای جنوبی با اعزام نیروی رزمی اکسپدیشنری (مارانهاس) به نبردهای خونین ایتالیا."}, "MX": {"code": "MX", "iso3": "MEX", "name_fa": "ایالات متحده مکزیک", "name_en": "Mexico", "faction": "allies", "ideology": "democracy", "leader_fa": "لازارو کاردناس", "leader_en": "Lázaro Cárdenas", "capital_fa": "مکزیکوسیتی", "flag_url": "https://flagcdn.com/w320/mx.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/L%C3%A1zaro_C%C3%A1rdenas_1937.jpg/330px-L%C3%A1zaro_C%C3%A1rdenas_1937.jpg", "desc": "صنایع ملی‌شده نفت پمکس و اسکادران پروازی معروف ۲۰۱ (عقاب‌های آزتک) در اقیانوس آرام."}, "AR": {"code": "AR", "iso3": "ARG", "name_fa": "جمهوری آرژانتین", "name_en": "Argentina", "faction": "neutral", "ideology": "neutral", "leader_fa": "روبرتو ماریا اورتیز", "leader_en": "Roberto María Ortiz", "capital_fa": "بوئنوس آیرس", "flag_url": "https://flagcdn.com/w320/ar.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Roberto_Ortiz_1938.jpg/330px-Roberto_Ortiz_1938.jpg", "desc": "انبار غلات و گوشت آمریکای جنوبی با توازن محتاطانه میان روابط تجاری با بریتانیا و آلمان."}, "IQ": {"code": "IQ", "iso3": "IRQ", "name_fa": "پادشاهی عراق", "name_en": "Kingdom of Iraq", "faction": "neutral", "ideology": "neutral", "leader_fa": "رشید عالی گیلانی", "leader_en": "Rashid Ali al-Gaylani", "capital_fa": "بغداد", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Flag_of_Iraq_%281924%E2%80%931959%29.svg/330px-Flag_of_Iraq_%281924%E2%80%931959%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Rashid_Ali_al-Gaylani.jpg/330px-Rashid_Ali_al-Gaylani.jpg", "desc": "کانون شورش ملی‌گرایانه ۱۹۴۱ متمایل به محور و نفت راهبردی کرکوک و بصره."}, "SA": {"code": "SA", "iso3": "SAU", "name_fa": "پادشاهی عربستان سعودی", "name_en": "Saudi Arabia", "faction": "neutral", "ideology": "neutral", "leader_fa": "ملک عبدالعزیز آل سعود", "leader_en": "Ibn Saud", "capital_fa": "ریاض", "flag_url": "https://flagcdn.com/w320/sa.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Ibn_Saud_1930s.jpg/330px-Ibn_Saud_1930s.jpg", "desc": "سرزمین ذخایر نوین نفت آرامکو و آغاز اتحاد نفتی-امنیتی تاریخی با ایالات متحده در جریان دیدار کشتی کوئینسی."}, "EG": {"code": "EG", "iso3": "EGY", "name_fa": "پادشاهی مصر", "name_en": "Kingdom of Egypt", "faction": "allies", "ideology": "neutral", "leader_fa": "ملک فاروق اول", "leader_en": "King Farouk", "capital_fa": "قاهره", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Flag_of_Egypt_%281922%E2%80%931953%29.svg/330px-Flag_of_Egypt_%281922%E2%80%931953%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Farouk_I_of_Egypt_1937.jpg/330px-Farouk_I_of_Egypt_1937.jpg", "desc": "شاهراه کانال سوئز و عرصه نبرد حماسی العلمین میان ارتش هشتم مونتگومری و آفریکاکور رومل."}, "ZA": {"code": "ZA", "iso3": "ZAF", "name_fa": "اتحادیه آفریقای جنوبی", "name_en": "South Africa", "faction": "allies", "ideology": "democracy", "leader_fa": "یان اسموتس", "leader_en": "Jan Smuts", "capital_fa": "پرتوریا", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Flag_of_South_Africa_%281928%E2%80%931994%29.svg/330px-Flag_of_South_Africa_%281928%E2%80%931994%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Jan_Smuts_1940s.jpg/330px-Jan_Smuts_1940s.jpg", "desc": "معادن طلای راند، صنایع فلزی پیشرفته و نیروهای شجاع در آزادسازی اتیوپی و نبردهای توبروک."}, "NZ": {"code": "NZ", "iso3": "NZL", "name_fa": "دومینیون نیوزیلند", "name_en": "New Zealand", "faction": "allies", "ideology": "democracy", "leader_fa": "مایکل جوزف ساویج", "leader_en": "Michael Joseph Savage", "capital_fa": "ولینگتون", "flag_url": "https://flagcdn.com/w320/nz.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Michael_Joseph_Savage_1935.jpg/330px-Michael_Joseph_Savage_1935.jpg", "desc": "لشکر نامدار دوم نیوزیلند در یونان، کرت و نبرد سنگین مونته کازینو."}, "MN": {"code": "MN", "iso3": "MNG", "name_fa": "جمهوری خلق مغولستان", "name_en": "Mongolia", "faction": "comintern", "ideology": "communism", "leader_fa": "خورلوگین چویبالسان", "leader_en": "Khorloogiin Choibalsan", "capital_fa": "اولان‌باتور", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Flag_of_the_Mongolian_People%27s_Republic_%281940%E2%80%931945%29.svg/330px-Flag_of_the_Mongolian_People%27s_Republic_%281940%E2%80%931945%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/Khorloogiin_Choibalsan_1939.jpg/330px-Khorloogiin_Choibalsan_1939.jpg", "desc": "نبرد حماسی خالخین‌گل همراه با ژنرال ژوکوف و شکست دادن ارتش کوانتونگ ژاپن."}, "TH": {"code": "TH", "iso3": "THA", "name_fa": "پادشاهی تایلند (سیام)", "name_en": "Thailand", "faction": "axis", "ideology": "fascism", "leader_fa": "پلک فیبونسونگرام", "leader_en": "Plaek Phibunsongkhram", "capital_fa": "بانکوک", "flag_url": "https://flagcdn.com/w320/th.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Plaek_Phibunsongkhram_1940.jpg/330px-Plaek_Phibunsongkhram_1940.jpg", "desc": "متحد آسیایی محور در هندوچین با تهاجم به برمه و مالایا."}, "IE": {"code": "IE", "iso3": "IRL", "name_fa": "ایرلند", "name_en": "Ireland", "faction": "neutral", "ideology": "democracy", "leader_fa": "ایمون دو والرا", "leader_en": "Éamon de Valera", "capital_fa": "دوبلین", "flag_url": "https://flagcdn.com/w320/ie.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Eamon_de_Valera_1933.jpg/330px-Eamon_de_Valera_1933.jpg", "desc": "بی‌طرفی هوشمندانه در بحران اضطراری با همکاری اطلاعاتی محرمانه هواشناسی برای عملیات دی‌دی."}, "AF": {"code": "AF", "iso3": "AFG", "name_fa": "پادشاهی افغانستان", "name_en": "Afghanistan", "faction": "neutral", "ideology": "neutral", "leader_fa": "محمد ظاهرشاه", "leader_en": "Mohammad Zahir Shah", "capital_fa": "کابل", "flag_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Flag_of_Afghanistan_%281931%E2%80%931973%29.svg/330px-Flag_of_Afghanistan_%281931%E2%80%931973%29.svg.png", "leader_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Zahir_Shah_1930s.jpg/330px-Zahir_Shah_1930s.jpg", "desc": "سپر حائل آسیای میانه و کوه‌های هندوکش با حفظ کامل بی‌طرفی در میان رقابت قدرت‌های بزرگ."}};
+    const FACTIONS = {"axis": {"id": "axis", "fa": "محور", "en": "Axis Powers", "symbol": "🦅", "color": "#e74c3c", "bg": "rgba(231, 76, 60, 0.15)", "border": "#c0392b", "desc": "متحدین محور (آلمان، ژاپن، ایتالیا و متحدانشان در اروپا و آسیا)"}, "allies": {"id": "allies", "fa": "متفقین", "en": "Allies", "symbol": "⭐", "color": "#3498db", "bg": "rgba(52, 152, 219, 0.15)", "border": "#2980b9", "desc": "ائتلاف متفقین (بریتانیا، آمریکا، فرانسه، کشورهای مشترک‌المنافع و شوروی متأخر)"}, "comintern": {"id": "comintern", "fa": "کمینترن", "en": "Comintern", "symbol": "🚩", "color": "#e67e22", "bg": "rgba(230, 126, 34, 0.15)", "border": "#d35400", "desc": "انترناسیونال کمونیستی به رهبری اتحاد جماهیر شوروی سوسیالیستی"}, "neutral": {"id": "neutral", "fa": "غیرمتعهد / بی‌طرف", "en": "Non-Aligned", "symbol": "🕊️", "color": "#95a5a6", "bg": "rgba(149, 165, 166, 0.15)", "border": "#7f8c8d", "desc": "کشورهای بی‌طرف، مستقل یا غیروابسته در توازن قوای جهانی"}};
+    const IDEOLOGIES = {"fascism": {"id": "fascism", "fa": "فاشیسم / نظامی‌گری", "en": "Fascism", "symbol": "⚡", "icon_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Fasces_lictoriae.svg/200px-Fasces_lictoriae.svg.png", "color": "#9b59b6", "desc": "حکومت توتالیتر، اقتدارگرای نظامی و ناسیونالیسم افراطی"}, "communism": {"id": "communism", "fa": "کمونیسم", "en": "Communism", "symbol": "☭", "icon_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Hammer_and_sickle.svg/200px-Hammer_and_sickle.svg.png", "color": "#e74c3c", "desc": "مارکسیسم-لنینیسم، اقتصاد متمرکز اشتراکی و تک‌حزبی"}, "democracy": {"id": "democracy", "fa": "دموکراسی", "en": "Democracy", "symbol": "⚖️", "icon_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Liberty_symbol.svg/200px-Liberty_symbol.svg.png", "color": "#2980b9", "desc": "دموکراسی پارلمانی، حاکمیت قانون و اقتصاد بازار آزاد"}, "neutral": {"id": "neutral", "fa": "غیرمتعهد / پادشاهی", "en": "Non-Aligned / Monarchy", "symbol": "👑", "icon_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Imperial_Crown_symbol.svg/200px-Imperial_Crown_symbol.svg.png", "color": "#f1c40f", "desc": "سلطنت مشروطه، نظام‌های سنتی استبدادی یا حکومت‌های موقت بی‌طرف"}};
+
+    // State
+    let S = {
+      season: 'pick', // 'wait', 'pick', 'live'
+      p: null,
+      taken: [],
+      owners: {},
+      bg_music: 'https://upload.wikimedia.org/wikipedia/commons/8/85/Holst-_mars.ogg'
+    };
+
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let currentViewMode = 'cards';
+    let selectedCountryCode = null;
+    let isAudioPlaying = false;
+    let leafletMap = null;
+    let geojsonLayer = null;
+    let worldGeoData = null;
+
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      try {
+        tg.ready();
+        tg.expand();
+        tg.enableClosingConfirmation();
+      } catch(e) {}
+    }
+
+    // Fallback images
+    const FALLBACK_FLAG = 'https://flagcdn.com/w160/un.png';
+    const FALLBACK_LEADER = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Portrait_Placeholder.png/240px-Portrait_Placeholder.png';
+
+    function init() {
+      updateStats();
+      renderCards();
+      setupAudio();
+      fetchState();
+    }
+
+    // Fetch live state from backend
+    async function fetchState() {
+      try {
+        const initData = tg?.initData || '';
+        const res = await fetch('/api/state', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ init: initData })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.s) {
+            S.season = data.s.season || 'pick';
+            S.p = data.s.p || null;
+            S.taken = data.s.taken || [];
+            S.owners = data.s.owners || {};
+            if (data.s.bg_music) S.bg_music = data.s.bg_music;
+            onStateUpdated();
+          }
+        }
+      } catch(e) {
+        console.log('Using local client state');
+      }
+    }
+
+    function onStateUpdated() {
+      updateStats();
+      
+      // If player already picked a country OR season is 'wait'
+      if (S.p && S.p.c) {
+        showWaitingRoom();
+      } else if (S.season === 'wait') {
+        showWaitingRoom();
+      } else {
+        showSelectionView();
+      }
+
+      renderCards();
+      if (geojsonLayer) updateMapStyles();
+    }
+
+    function updateStats() {
+      let axisCount = 0, alliesCount = 0, cominternCount = 0, neutralCount = 0;
+      Object.values(COUNTRIES).forEach(c => {
+        if (c.faction === 'axis') axisCount++;
+        else if (c.faction === 'allies') alliesCount++;
+        else if (c.faction === 'comintern') cominternCount++;
+        else neutralCount++;
+      });
+
+      document.getElementById('stat-axis-count').innerText = `${S.taken.filter(code => COUNTRIES[code]?.faction === 'axis').length} / ${axisCount}`;
+      document.getElementById('stat-allies-count').innerText = `${S.taken.filter(code => COUNTRIES[code]?.faction === 'allies').length} / ${alliesCount}`;
+      document.getElementById('stat-comintern-count').innerText = `${S.taken.filter(code => COUNTRIES[code]?.faction === 'comintern').length} / ${cominternCount}`;
+      document.getElementById('stat-neutral-count').innerText = `${S.taken.filter(code => COUNTRIES[code]?.faction === 'neutral').length} / ${neutralCount}`;
+    }
+
+    function showWaitingRoom() {
+      document.getElementById('section-waiting-room').style.display = 'flex';
+      document.getElementById('section-selection').style.display = 'none';
+
+      const dossier = document.getElementById('player-command-dossier');
+      if (S.p && S.p.c) {
+        const c = COUNTRIES[S.p.c] || {};
+        const fac = FACTIONS[c.faction] || {};
+        const ideo = IDEOLOGIES[c.ideology] || {};
+        
+        dossier.innerHTML = `
+          <div class="dossier-header">
+            <div class="dossier-flag">
+              <img src="${c.flag_url || FALLBACK_FLAG}" onerror="this.src='${FALLBACK_FLAG}'">
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--gold); font-weight: 700;">پرونده فرماندهی عالی ستاد کل</div>
+              <h3 style="margin: 2px 0 0; font-size: 19px; color: #fff;">${c.name_fa || S.p.c}</h3>
+              <div style="font-size: 11px; color: var(--text-muted);">${c.name_en || ''} | پایتخت: ${c.capital_fa || ''}</div>
+            </div>
+          </div>
+          <div class="dossier-grid">
+            <div class="dossier-field">
+              <span class="dossier-label">فرمانروای کشور (کاربر)</span>
+              <span class="dossier-value" style="color: var(--cyan);">👑 ${S.p.name || S.p.username || 'شما'}</span>
+            </div>
+            <div class="dossier-field">
+              <span class="dossier-label">ائتلاف نظامی</span>
+              <span class="dossier-value" style="color: ${fac.color || '#fff'};">${fac.symbol || ''} ${fac.fa || ''}</span>
+            </div>
+            <div class="dossier-field">
+              <span class="dossier-label">نظام ایدئولوژیک</span>
+              <span class="dossier-value">${ideo.symbol || ''} ${ideo.fa || ''}</span>
+            </div>
+            <div class="dossier-field">
+              <span class="dossier-label">رهبر تاریخی (۱۹۳۹)</span>
+              <span class="dossier-value">${c.leader_fa || ''}</span>
+            </div>
+          </div>
+          <div style="margin-top: 14px; background: rgba(30, 41, 59, 0.5); padding: 10px; border-radius: 8px; font-size: 12px; color: var(--text-muted);">
+            ⚡ <b>وضعیت آمادگی:</b> تمامی لشکرهای پیاده و زرهی سازماندهی شده‌اند. با دستور ستاد کل در لحظه آغاز سیزن، نبرد در سراسر جبهه‌ها آغاز خواهد شد.
+          </div>
+        `;
+      } else {
+        dossier.innerHTML = `
+          <div style="padding: 20px; text-align: center;">
+            <p style="color: var(--gold); font-size: 15px; margin: 0 0 10px;">شما هنوز کشوری انتخاب نکرده‌اید!</p>
+            <button class="btn btn-gold" onclick="showSelectionView()">انتخاب کشور برای سیزن ⚔️</button>
+          </div>
+        `;
+      }
+    }
+
+    function showSelectionView() {
+      document.getElementById('section-waiting-room').style.display = 'none';
+      document.getElementById('section-selection').style.display = 'block';
+    }
+
+    function showAllNationsView() {
+      showSelectionView();
+    }
+
+    // Filter & Search
+    function handleSearch(val) {
+      searchQuery = String(val || '').toLowerCase().trim();
+      renderCards();
+      if (geojsonLayer) updateMapStyles();
+    }
+
+    function setFilter(type, elem) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-chips .chip').forEach(c => c.classList.remove('active'));
+      if (elem) elem.classList.add('active');
+      renderCards();
+      if (geojsonLayer) updateMapStyles();
+    }
+
+    function matchesFilter(c, code) {
+      const taken = S.taken.includes(code);
+      if (currentFilter === 'free_only' && taken) return false;
+      if (currentFilter === 'axis' && c.faction !== 'axis') return false;
+      if (currentFilter === 'allies' && c.faction !== 'allies') return false;
+      if (currentFilter === 'comintern' && c.faction !== 'comintern') return false;
+      if (currentFilter === 'neutral_fac' && c.faction !== 'neutral') return false;
+      if (currentFilter === 'fascism' && c.ideology !== 'fascism') return false;
+      if (currentFilter === 'communism' && c.ideology !== 'communism') return false;
+      if (currentFilter === 'democracy' && c.ideology !== 'democracy') return false;
+      if (currentFilter === 'monarchy' && c.ideology !== 'neutral') return false;
+
+      if (searchQuery) {
+        const text = `${c.name_fa} ${c.name_en} ${c.leader_fa} ${c.leader_en} ${c.capital_fa} ${c.code} ${c.iso3}`.toLowerCase();
+        if (!text.includes(searchQuery)) return false;
+      }
+      return true;
+    }
+
+    // Card Renderer
+    function renderCards() {
+      const grid = document.getElementById('countries-grid');
+      const codes = Object.keys(COUNTRIES);
+      
+      const filtered = codes.filter(code => matchesFilter(COUNTRIES[code], code));
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--text-muted); background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border);">هیچ کشوری با این مشخصات یافت نشد.</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(code => {
+        const c = COUNTRIES[code];
+        const fac = FACTIONS[c.faction] || {};
+        const ideo = IDEOLOGIES[c.ideology] || {};
+        const taken = S.taken.includes(code);
+        const owner = S.owners[code] || S.owners[code.toLowerCase()];
+        const ownerLabel = owner ? (owner.name || (owner.username ? '@' + owner.username : 'فرمانروا')) : 'انتخاب‌شده';
+
+        return `
+          <div class="country-card ${taken ? 'taken' : ''}" id="card-${code}">
+            <div class="card-top">
+              <div class="flag-box">
+                <img src="${c.flag_url || FALLBACK_FLAG}" alt="${c.name_fa}" loading="lazy" onerror="this.src='${FALLBACK_FLAG}'">
+              </div>
+              <div class="country-info">
+                <h3 class="country-name-fa">${c.name_fa}</h3>
+                <p class="country-name-en">${c.name_en}</p>
+                <div class="card-badges">
+                  <span class="tactical-badge badge-${c.faction}">
+                    ${fac.symbol || ''} ${fac.fa || ''}
+                  </span>
+                  <span class="tactical-badge badge-${c.ideology === 'neutral' ? 'monarchy' : c.ideology}">
+                    ${ideo.symbol || ''} ${ideo.fa || ''}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="leader-row">
+              <div class="leader-photo">
+                <img src="${c.leader_url || FALLBACK_LEADER}" alt="${c.leader_fa}" loading="lazy" onerror="this.src='${FALLBACK_LEADER}'">
+              </div>
+              <div class="leader-meta">
+                <p class="leader-title">رهبر تاریخی (۱۹۳۹):</p>
+                <p class="leader-name">${c.leader_fa}</p>
+              </div>
+            </div>
+
+            <p class="card-desc">${c.desc || ''}</p>
+
+            <div class="card-footer">
+              ${taken ? `
+                <div class="owner-tag">
+                  <span>🔒 اشغال‌شده</span> | 
+                  <span>👑</span> 
+                  <span class="ruler-name">${ownerLabel}</span>
+                </div>
+              ` : `
+                <button class="claim-btn" onclick="openClaimModal('${code}')">
+                  فرمانروایی بر این کشور ⚔️
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Switch View Mode
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      document.getElementById('btn-view-cards').classList.toggle('active', mode === 'cards');
+      document.getElementById('btn-view-map').classList.toggle('active', mode === 'map');
+
+      document.getElementById('cards-view-wrap').style.display = mode === 'cards' ? 'block' : 'none';
+      document.getElementById('map-view-container').style.display = mode === 'map' ? 'block' : 'none';
+
+      if (mode === 'map') {
+        if (!leafletMap) {
+          initMap();
+        } else {
+          setTimeout(() => leafletMap.invalidateSize(), 150);
+        }
+      }
+    }
+
+    // Leaflet World Map
+    async function initMap() {
+      leafletMap = L.map('map', {
+        center: [30, 20],
+        zoom: 2.2,
+        minZoom: 1.5,
+        maxZoom: 6,
+        attributionControl: false
+      });
+
+      try {
+        let res = await fetch('/world_geo.json');
+        if (!res.ok) {
+          res = await fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json');
+        }
+        worldGeoData = await res.json();
+        renderGeoJson();
+      } catch(err) {
+        console.error('Failed to load map data:', err);
+      }
+    }
+
+    // Mapping from GeoJSON ID/ISO3 to Country Code
+    const iso3ToCode = {
+      'DEU': 'DE', 'RUS': 'SO', 'GBR': 'GB', 'USA': 'US', 'JPN': 'JP',
+      'ITA': 'IT', 'FRA': 'FR', 'CHN': 'CN', 'IRN': 'IR', 'POL': 'PL',
+      'CAN': 'CA', 'AUS': 'AU', 'IND': 'IN', 'ROU': 'RO', 'HUN': 'HU',
+      'FIN': 'FIN', 'BGR': 'BG', 'SRB': 'YU', 'HRV': 'YU', 'GRC': 'GR',
+      'TUR': 'TR', 'ESP': 'ESP', 'SWE': 'SE', 'CHE': 'CH', 'PRT': 'PT',
+      'NLD': 'NL', 'BEL': 'BEL', 'NOR': 'NO', 'DNK': 'DK', 'CZE': 'CZ',
+      'BRA': 'BR', 'MEX': 'MX', 'ARG': 'AR', 'IRQ': 'IQ', 'SAU': 'SA',
+      'EGY': 'EGY', 'ZAF': 'ZA', 'NZL': 'NZ', 'MNG': 'MN', 'THA': 'TH',
+      'IRL': 'IE', 'AFG': 'AF'
+    };
+
+    function getFactionColor(faction) {
+      if (faction === 'axis') return '#ef4444';
+      if (faction === 'allies') return '#3b82f6';
+      if (faction === 'comintern') return '#f97316';
+      return '#64748b';
+    }
+
+    function renderGeoJson() {
+      if (!worldGeoData) return;
+      if (geojsonLayer) leafletMap.removeLayer(geojsonLayer);
+
+      geojsonLayer = L.geoJSON(worldGeoData, {
+        style: feature => {
+          const iso = feature.id;
+          const code = iso3ToCode[iso];
+          const country = COUNTRIES[code];
+
+          if (!country) {
+            return {
+              fillColor: '#1e293b',
+              weight: 0.8,
+              opacity: 1,
+              color: '#0f172a',
+              fillOpacity: 0.4
+            };
+          }
+
+          const taken = S.taken.includes(code);
+          const color = getFactionColor(country.faction);
+
+          return {
+            fillColor: color,
+            weight: 1.2,
+            opacity: 1,
+            color: taken ? '#f59e0b' : '#334155',
+            fillOpacity: taken ? 0.35 : 0.75
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const iso = feature.id;
+          const code = iso3ToCode[iso];
+          const country = COUNTRIES[code];
+
+          if (country) {
+            const fac = FACTIONS[country.faction] || {};
+            const ideo = IDEOLOGIES[country.ideology] || {};
+            const taken = S.taken.includes(code);
+            const owner = S.owners[code];
+            const ownerLabel = owner ? (owner.name || (owner.username ? '@' + owner.username : 'فرمانروا')) : 'انتخاب‌شده';
+
+            layer.bindTooltip(`
+              <div style="direction: rtl; text-align: right; font-family: 'Vazirmatn', sans-serif;">
+                <div style="font-weight: 800; font-size: 13px; color: #fff;">${country.name_fa}</div>
+                <div style="font-size: 11px; color: #cbd5e1;">${fac.symbol || ''} ${fac.fa || ''} | ${ideo.symbol || ''} ${ideo.fa || ''}</div>
+                <div style="font-size: 11px; color: var(--gold); margin-top: 3px;">رهبر: ${country.leader_fa}</div>
+                <div style="font-size: 10px; margin-top: 3px;">${taken ? '🔒 اشغال‌شده توسط: ' + ownerLabel : '🟢 آماده برای فرمانروایی'}</div>
+              </div>
+            `, { sticky: true, opacity: 0.95 });
+
+            layer.on({
+              mouseover: e => {
+                const l = e.target;
+                l.setStyle({
+                  weight: 2.5,
+                  color: '#38bdf8',
+                  fillOpacity: 0.9
+                });
+                l.bringToFront();
+              },
+              mouseout: e => {
+                geojsonLayer.resetStyle(e.target);
+              },
+              click: () => {
+                openClaimModal(code);
+              }
+            });
+          }
+        }
+      }).addTo(leafletMap);
+    }
+
+    function updateMapStyles() {
+      if (geojsonLayer) {
+        geojsonLayer.setStyle(feature => {
+          const iso = feature.id;
+          const code = iso3ToCode[iso];
+          const country = COUNTRIES[code];
+
+          if (!country) {
+            return { fillColor: '#1e293b', weight: 0.8, color: '#0f172a', fillOpacity: 0.4 };
+          }
+
+          const matches = matchesFilter(country, code);
+          const taken = S.taken.includes(code);
+          const color = getFactionColor(country.faction);
+
+          return {
+            fillColor: color,
+            weight: matches ? 1.5 : 0.5,
+            opacity: 1,
+            color: matches ? (taken ? '#f59e0b' : '#38bdf8') : '#1e293b',
+            fillOpacity: matches ? (taken ? 0.35 : 0.8) : 0.15
+          };
+        });
+      }
+    }
+
+    // Modal Claim Handlers
+    function openClaimModal(code) {
+      selectedCountryCode = code;
+      const c = COUNTRIES[code];
+      if (!c) return;
+
+      const taken = S.taken.includes(code);
+      const owner = S.owners[code];
+      const fac = FACTIONS[c.faction] || {};
+      const ideo = IDEOLOGIES[c.ideology] || {};
+
+      document.getElementById('modal-title').innerText = `تصدی فرماندهی: ${c.name_fa}`;
+      
+      document.getElementById('modal-body').innerHTML = `
+        <div style="display: flex; gap: 14px; align-items: center; background: #09111e; padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
+          <div style="width: 80px; height: 54px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;">
+            <img src="${c.flag_url || FALLBACK_FLAG}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='${FALLBACK_FLAG}'">
+          </div>
+          <div style="flex: 1;">
+            <h4 style="margin: 0; font-size: 16px; color: #fff;">${c.name_fa} (${c.name_en})</h4>
+            <div style="font-size: 12px; color: var(--text-muted);">پایتخت: ${c.capital_fa}</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div style="background: #111c30; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px;">
+            <span style="color: var(--text-muted); font-size: 10px; display: block;">ائتلاف نظامی:</span>
+            <strong style="color: ${fac.color || '#fff'};">${fac.symbol || ''} ${fac.fa || ''}</strong>
+          </div>
+          <div style="background: #111c30; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px;">
+            <span style="color: var(--text-muted); font-size: 10px; display: block;">نوع حکومت / ایدئولوژی:</span>
+            <strong style="color: ${ideo.color || '#fff'};">${ideo.symbol || ''} ${ideo.fa || ''}</strong>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; background: #111c30; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--gold); flex-shrink: 0;">
+            <img src="${c.leader_url || FALLBACK_LEADER}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='${FALLBACK_LEADER}'">
+          </div>
+          <div>
+            <div style="font-size: 10px; color: var(--text-muted);">فرمانده تاریخی جنگ:</div>
+            <div style="font-size: 13px; font-weight: 700; color: #fff;">${c.leader_fa}</div>
+          </div>
+        </div>
+
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin: 0;">
+          ${c.desc || ''}
+        </p>
+
+        ${taken ? `
+          <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 12px;">
+            🔒 این کشور قبلاً توسط <b>${owner ? (owner.name || owner.username) : 'کاربر دیگری'}</b> تصاحب شده است.
+          </div>
+        ` : `
+          <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--gold); color: #fde68a; padding: 10px; border-radius: 8px; font-size: 12px;">
+            ⚠️ توجه: پس از تأیید نهایی، شما فرمانروای رسمی این کشور در سیزن جنگ جهانی دوم خواهید بود و این انتخاب غیرقابل تغییر است.
+          </div>
+        `}
+      `;
+
+      const confirmBtn = document.getElementById('modal-confirm-btn');
+      confirmBtn.style.display = taken ? 'none' : 'inline-flex';
+
+      document.getElementById('claim-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('claim-modal').classList.remove('open');
+      selectedCountryCode = null;
+    }
+
+    async function confirmClaim() {
+      if (!selectedCountryCode) return;
+      const code = selectedCountryCode;
+      
+      try {
+        const initData = tg?.initData || '';
+        const res = await fetch('/api/pick', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ c: code, init: initData })
+        });
+
+        const data = await res.json();
+        if (data.err) {
+          showToast(`خطا: ${data.err}`);
+        } else {
+          showToast(`فرمانروایی کشور ${COUNTRIES[code]?.name_fa} با موفقیت به شما واگذار شد!`);
+          closeModal();
+          if (data.s) {
+            S.season = data.s.season || S.season;
+            S.p = data.s.p || S.p;
+            S.taken = data.s.taken || S.taken;
+            S.owners = data.s.owners || S.owners;
+          } else {
+            S.taken.push(code);
+            S.p = { c: code, name: tg?.initDataUnsafe?.user?.first_name || 'شما' };
+          }
+          onStateUpdated();
+        }
+      } catch(err) {
+        // Dev offline fallback
+        showToast(`فرمانروایی کشور ${COUNTRIES[code]?.name_fa} ثبت شد!`);
+        closeModal();
+        S.taken.push(code);
+        S.p = { c: code, name: tg?.initDataUnsafe?.user?.first_name || 'فرمانده' };
+        onStateUpdated();
+      }
+    }
+
+    // Toast notification
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // Audio Controls
+    function setupAudio() {
+      const audio = document.getElementById('bg-audio');
+      // Attempt autoplay on first user interaction
+      const startAudioOnTouch = () => {
+        if (!isAudioPlaying) {
+          audio.play().then(() => {
+            isAudioPlaying = true;
+            updateAudioUI();
+          }).catch(() => {});
+        }
+        window.removeEventListener('click', startAudioOnTouch);
+        window.removeEventListener('touchstart', startAudioOnTouch);
+      };
+      window.addEventListener('click', startAudioOnTouch, { once: true });
+      window.addEventListener('touchstart', startAudioOnTouch, { once: true });
+    }
+
+    function toggleAudio() {
+      const audio = document.getElementById('bg-audio');
+      if (isAudioPlaying) {
+        audio.pause();
+        isAudioPlaying = false;
+      } else {
+        audio.play().then(() => {
+          isAudioPlaying = true;
+        }).catch(e => console.log('Audio play blocked:', e));
+      }
+      updateAudioUI();
+    }
+
+    function updateAudioUI() {
+      const pill = document.getElementById('audio-toggle');
+      pill.classList.toggle('playing', isAudioPlaying);
+      document.getElementById('audio-label').innerText = isAudioPlaying ? 'مارش جنگی' : 'موسیقی';
+    }
+
+    // Launch
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
