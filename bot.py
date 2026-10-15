@@ -14,11 +14,9 @@ from aiogram.filters import Command
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, WebAppInfo
 from dotenv import load_dotenv
 
-try:
-    from game_data import COUNTRIES, COUNTRY_CODES, DEFAULT_MUSIC_URL, FACTIONS, IDEOLOGIES
-except ImportError:
-    from game_data import COUNTRIES, COUNTRY_CODES, FACTIONS, IDEOLOGIES
-    DEFAULT_MUSIC_URL = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Holst_The_Planets_Mars_the_Bringer_of_War_USAF_Band.ogg"
+# COUNTRY_CODES was removed from game_data.py and is not used by this bot.
+# Import only symbols that the current game_data module actually exports.
+from game_data import COUNTRIES, DEFAULT_MUSIC_URL, FACTIONS, IDEOLOGIES
 
 
 load_dotenv()
@@ -33,6 +31,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INDEX_PATH = os.path.join(BASE_DIR, "index.html")
 GEOJSON_PATH = os.path.join(BASE_DIR, "world_geo.json")
 DB_PATH = os.environ.get("DB_PATH", os.path.join(BASE_DIR, "bk_ww2.db"))
+# Ensure custom DB_PATH parent directories exist (e.g. /data/bk_ww2.db on a mounted volume).
+os.makedirs(os.path.dirname(os.path.abspath(DB_PATH)), exist_ok=True)
 
 BACKGROUND_MUSIC_URL = os.environ.get("BACKGROUND_MUSIC_URL", DEFAULT_MUSIC_URL).strip()
 
@@ -108,14 +108,20 @@ def find_player_by_country(code):
 
 
 def auth(init_data):
+    # Never accept a missing Telegram initData when a real bot token is configured.
+    # The old fallback let unauthenticated requests act as the shared test user (1001).
     if not init_data:
+        if TOKEN:
+            return None
         return {"id": 1001, "first_name": "فرمانده آزمایشی", "username": "commander_dev"}
 
+    # Tokenless mode is only for local UI development; it is not secure for public hosting.
     if not TOKEN:
         try:
-            fields = dict(parse_qsl(init_data, keep_blank_values=True))
+            fields = dict(parse_qsl(init_data, keep_blank_values=True, max_num_fields=64))
             if "user" in fields:
-                return json.loads(fields["user"])
+                user = json.loads(fields["user"])
+                return user if isinstance(user, dict) and str(user.get("id", "")).isdigit() else None
         except Exception:
             pass
         return {"id": 1001, "first_name": "فرمانده", "username": "commander"}
@@ -166,10 +172,9 @@ async def check_user_membership(uid: int):
         except Exception as e:
             err_msg = str(e).lower()
             print(f"[membership-check] @{ch['username']} for {uid}: {e}")
-            if "not found" in err_msg or "left" in err_msg or "kicked" in err_msg:
-                missing.append(ch)
-            # If bot itself is not added as admin to channel yet, avoid totally blocking all users
-            # unless it clearly reports user not present.
+            # Fail closed on membership-check errors. Otherwise a Telegram API or
+            # permission failure could accidentally allow a non-member into the game.
+            missing.append(ch)
 
     return len(missing) == 0, missing
 
@@ -386,9 +391,9 @@ async def main():
     app = web.Application()
     app.router.add_get("/health", health_handler)
     app.router.add_get("/", index_handler)
-    STATIC_DIR = os.path.join(BASE_DIR, "static")
-    if os.path.exists(STATIC_DIR):
-        app.router.add_static("/static/", STATIC_DIR, name="static")
+    static_dir = os.path.join(BASE_DIR, "static")
+    if os.path.isdir(static_dir):
+        app.router.add_static("/static/", static_dir, name="static")
 
     app.router.add_get("/world_geo.json", geojson_handler)
     app.router.add_route("OPTIONS", "/api/{a}", options_handler)
@@ -397,22 +402,24 @@ async def main():
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", PORT)
-    await site.start()
-    print(f"[*] WW2 Web server running on http://0.0.0.0:{PORT}")
 
-    if bot and dp:
-        try:
+    try:
+        await site.start()
+        print(f"[*] WW2 Web server running on http://0.0.0.0:{PORT}")
+
+        if bot and dp:
             bot_me = await bot.get_me()
             print(f"[*] Telegram Bot @{bot_me.username} connected successfully!")
-            await dp.start_polling(bot)
-        except Exception as e:
-            print(f"[!] Telegram polling error: {e}")
-            while True:
-                await asyncio.sleep(3600)
-    else:
-        print("[*] Running in standalone web server mode (No BOT_TOKEN configured)")
-        while True:
-            await asyncio.sleep(3600)
+            # Do not swallow polling errors. TelegramConflictError means another process
+            # is polling this token; exit visibly instead of leaving a web-only half-alive app.
+            await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+        else:
+            print("[*] Running in standalone web server mode (No BOT_TOKEN configured)")
+            await asyncio.Event().wait()
+    finally:
+        await runner.cleanup()
+        if bot:
+            await bot.session.close()
 
 
 if __name__ == "__main__":
