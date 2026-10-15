@@ -26,6 +26,24 @@ PORT = int(os.environ.get("PORT", 8080))
 DB_PATH = os.environ.get("DB_PATH", "bk_ww2.db")
 BACKGROUND_MUSIC_URL = os.environ.get("BACKGROUND_MUSIC_URL", DEFAULT_MUSIC_URL).strip()
 
+# Mandatory channels that players must join
+REQUIRED_CHANNELS = [
+    {
+        "id": "Burnt_kingdoms",
+        "username": "Burnt_kingdoms",
+        "name": "کانال رسمی Burnt Kingdoms",
+        "link": "https://t.me/Burnt_kingdoms",
+        "desc": "اخبار، رویدادها و اطلاعیه‌های رسمی ستاد کل"
+    },
+    {
+        "id": "bk_chatt",
+        "username": "bk_chatt",
+        "name": "گروه نبرد و گفتگوی جنگ جهانی دوم",
+        "link": "https://t.me/bk_chatt",
+        "desc": "مذاکرات دیپلماتیک و پیمان‌های نظامی فرماندهان"
+    }
+]
+
 db = sqlite3.connect(DB_PATH, check_same_thread=False)
 db.execute("PRAGMA journal_mode = WAL;")
 db.execute("CREATE TABLE IF NOT EXISTS kv (k TEXT PRIMARY KEY, v TEXT);")
@@ -123,7 +141,30 @@ def auth(init_data):
         return None
 
 
-def get_api_state(uid, player, season):
+async def check_user_membership(uid: int):
+    # If no bot token is set or test user or admin, allow automatically
+    if not bot or uid in (1001, 1002) or uid in ADMIN_IDS:
+        return True, []
+
+    missing = []
+    for ch in REQUIRED_CHANNELS:
+        try:
+            member = await bot.get_chat_member(chat_id=f"@{ch['username']}", user_id=uid)
+            status = getattr(member, "status", "")
+            if status not in ("creator", "administrator", "member", "restricted"):
+                missing.append(ch)
+        except Exception as e:
+            err_msg = str(e).lower()
+            print(f"[membership-check] @{ch['username']} for {uid}: {e}")
+            if "not found" in err_msg or "left" in err_msg or "kicked" in err_msg:
+                missing.append(ch)
+            # If bot itself is not added as admin to channel yet, avoid totally blocking all users
+            # unless it clearly reports user not present.
+
+    return len(missing) == 0, missing
+
+
+def get_api_state(uid, player, season, membership_info=None):
     players = all_players()
     taken_codes = []
     owners = {}
@@ -138,7 +179,15 @@ def get_api_state(uid, player, season):
         owners[c] = {"name": p_name or p_uname or "فرمانروا", "username": p_uname, "uid": p_uid}
         owners[c.lower()] = owners[c]
 
-    return {"season": season, "p": player, "taken": taken_codes, "owners": owners, "bg_music": BACKGROUND_MUSIC_URL}
+    return {
+        "season": season,
+        "p": player,
+        "taken": taken_codes,
+        "owners": owners,
+        "bg_music": BACKGROUND_MUSIC_URL,
+        "membership": membership_info or {"ok": True, "missing": [], "channels": REQUIRED_CHANNELS},
+        "required_channels": REQUIRED_CHANNELS,
+    }
 
 
 async def index_handler(request):
@@ -170,13 +219,38 @@ async def api_handler(request):
     uid = int(user.get("id", 1001))
     season = kget("season", "pick")
 
+    # Check channels membership
+    is_member, missing_channels = await check_user_membership(uid)
+    membership_info = {"ok": is_member, "missing": missing_channels, "channels": REQUIRED_CHANNELS}
+
+    if action == "check_membership":
+        return web.json_response({
+            "ok": is_member,
+            "missing": missing_channels,
+            "channels": REQUIRED_CHANNELS,
+            "s": get_api_state(uid, pget(uid), season, membership_info)
+        })
+
     async with ACTION_LOCK:
         player = pget(uid)
         error = None
 
         if action == "state":
             pass
+
         elif action == "pick":
+            # Mandatory channel check
+            if not is_member:
+                ch_names = " و ".join(f"@{ch['username']}" for ch in missing_channels)
+                error = "برای انتخاب کشور و ورود به بازی، ابتدا باید در کانال‌های زیر عضو شوید:\n" + ch_names
+                return web.json_response({
+                    "err": error,
+                    "must_join": True,
+                    "missing": missing_channels,
+                    "channels": REQUIRED_CHANNELS,
+                    "s": get_api_state(uid, player, season, membership_info)
+                })
+
             code = str(body.get("c", "")).strip().upper()
             if not code or code not in COUNTRIES:
                 error = "کد کشور نامعتبر است."
@@ -192,7 +266,13 @@ async def api_handler(request):
                     full_name = f"{first_name} {last_name}".strip() or "فرمانده"
                     username = str(user.get("username", "")).strip().lstrip("@")
 
-                    new_player = {"c": code, "name": full_name, "username": username, "alive": True, "created_at": int(time.time())}
+                    new_player = {
+                        "c": code,
+                        "name": full_name,
+                        "username": username,
+                        "alive": True,
+                        "created_at": int(time.time())
+                    }
                     pset(uid, new_player)
                     player = new_player
 
@@ -204,7 +284,10 @@ async def api_handler(request):
                     if bot and ANNOUNCE_CHANNEL:
                         asyncio.create_task(send_channel_announcement(full_name, username, c_name, fac_name))
 
-        return web.json_response({"s": get_api_state(uid, player, season), "err": error})
+        return web.json_response({
+            "s": get_api_state(uid, player, season, membership_info),
+            "err": error
+        })
 
 
 async def send_channel_announcement(name, username, country_name, faction_name):
@@ -212,7 +295,7 @@ async def send_channel_announcement(name, username, country_name, faction_name):
         return
     try:
         user_tag = f"@{username}" if username else name
-        text = f"""📢 <b>اعلان ستاد کل جنگ جهانی دوم</b>\n\nفرمانده <b>{user_tag}</b> رسماً زمام امور کشور <b>{country_name}</b> را در ائتلاف <b>{faction_name}</b> به دست گرفت!\n\n⚡ نیروها در حالت آماده‌باش قرار گرفتند."""
+        text = f"📢 <b>اعلان ستاد کل جنگ جهانی دوم</b>\n\nفرمانده <b>{user_tag}</b> رسماً زمام امور کشور <b>{country_name}</b> را در ائتلاف <b>{faction_name}</b> به دست گرفت!\n\n⚡ نیروها در حالت آماده‌باش قرار گرفتند."
         await bot.send_message(ANNOUNCE_CHANNEL, text, parse_mode="HTML")
     except Exception as exc:
         print("[announce-error]", exc)
@@ -225,8 +308,12 @@ dp = Dispatcher() if TOKEN else None
 if dp:
     @dp.message(Command("start"))
     async def cmd_start(msg: Message):
-        kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="⚔️ ورود به کارزار جنگ جهانی دوم (Mini App)", web_app=WebAppInfo(url=URL))]]) if URL else None
-        text = """⚔️ <b>به کارزار جهانی دوم ۱۹۳۹ (Burnt Kingdoms WW2) خوش آمدید!</b>\n\nدر این بازی شما در نقش رهبران و فرمانروایان کشورهای جهان در آستانه جنگ جهانی دوم قرار می‌گیرید.\n\n🎖️ <b>مرحله فعلی:</b> انتخاب کشور و اتاق آماده‌باش سیزن\n🗺️ بیش از ۴۰ کشور با پرچم‌های تاریخی، رهبران واقعی، ائتلاف‌ها و نقشه تعاملی جهان.\n\nجهت انتخاب کشور خود و مشاهده نقشه، روی دکمه زیر کلیک کنید:"""
+        kb = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [InlineKeyboardButton(text="⚔️ ورود به کارزار جنگ جهانی دوم (Mini App)", web_app=WebAppInfo(url=URL))]
+            ]
+        ) if URL else None
+        text = "⚔️ <b>به کارزار جهانی دوم ۱۹۳۹ (Burnt Kingdoms WW2) خوش آمدید!</b>\n\nدر این بازی شما در نقش رهبران و فرمانروایان کشورهای جهان در آستانه جنگ جهانی دوم قرار می‌گیرید.\n\n🎖️ <b>مرحله فعلی:</b> انتخاب کشور و اتاق آماده‌باش سیزن\n🗺️ ۷۵ کشور تاریخی با پرچم‌های ۱۹۳۰، رهبران واقعی، ائتلاف‌ها و نقشه تعاملی جهان.\n⚠️ <b>توجه:</b> جهت ورود، عضویت در کانال‌های @Burnt_kingdoms و @bk_chatt الزامی است.\n\nجهت انتخاب کشور خود و مشاهده نقشه، روی دکمه زیر کلیک کنید:"
         await msg.answer(text, reply_markup=kb, parse_mode="HTML")
 
     @dp.message(Command("season"))
