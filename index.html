@@ -868,11 +868,11 @@
       <!-- Live Global Power Balance -->
       <div class="tension-bar" id="tension-bar">
         <div class="stat-pill axis">
-          <span class="pill-label"><img src="static/badges/neutral.svg" class="badge-icon-img"> متحدین محور</span>
+          <span class="pill-label"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> متحدین محور</span>
           <strong id="stat-axis-count">0</strong>
         </div>
         <div class="stat-pill allies">
-          <span class="pill-label"><img src="static/badges/neutral.svg" class="badge-icon-img"> ائتلاف متفقین</span>
+          <span class="pill-label"><img src="static/badges/allies.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</span>
           <strong id="stat-allies-count">0</strong>
         </div>
         <div class="stat-pill comintern">
@@ -2164,10 +2164,10 @@
   },
   "neutral": {
     "id": "neutral",
-    "fa": "پادشاهی / غیرمتعهد",
+    "fa": "غیرمتعهد",
     "en": "Non-Aligned",
     "color": "#eab308",
-    "badge_url": "static/badges/monarchy.svg"
+    "badge_url": "static/badges/neutral.svg"
   }
 };
     const ICONS = {"swords": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.5 17.5L3 6V3h3l11.5 11.5\"/><path d=\"m13 19 6 2 2-6-2-2-6 2z\"/><path d=\"m2 22 3-3\"/><path d=\"m19 5 3-3\"/><path d=\"m5 2 4 4\"/><path d=\"m2 5 4 4\"/></svg>", "cards": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M3 9h18\"/><path d=\"M9 21V9\"/></svg>", "map": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21\"/><line x1=\"9\" x2=\"9\" y1=\"3\" y2=\"18\"/><line x1=\"15\" x2=\"15\" y1=\"6\" y2=\"21\"/></svg>", "music": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></svg>", "search": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><line x1=\"21\" x2=\"16.65\" y1=\"21\" y2=\"16.65\"/></svg>", "lock": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg>", "crown": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"currentColor\"><path d=\"M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z\"/></svg>", "radar": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"38\" height=\"38\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2a10 10 0 1 0 10 10\"/><path d=\"M12 6a6 6 0 1 0 6 6\"/><path d=\"M12 10a2 2 0 1 0 2 2\"/><line x1=\"12\" y1=\"12\" x2=\"22\" y2=\"2\"/></svg>", "close": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg>", "check": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"20 6 9 17 4 12\"/></svg>", "warning": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z\"/><line x1=\"12\" y1=\"9\" x2=\"12\" y2=\"13\"/><line x1=\"12\" y1=\"17\" x2=\"12.01\" y2=\"17\"/></svg>", "telegram": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"currentColor\"><path d=\"M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.943z\"/></svg>", "dot_free": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"10\" height=\"10\" fill=\"#10b981\"><circle cx=\"12\" cy=\"12\" r=\"8\"/></svg>", "refresh": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67\"/></svg>"};
@@ -2465,7 +2465,7 @@
                     <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
                     ${fac.fa || ''}
                   </span>
-                  <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'monarchy' : c.ideology}">
+                  <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'neutral' : c.ideology}">
                     <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
                     ${ideo.fa || 'غیرمتعهد'}
                   </span>
@@ -2662,7 +2662,7 @@
                 <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
                 ${fac.fa || ''}
               </span>
-              <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'monarchy' : c.ideology}">
+              <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'neutral' : c.ideology}">
                 <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
                 ${ideo.fa || 'غیرمتعهد'}
               </span>
@@ -2673,7 +2673,7 @@
 
         <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0; background: #0f1828; padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
           <div style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold); flex-shrink: 0;">
-            <img src="${c.leader_url || FALLBACK_LEADER}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='${FALLBACK_LEADER}'">
+            <img src="${c.leader_url || FALLBACK_LEADER}" style="width: 100%; height: 100%; object-fit: cover; object-position: center 22%;" onerror="this.src='${FALLBACK_LEADER}'">
           </div>
           <div>
             <div style="font-size: 11px; color: var(--text-muted);">رهبر تاریخی (دوران ۱۹۳۰):</div>
