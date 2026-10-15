@@ -408,6 +408,15 @@
       text-overflow: ellipsis;
     }
 
+    .country-capital {
+      font-size: 11px;
+      color: var(--gold);
+      margin: 2px 0 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .country-name-en {
       font-size: 11px;
       color: var(--text-muted);
@@ -459,6 +468,7 @@
     .badge-communism { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; }
     .badge-democracy { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #7dd3fc; }
     .badge-monarchy { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde68a; }
+    .badge-colony { background: rgba(34, 197, 94, 0.14); border: 1px solid rgba(34, 197, 94, 0.42); color: #86efac; }
 
     .leader-row {
       display: flex;
@@ -1045,6 +1055,7 @@
     "code": "DE",
     "name_fa": "آلمان (رایش سوم)",
     "name_en": "Germany",
+    "capital_fa": "برلین",
     "faction": "axis",
     "ideology": "fascism",
     "leader": "آدولف هیتلر",
@@ -1059,6 +1070,7 @@
     "code": "IT",
     "name_fa": "پادشاهی ایتالیا",
     "name_en": "Italy",
+    "capital_fa": "رم",
     "faction": "axis",
     "ideology": "fascism",
     "leader": "بنیتو موسولینی",
@@ -1073,6 +1085,7 @@
     "code": "JP",
     "name_fa": "امپراتوری ژاپن",
     "name_en": "Japan",
+    "capital_fa": "توکیو",
     "faction": "axis",
     "ideology": "fascism",
     "leader": "امپراتور هیروهیتو",
@@ -1087,6 +1100,7 @@
     "code": "HU",
     "name_fa": "پادشاهی مجارستان",
     "name_en": "Hungary",
+    "capital_fa": "بوداپست",
     "faction": "axis",
     "ideology": "fascism",
     "leader": "میکلوش هورتی",
@@ -1101,6 +1115,7 @@
     "code": "RO",
     "name_fa": "پادشاهی رومانی",
     "name_en": "Romania",
+    "capital_fa": "بخارست",
     "faction": "axis",
     "ideology": "fascism",
     "leader": "یون آنتونسکو",
@@ -1115,6 +1130,7 @@
     "code": "BG",
     "name_fa": "پادشاهی بلغارستان",
     "name_en": "Bulgaria",
+    "capital_fa": "صوفیه",
     "faction": "axis",
     "ideology": "nonaligned",
     "leader": "تزار بوریس سوم",
@@ -1129,6 +1145,7 @@
     "code": "FI",
     "name_fa": "جمهوری فنلاند",
     "name_en": "Finland",
+    "capital_fa": "هلسینکی",
     "faction": "axis",
     "ideology": "democracy",
     "leader": "کارل گوستاف مانرهایم",
@@ -1143,6 +1160,7 @@
     "code": "TH",
     "name_fa": "پادشاهی تایلند (سیام)",
     "name_en": "Thailand",
+    "capital_fa": "بانکوک",
     "faction": "axis",
     "ideology": "fascism",
     "leader": "پلاک فیبونسونگکرام",
@@ -1157,6 +1175,7 @@
     "code": "GB",
     "name_fa": "بریتانیای کبیر",
     "name_en": "United Kingdom",
+    "capital_fa": "لندن",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "وینستون چرچیل",
@@ -1171,6 +1190,7 @@
     "code": "US",
     "name_fa": "ایالات متحده آمریکا",
     "name_en": "United States",
+    "capital_fa": "واشینگتن دی‌سی",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "فرانکلین دی. روزولت",
@@ -1185,6 +1205,7 @@
     "code": "FR",
     "name_fa": "جمهوری فرانسه",
     "name_en": "France",
+    "capital_fa": "پاریس",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "شارل دو گل",
@@ -1199,6 +1220,7 @@
     "code": "PL",
     "name_fa": "جمهوری لهستان",
     "name_en": "Poland",
+    "capital_fa": "ورشو",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "ولادیسلاو راچکیویچ",
@@ -1213,6 +1235,7 @@
     "code": "CN",
     "name_fa": "جمهوری چین (ملی‌گرا)",
     "name_en": "Republic of China",
+    "capital_fa": "نانجینگ",
     "faction": "allies",
     "ideology": "nonaligned",
     "leader": "چیانگ کای‌شک",
@@ -1227,6 +1250,7 @@
     "code": "CA",
     "name_fa": "دومینیون کانادا",
     "name_en": "Canada",
+    "capital_fa": "اتاوا",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "مکنزی کینگ",
@@ -1241,6 +1265,7 @@
     "code": "AU",
     "name_fa": "استرالیا",
     "name_en": "Australia",
+    "capital_fa": "کانبرا",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "جان کورتین",
@@ -1255,6 +1280,7 @@
     "code": "NZ",
     "name_fa": "نیوزیلند",
     "name_en": "New Zealand",
+    "capital_fa": "ولینگتون",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "پیتر فریزر",
@@ -1269,6 +1295,10 @@
     "code": "IN",
     "name_fa": "راج بریتانیا (هند)",
     "name_en": "British Raj",
+    "capital_fa": "دهلی نو",
+    "colony_of": "GB",
+    "colony_of_fa": "بریتانیا",
+    "colony_label": "مستعمرهٔ بریتانیا",
     "faction": "allies",
     "ideology": "nonaligned",
     "leader": "لرد لینلیثگو",
@@ -1277,12 +1307,13 @@
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Victor_Hope%2C_2nd_Marquess_of_Linlithgow.jpg/250px-Victor_Hope%2C_2nd_Marquess_of_Linlithgow.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Victor_Hope%2C_2nd_Marquess_of_Linlithgow.jpg/250px-Victor_Hope%2C_2nd_Marquess_of_Linlithgow.jpg",
     "flag_url": "static/flags/IN.svg",
-    "desc": "کشور راج بریتانیا (هند) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده لرد لینلیثگو بود."
+    "desc": "کشور راج بریتانیا (هند) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده لرد لینلیثگو بود. وضعیت استعماری: راج بریتانیا، تحت حاکمیت بریتانیا."
   },
   "ZA": {
     "code": "ZA",
     "name_fa": "آفریقای جنوبی",
     "name_en": "South Africa",
+    "capital_fa": "پرتوریا",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "یان اسموتس",
@@ -1297,6 +1328,7 @@
     "code": "NL",
     "name_fa": "پادشاهی هلند",
     "name_en": "Netherlands",
+    "capital_fa": "آمستردام",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "ملکه ویلهلمینا",
@@ -1311,6 +1343,7 @@
     "code": "BE",
     "name_fa": "پادشاهی بلژیک",
     "name_en": "Belgium",
+    "capital_fa": "بروکسل",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "لئوپولد سوم",
@@ -1325,6 +1358,7 @@
     "code": "NO",
     "name_fa": "پادشاهی نروژ",
     "name_en": "Norway",
+    "capital_fa": "اسلو",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "هاکون هفتم",
@@ -1339,6 +1373,7 @@
     "code": "DK",
     "name_fa": "پادشاهی دانمارک",
     "name_en": "Denmark",
+    "capital_fa": "کپنهاگ",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "کریستیان دهم",
@@ -1353,6 +1388,7 @@
     "code": "GR",
     "name_fa": "پادشاهی یونان",
     "name_en": "Greece",
+    "capital_fa": "آتن",
     "faction": "allies",
     "ideology": "nonaligned",
     "leader": "یوآنیس متاکساس",
@@ -1367,6 +1403,7 @@
     "code": "YU",
     "name_fa": "پادشاهی یوگسلاوی",
     "name_en": "Yugoslavia",
+    "capital_fa": "بلگراد",
     "faction": "allies",
     "ideology": "nonaligned",
     "leader": "پیتر دوم",
@@ -1381,6 +1418,7 @@
     "code": "CZ",
     "name_fa": "چکسلواکی",
     "name_en": "Czechoslovakia",
+    "capital_fa": "پراگ",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "ادوارد بنش",
@@ -1395,6 +1433,7 @@
     "code": "LU",
     "name_fa": "لوکزامبورگ",
     "name_en": "Luxembourg",
+    "capital_fa": "لوکزامبورگ",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "گراندوشس شارلوت",
@@ -1409,6 +1448,7 @@
     "code": "BR",
     "name_fa": "برزیل",
     "name_en": "Brazil",
+    "capital_fa": "ریو دو ژانیرو",
     "faction": "allies",
     "ideology": "nonaligned",
     "leader": "ژتولیو وارگاس",
@@ -1423,6 +1463,7 @@
     "code": "MX",
     "name_fa": "مکزیک",
     "name_en": "Mexico",
+    "capital_fa": "مکزیکوسیتی",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "لازارو کاردناس",
@@ -1437,6 +1478,7 @@
     "code": "SU",
     "name_fa": "اتحاد جماهیر شوروی",
     "name_en": "Soviet Union",
+    "capital_fa": "مسکو",
     "faction": "comintern",
     "ideology": "communism",
     "leader": "ژوزف استالین",
@@ -1451,6 +1493,7 @@
     "code": "MN",
     "name_fa": "جمهوری خلق مغولستان",
     "name_en": "Mongolia",
+    "capital_fa": "اولان‌باتور",
     "faction": "comintern",
     "ideology": "communism",
     "leader": "خورلوگین چویبالسان",
@@ -1465,6 +1508,7 @@
     "code": "IR",
     "name_fa": "شاهنشاهی ایران",
     "name_en": "Iran",
+    "capital_fa": "تهران",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "رضاشاه پهلوی",
@@ -1479,6 +1523,7 @@
     "code": "TR",
     "name_fa": "جمهوری ترکیه",
     "name_en": "Turkey",
+    "capital_fa": "آنکارا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "مصطفی کمال آتاتورک",
@@ -1493,6 +1538,7 @@
     "code": "ES",
     "name_fa": "اسپانیا",
     "name_en": "Spain",
+    "capital_fa": "مادرید",
     "faction": "neutral",
     "ideology": "fascism",
     "leader": "فرانسیسکو فرانکو",
@@ -1507,6 +1553,7 @@
     "code": "PT",
     "name_fa": "پرتغال",
     "name_en": "Portugal",
+    "capital_fa": "لیسبون",
     "faction": "neutral",
     "ideology": "fascism",
     "leader": "آنتونیو دی اولیویرا سالازار",
@@ -1521,6 +1568,7 @@
     "code": "SE",
     "name_fa": "پادشاهی سوئد",
     "name_en": "Sweden",
+    "capital_fa": "استکهلم",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "گوستاو پنجم",
@@ -1535,6 +1583,7 @@
     "code": "CH",
     "name_fa": "کنفدراسیون سوئیس",
     "name_en": "Switzerland",
+    "capital_fa": "برن",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "فیلیپ اتر",
@@ -1549,6 +1598,7 @@
     "code": "IE",
     "name_fa": "جمهوری ایرلند",
     "name_en": "Ireland",
+    "capital_fa": "دوبلین",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "ایمون دو والرا",
@@ -1563,6 +1613,7 @@
     "code": "AF",
     "name_fa": "پادشاهی افغانستان",
     "name_en": "Afghanistan",
+    "capital_fa": "کابل",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "محمد ظاهرشاه",
@@ -1577,6 +1628,7 @@
     "code": "SA",
     "name_fa": "پادشاهی عربستان سعودی",
     "name_en": "Saudi Arabia",
+    "capital_fa": "ریاض",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "ملک عبدالعزیز آل سعود",
@@ -1591,6 +1643,7 @@
     "code": "IQ",
     "name_fa": "پادشاهی عراق",
     "name_en": "Iraq",
+    "capital_fa": "بغداد",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "ملک غازی اول",
@@ -1605,6 +1658,7 @@
     "code": "EG",
     "name_fa": "پادشاهی مصر",
     "name_en": "Egypt",
+    "capital_fa": "قاهره",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "ملک فاروق اول",
@@ -1619,6 +1673,7 @@
     "code": "ET",
     "name_fa": "امپراتوری اتیوپی",
     "name_en": "Ethiopia",
+    "capital_fa": "آدیس آبابا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "هایله سلاسی",
@@ -1633,6 +1688,7 @@
     "code": "AR",
     "name_fa": "آرژانتین",
     "name_en": "Argentina",
+    "capital_fa": "بوئنوس آیرس",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "روبرتو ماریا اورتیز",
@@ -1647,6 +1703,7 @@
     "code": "CL",
     "name_fa": "جمهوری شیلی",
     "name_en": "Chile",
+    "capital_fa": "سانتیاگو",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "پدرو آگوئیره سردار",
@@ -1661,6 +1718,7 @@
     "code": "CO",
     "name_fa": "جمهوری کلمبیا",
     "name_en": "Colombia",
+    "capital_fa": "بوگوتا",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "ادواردو سانتوس",
@@ -1675,6 +1733,7 @@
     "code": "PE",
     "name_fa": "پرو",
     "name_en": "Peru",
+    "capital_fa": "لیما",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "اسکار بناویدس",
@@ -1689,6 +1748,7 @@
     "code": "VE",
     "name_fa": "ونزوئلا",
     "name_en": "Venezuela",
+    "capital_fa": "کاراکاس",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "الازار لوپز کنتراس",
@@ -1703,6 +1763,7 @@
     "code": "CU",
     "name_fa": "کوبا",
     "name_en": "Cuba",
+    "capital_fa": "هاوانا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "فولخنسیو باتیستا",
@@ -1717,6 +1778,7 @@
     "code": "EE",
     "name_fa": "استونی",
     "name_en": "Estonia",
+    "capital_fa": "تالین",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "کنستانتین پاتس",
@@ -1731,6 +1793,7 @@
     "code": "LV",
     "name_fa": "لتونی",
     "name_en": "Latvia",
+    "capital_fa": "ریگا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "کارلیس اولمانیس",
@@ -1745,6 +1808,7 @@
     "code": "LT",
     "name_fa": "لیتوانی",
     "name_en": "Lithuania",
+    "capital_fa": "کائوناس",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "آنتاناس اسمتونا",
@@ -1759,6 +1823,7 @@
     "code": "TB",
     "name_fa": "تبت",
     "name_en": "Tibet",
+    "capital_fa": "لهاسا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "دالایی لاما چهاردهم",
@@ -1773,6 +1838,7 @@
     "code": "NP",
     "name_fa": "نپال",
     "name_en": "Nepal",
+    "capital_fa": "کاتماندو",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "جودا شومشر رانا",
@@ -1787,6 +1853,7 @@
     "code": "BT",
     "name_fa": "بوتان",
     "name_en": "Bhutan",
+    "capital_fa": "پوناخا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "جیگمه وانگچوک",
@@ -1801,6 +1868,7 @@
     "code": "YE",
     "name_fa": "پادشاهی یمن",
     "name_en": "Yemen",
+    "capital_fa": "صنعا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "امام یحیی حمیدالدین",
@@ -1815,6 +1883,7 @@
     "code": "OM",
     "name_fa": "سلطنت عمان",
     "name_en": "Oman",
+    "capital_fa": "مسقط",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "سلطان سعید بن تیمور",
@@ -1829,6 +1898,7 @@
     "code": "IS",
     "name_fa": "ایسلند",
     "name_en": "Iceland",
+    "capital_fa": "ریکیاویک",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "هرماند یوناسون",
@@ -1843,6 +1913,7 @@
     "code": "AL",
     "name_fa": "پادشاهی آلبانی",
     "name_en": "Albania",
+    "capital_fa": "تیرانا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "شاه زوگ اول",
@@ -1857,6 +1928,7 @@
     "code": "UY",
     "name_fa": "اروگوئه",
     "name_en": "Uruguay",
+    "capital_fa": "مونته‌ویدئو",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "آلفردو بالدومیر",
@@ -1871,6 +1943,7 @@
     "code": "PY",
     "name_fa": "پاراگوئه",
     "name_en": "Paraguay",
+    "capital_fa": "آسونسیون",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "خوزه فلیکس استیگاریبیا",
@@ -1885,6 +1958,7 @@
     "code": "BO",
     "name_fa": "بولیوی",
     "name_en": "Bolivia",
+    "capital_fa": "لاپاز",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "خرمان بوش",
@@ -1899,6 +1973,7 @@
     "code": "EC",
     "name_fa": "اکوادور",
     "name_en": "Ecuador",
+    "capital_fa": "کیتو",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "آئورلیو موسکئرا",
@@ -1913,6 +1988,7 @@
     "code": "GT",
     "name_fa": "گواتمالا",
     "name_en": "Guatemala",
+    "capital_fa": "گواتمالاسیتی",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "خورخه اوبیکو",
@@ -1927,6 +2003,7 @@
     "code": "HN",
     "name_fa": "هندوراس",
     "name_en": "Honduras",
+    "capital_fa": "تگوسیگالپا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "تیبورسیو کاریاس آندینو",
@@ -1941,6 +2018,7 @@
     "code": "SV",
     "name_fa": "السالوادور",
     "name_en": "El Salvador",
+    "capital_fa": "سان سالوادور",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "ماکسیمیلیانو هرناندز مارتینز",
@@ -1955,6 +2033,7 @@
     "code": "NI",
     "name_fa": "نیکاراگوئه",
     "name_en": "Nicaragua",
+    "capital_fa": "ماناگوا",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "آناستاسیو سوموسا گارسیا",
@@ -1969,6 +2048,7 @@
     "code": "CR",
     "name_fa": "کاستاریکا",
     "name_en": "Costa Rica",
+    "capital_fa": "سن‌خوزه",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "لئون کورتس کاسترو",
@@ -1983,6 +2063,7 @@
     "code": "PA",
     "name_fa": "پاناما",
     "name_en": "Panama",
+    "capital_fa": "پاناماسیتی",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "خوان دموستنس آروزمنا",
@@ -1997,6 +2078,7 @@
     "code": "DO",
     "name_fa": "جمهوری دومینیکن",
     "name_en": "Dominican Republic",
+    "capital_fa": "سانتو دومینگو",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "رافائل تروخیو",
@@ -2011,6 +2093,7 @@
     "code": "HT",
     "name_fa": "هائیتی",
     "name_en": "Haiti",
+    "capital_fa": "پورتو پرنس",
     "faction": "neutral",
     "ideology": "nonaligned",
     "leader": "استنیو ونسنت",
@@ -2025,6 +2108,7 @@
     "code": "LR",
     "name_fa": "لیبریا",
     "name_en": "Liberia",
+    "capital_fa": "مونروویا",
     "faction": "neutral",
     "ideology": "democracy",
     "leader": "ادوین بارکلی",
@@ -2039,6 +2123,10 @@
     "code": "PH",
     "name_fa": "فیلیپین (مشترک‌المنافع)",
     "name_en": "Philippines",
+    "capital_fa": "مانیلا",
+    "colony_of": "US",
+    "colony_of_fa": "ایالات متحدهٔ آمریکا",
+    "colony_label": "مستعمرهٔ ایالات متحده",
     "faction": "allies",
     "ideology": "democracy",
     "leader": "مانوئل ال. کوئزون",
@@ -2047,12 +2135,13 @@
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Manuel_L._Quezon_%28November_1942%29.jpg/250px-Manuel_L._Quezon_%28November_1942%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Manuel_L._Quezon_%28November_1942%29.jpg/250px-Manuel_L._Quezon_%28November_1942%29.jpg",
     "flag_url": "https://flagcdn.com/w320/ph.png",
-    "desc": "کشور فیلیپین (مشترک‌المنافع) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده مانوئل ال. کوئزون بود."
+    "desc": "کشور فیلیپین (مشترک‌المنافع) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده مانوئل ال. کوئزون بود. وضعیت استعماری: فیلیپین در سال ۱۹۳۰ قلمرو تحت ادارهٔ ایالات متحده بود و هنوز استقلال نیافته بود."
   },
   "SK": {
     "code": "SK",
     "name_fa": "جمهوری اسلواکی",
     "name_en": "Slovakia",
+    "capital_fa": "براتیسلاوا",
     "faction": "axis",
     "ideology": "fascism",
     "leader": "یوزف تیسو",
@@ -2067,6 +2156,7 @@
     "code": "CP",
     "name_fa": "جمهوری شورایی چین (یان‌آن)",
     "name_en": "Communist China",
+    "capital_fa": "یان‌آن",
     "faction": "comintern",
     "ideology": "communism",
     "leader": "مائو تسه‌تونگ",
@@ -2081,6 +2171,7 @@
     "code": "TU",
     "name_fa": "جمهوری خلق تووا",
     "name_en": "Tannu Tuva",
+    "capital_fa": "قیزیل",
     "faction": "comintern",
     "ideology": "communism",
     "leader": "سالچاک توکا",
@@ -2095,6 +2186,7 @@
     "code": "MZ",
     "name_fa": "امپراتوری منچوکوئو",
     "name_en": "Manchukuo",
+    "capital_fa": "چانگچون",
     "faction": "axis",
     "ideology": "fascism",
     "leader": "پویی (امپراتور کانگ‌ده)",
@@ -2461,6 +2553,7 @@
               <div class="country-info">
                 <h3 class="country-name-fa">${c.name_fa}</h3>
                 <p class="country-name-en">${c.name_en}</p>
+                <p class="country-capital">پایتخت: ${c.capital_fa || "نامشخص"}</p>
                 <div class="card-badges">
                   <span class="tactical-badge badge-${c.faction}">
                     <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
@@ -2471,6 +2564,7 @@
                     ${ideo.fa || 'غیرمتعهد'}
                   </span>
                   ${isMonarchy(c, code) ? '<span class="tactical-badge badge-monarchy"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span>' : ''}
+                  ${c.colony_of_fa ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="مستعمره"> ' + (c.colony_label || 'مستعمرهٔ ' + c.colony_of_fa) + '</span>' : ''}
                 </div>
               </div>
             </div>
@@ -2611,7 +2705,8 @@
             layer.bindTooltip(`
               <div style="direction: rtl; text-align: right; font-family: Vazirmatn, sans-serif; font-size: 12px;">
                 <b>${country.name_fa}</b> (${country.name_en})<br>
-                <span>رهبر: ${country.leader_fa}</span><br>
+                <span>رهبر: ${country.leader_fa}</span><br>                ${country.capital_fa ? '<span>پایتخت: ' + country.capital_fa + '</span><br>' : ''}
+                ${country.colony_of_fa ? '<span style="color:#86efac;">' + (country.colony_label || 'مستعمرهٔ ' + country.colony_of_fa) + '</span><br>' : ''}
                 ${isTaken ? '<span style="color:#ef4444;">اشغال‌شده توسط: ' + ownerLabel + '</span>' : '<span style="color:#10b981;">آماده تصاحب</span>'}
               </div>
             `, { sticky: true });
@@ -2684,7 +2779,7 @@
         </div>
 
         <div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.6; background: #0b1322; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
-          <b style="color: #fff;">دکترین نظامی و وضعیت ژئوپلیتیک:</b><br>
+          <b style="color: #fff;">توضیحات و وضعیت تاریخی کشور:</b><br>
           ${c.desc || 'اطلاعات محرمانه ستاد کل ارتش.'}
         </div>
 
