@@ -14,7 +14,12 @@ from aiogram.filters import Command
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, WebAppInfo
 from dotenv import load_dotenv
 
-from game_data import COUNTRIES, COUNTRY_CODES, DEFAULT_MUSIC_URL, FACTIONS, IDEOLOGIES
+try:
+    from game_data import COUNTRIES, COUNTRY_CODES, DEFAULT_MUSIC_URL, FACTIONS, IDEOLOGIES
+except ImportError:
+    from game_data import COUNTRIES, COUNTRY_CODES, FACTIONS, IDEOLOGIES
+    DEFAULT_MUSIC_URL = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Holst_The_Planets_Mars_the_Bringer_of_War_USAF_Band.ogg"
+
 
 load_dotenv()
 
@@ -23,7 +28,12 @@ URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 ADMIN_IDS = [int(x.strip()) for x in os.environ.get("ADMINS", "").split(",") if x.strip().isdigit()]
 ANNOUNCE_CHANNEL = os.environ.get("ANNOUNCE_CHANNEL", "").strip()
 PORT = int(os.environ.get("PORT", 8080))
-DB_PATH = os.environ.get("DB_PATH", "bk_ww2.db")
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+INDEX_PATH = os.path.join(BASE_DIR, "index.html")
+GEOJSON_PATH = os.path.join(BASE_DIR, "world_geo.json")
+DB_PATH = os.environ.get("DB_PATH", os.path.join(BASE_DIR, "bk_ww2.db"))
+
 BACKGROUND_MUSIC_URL = os.environ.get("BACKGROUND_MUSIC_URL", DEFAULT_MUSIC_URL).strip()
 
 # Mandatory channels that players must join
@@ -190,8 +200,23 @@ def get_api_state(uid, player, season, membership_info=None):
     }
 
 
+async def health_handler(request):
+    return web.json_response({"status": "ok", "app": "bk_ww2", "season": kget("season", "pick")})
+
+
+async def options_handler(request):
+    resp = web.Response(status=204)
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return resp
+
+
 async def index_handler(request):
-    resp = web.FileResponse("index.html")
+    target = INDEX_PATH if os.path.exists(INDEX_PATH) else "index.html"
+    if not os.path.exists(target):
+        return web.Response(text="index.html not found on server", status=404)
+    resp = web.FileResponse(target)
     resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
     resp.headers["Pragma"] = "no-cache"
     resp.headers["Expires"] = "0"
@@ -199,8 +224,9 @@ async def index_handler(request):
 
 
 async def geojson_handler(request):
-    if os.path.exists("world_geo.json"):
-        return web.FileResponse("world_geo.json")
+    target = GEOJSON_PATH if os.path.exists(GEOJSON_PATH) else "world_geo.json"
+    if os.path.exists(target):
+        return web.FileResponse(target)
     return web.json_response({"error": "world_geo.json not found"}, status=404)
 
 
@@ -358,8 +384,10 @@ if dp:
 
 async def main():
     app = web.Application()
+    app.router.add_get("/health", health_handler)
     app.router.add_get("/", index_handler)
     app.router.add_get("/world_geo.json", geojson_handler)
+    app.router.add_route("OPTIONS", "/api/{a}", options_handler)
     app.router.add_post("/api/{a}", api_handler)
 
     runner = web.AppRunner(app)
