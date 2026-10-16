@@ -324,6 +324,7 @@ async def api_handler(request):
                         asyncio.create_task(send_channel_announcement(full_name, username, c_name, fac_name))
 
         return web.json_response({
+            "ok": error is None,
             "s": get_api_state(uid, player, season, membership_info),
             "err": error
         })
@@ -394,7 +395,7 @@ if dp:
     @dp.message(Command("status"))
     async def cmd_status(msg: Message):
         pl = all_players()
-        lines = [f"[آمار] <b>آمار سیزن:</b> {len(pl)} از {sum(1 for c in COUNTRIES.values() if c.get("selectable") != "no")} کشور تصاحب شده"]
+        lines = [f"[آمار] <b>آمار سیزن:</b> {len(pl)} از {sum(1 for c in COUNTRIES.values() if c.get('selectable') != 'no')} کشور تصاحب شده"]
         for uid, p in pl:
             code = p.get("c", "")
             c_name = COUNTRIES.get(code, {}).get("name_fa", code)
