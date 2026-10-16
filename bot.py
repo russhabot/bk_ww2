@@ -39,7 +39,7 @@ BACKGROUND_MUSIC_URL = os.environ.get("BACKGROUND_MUSIC_URL", DEFAULT_MUSIC_URL)
 # Mandatory channels that players must join
 REQUIRED_CHANNELS = [
     {
-        "id": "Burnt_kingdoms",
+        "id": "burnt_kingdoms",
         "username": "burnt_kingdoms",
         "name": "کانال رسمی Burnt Kingdoms",
         "link": "https://t.me/burnt_kingdoms",
@@ -71,6 +71,15 @@ def kget(key, default=None):
 def kset(key, value):
     db.execute("INSERT INTO kv (k, v) VALUES (?, ?) ON CONFLICT(k) DO UPDATE SET v=excluded.v", (key, str(value)))
     db.commit()
+
+
+# One-time migration: force the first state of the new season workflow to wait,
+# even when an older database had a saved "pick" value. Later admin choices persist.
+if kget("season_default_migrated") is None:
+    kset("season", "wait")
+    kset("season_default_migrated", "1")
+elif kget("season") is None:
+    kset("season", "wait")
 
 
 def pget(uid):
