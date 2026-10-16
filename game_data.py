@@ -24,7 +24,7 @@ FACTIONS = {
         "en": "Allied Powers",
         "color": "#3b82f6",
         "bg": "rgba(59, 130, 246, 0.15)",
-        "badge_url": "static/badges/allies.svg"
+        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg"
     },
     "comintern": {
         "id": "comintern",
@@ -50,7 +50,7 @@ IDEOLOGIES = {
         "fa": "فاشیسم / نظامی‌گری",
         "en": "Fascism",
         "color": "#a855f7",
-        "badge_url": "static/badges/fascism.svg"
+        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg"
     },
     "communism": {
         "id": "communism",
