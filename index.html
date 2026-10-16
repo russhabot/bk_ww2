@@ -2872,6 +2872,57 @@
       if (panel) panel.style.display = canChoose ? 'block' : 'none';
       if (cards) cards.style.display = canChoose && currentViewMode === 'cards' ? 'block' : 'none';
       if (map) map.style.display = canChoose && currentViewMode === 'map' ? 'block' : 'none';
+      if (S.season === 'live') renderLiveTab(liveTab);
+      else { const liveNav = document.getElementById('live-bottom-nav'); if (liveNav) liveNav.style.display = 'none'; }
+    }
+
+    function setLiveTab(tab) {
+      if (!S || S.season !== 'live') return;
+      liveTab = tab;
+      renderLiveTab(tab);
+    }
+
+    function renderLiveTab(tab) {
+      const nav = document.getElementById('live-bottom-nav');
+      const waitScreen = document.getElementById('section-waiting-room');
+      const selection = document.getElementById('section-selection');
+      const filter = document.getElementById('country-filter-panel');
+      const cards = document.getElementById('cards-view-wrap');
+      const map = document.getElementById('map-view-container');
+      if (nav) { nav.style.display = 'flex'; nav.querySelectorAll('button').forEach(btn => btn.classList.toggle('active', btn.dataset.liveTab === tab)); }
+      if (tab === 'world') {
+        if (waitScreen) waitScreen.style.display = 'none';
+        if (selection) selection.style.display = 'block';
+        if (filter) filter.style.display = 'block';
+        if (cards) cards.style.display = currentViewMode === 'cards' ? 'block' : 'none';
+        if (map) map.style.display = currentViewMode === 'map' ? 'block' : 'none';
+        return;
+      }
+      if (waitScreen) waitScreen.style.display = 'block';
+      if (selection) selection.style.display = 'none';
+      showWaitingRoom();
+      const title = document.getElementById('season-screen-title');
+      const message = document.getElementById('season-screen-message');
+      if (tab === 'country' && S.p && S.p.c) {
+        const c = COUNTRIES[S.p.c] || {};
+        const fac = FACTIONS[c.faction] || {};
+        const regime = getRegimeCategory(c);
+        const dossier = document.getElementById('player-command-dossier');
+        if (title) title.textContent = 'پرونده کشور شما';
+        if (message) message.textContent = 'مشخصات تاریخی، پرچم و وضعیت سیاسی کشور تحت فرمان شما.';
+        if (dossier) {
+          dossier.innerHTML = \`<div class="country-history-card">
+            <div class="history-banner"><img src="\${c.flag_url || FALLBACK_FLAG}" alt="پرچم کشور" onerror="this.onerror=null;this.src='\${FALLBACK_FLAG}'"><div><small>پرونده تاریخی · ۱۹۳۴</small><h3>\${c.name_fa || S.p.c}</h3><span>پایتخت: \${c.capital_fa || 'نامشخص'}</span></div></div>
+            <div class="history-tags"><div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-\${c.faction}">\${fac.fa || 'بدون جناح'}</span></div><div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-\${regime.key}"><img class="badge-icon-img" src="\${regime.badge_url}" alt="">\${regime.label}</span></div>\${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">مستعمره است</span>' : ''}</div>
+            <div class="leader-profile-card"><div class="leader-profile-photo"><img src="\${c.leader_url || c.leader_img || FALLBACK_LEADER}" alt="\${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this, '\${c.flag_url || FALLBACK_FLAG}')"></div><div class="leader-profile-meta"><span>رهبر تاریخی</span><strong>\${c.leader_fa || 'نامشخص'}</strong><small>\${c.leader_title || c.leader_en || ''}</small></div></div>
+            <div class="history-description"><strong>پیشینه کشور</strong><p>\${c.desc || 'اطلاعات تاریخی این کشور هنوز ثبت نشده است.'}</p></div>
+          </div>\`;
+        }
+      } else {
+        if (title) title.textContent = 'وضعیت کشور شما';
+        if (message) message.textContent = 'منابع، آمادگی و وضعیت کلی کشور تحت فرمان شما.';
+        showWaitingRoom();
+      }
     }
 
     function updateStats() {
