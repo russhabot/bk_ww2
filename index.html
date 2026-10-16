@@ -2698,6 +2698,8 @@
       } finally {
         try { onStateUpdated(); } catch (err) { console.error('Phase rendering failed:', err); }
         setupAudio();
+        // Refresh the season phase and country ownership while the Mini App remains open.
+        window.setInterval(() => { if (!document.hidden) fetchState(); }, 15000);
       }
     }
 
@@ -3149,7 +3151,7 @@
           const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];
           if(!c||c.selectable==='no'){layer.options.interactive=false;return;}
           const owner=S.owners[code]||S.owners[code?.toLowerCase()],ownerLabel=owner?(owner.name||'@'+owner.username):'کاربر';
-          layer.bindTooltip(`<div style="direction:rtl;text-align:right;font-family:Vazirmatn,sans-serif;font-size:12px"><b>${c.name_fa}</b> (${c.name_en})<br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa||'نامشخص'}<br>جناح: ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>حکومت: ${c.regime_fa||'نامشخص'}<br>${c.colony_label?'<span style="color:#86efac">'+c.colony_label+'</span><br>':''}${c.puppet_label?'<span style="color:#fdba74">'+c.puppet_label+'</span><br>':''}${S.taken.includes(code)?'<span style="color:#ef4444">اشغال‌شده توسط: '+ownerLabel+'</span>':'<span style="color:#10b981">آماده تصاحب</span>'}</div>`,{sticky:true});
+          layer.bindTooltip(`<div style="direction:rtl;text-align:right;font-family:Vazirmatn,sans-serif;font-size:12px"><b>${c.name_fa}</b> (${c.name_en})<br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa||'نامشخص'}<br>جناح: ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>نوع حکومت: ${getRegimeCategory(c).label}<br>${c.colony_label?'<span style="color:#86efac">'+c.colony_label+'</span><br>':''}${c.puppet_label?'<span style="color:#fdba74">'+c.puppet_label+'</span><br>':''}${S.taken.includes(code)?'<span style="color:#ef4444">اشغال‌شده توسط: '+ownerLabel+'</span>':'<span style="color:#10b981">آماده تصاحب</span>'}</div>`,{sticky:true});
           layer.on({mouseover:e=>{if(matchesFilter(c,code))e.target.setStyle({weight:2,color:'#f59e0b',fillOpacity:0.88});},mouseout:e=>{if(geojsonLayer)geojsonLayer.resetStyle(e.target);},click:()=>{if(matchesFilter(c,code)&&S.season==='pick')openClaimModal(code);}});
           layer.options.interactive=matchesFilter(c,code)&&S.season==='pick';
         }
@@ -3337,6 +3339,14 @@
         }
       }
       updateAudioUI();
+      // Browsers may block audible autoplay. Retry on the first normal screen interaction,
+      // not only when the dedicated music button is pressed.
+      const resumeAudio = () => {
+        if (!audio.paused) return;
+        audio.play().then(() => { isAudioPlaying = !audio.paused; updateAudioUI(); }).catch(() => {});
+      };
+      document.addEventListener('pointerdown', resumeAudio, { once: true, passive: true });
+      document.addEventListener('keydown', resumeAudio, { once: true });
     }
     async function toggleAudio() {
       const audio = document.getElementById('march-audio'); if (!audio) return;
