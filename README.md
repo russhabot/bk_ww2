@@ -76,3 +76,8 @@ python bot.py
 - `/season live`: فعال‌سازی رسمی «نبرد سیزن»
 - `/status`: مشاهده فهرست کشورهای تصاحب شده و حاکمان آن‌ها
 - `/reset <COUNTRY_CODE>`: آزادسازی یک کشور (مثال: `/reset DE`)
+
+
+### Allied Powers badge attribution
+
+The Allied Powers flag image is sourced from [Wikimedia Commons — Allied Powers Flag.svg](https://commons.wikimedia.org/wiki/File:Allied_Powers_Flag.svg), credited to RootOfAllLight and licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The Commons description identifies it as a flag combining the British Empire, United States, Free France, Republic of China, and Soviet Union. This historical flag is a commemorative representation, not a single official insignia used by every Allied force.
