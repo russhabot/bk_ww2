@@ -82,3 +82,8 @@ python bot.py
 ### Historical faction icon sources
 - Fascism ideology icon: [National Fascist Party logo (Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:National_Fascist_Party_logo.svg), historical Italian National Fascist Party emblem; the Commons page records a public-domain dedication by the uploader.
 - Allied faction icon: [Insignia of the South East Asia Command (Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:Insignia_of_the_South_East_Asia_Command.svg). This is a real Allied command insignia, not a universal logo for all Allied countries; there was no single universal Allied logo.
+
+
+### Historical Italian Fascist Party emblem source
+- Axis/fascism icon uses the Wikimedia Commons file [Flag of the PNF (National Fascist Party)](https://commons.wikimedia.org/wiki/File:Flag_of_the_PNF_(National_Fascist_Party).svg), a historical 1927–1943 Italian National Fascist Party design. It is used only as a historical faction/ideology identifier in the game.
+- The world map data is bundled locally in `world_geo.json` and loaded only when the map view is opened; Leaflet Canvas and simplified geometry are used to improve mobile performance.

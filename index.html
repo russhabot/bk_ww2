@@ -970,15 +970,15 @@
           <span class="radar-icon"><svg class="ui-icon" viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6a6 6 0 1 0 6 6"/><path d="M12 10a2 2 0 1 0 2 2"/><line x1="12" y1="12" x2="22" y2="2"/></svg></span>
         </div>
         <div>
-          <h2 style="margin: 0; font-size: 22px; color: #fff;">اتاق فرماندهی ستاد کل</h2>
-          <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 13px;">سیزن هنوز شروع نشده است؛ منتظر اعلام ادمین بمانید.</p>
+          <h2 id="season-screen-title" style="margin: 0; font-size: 22px; color: #fff;">سیزن هنوز شروع نشده است</h2>
+          <p id="season-screen-message" style="margin: 4px 0 0; color: var(--text-muted); font-size: 13px;">ادمین هنوز سیزن را آغاز نکرده است.</p>
         </div>
 
         <div class="command-dossier" id="player-command-dossier">
           <!-- Filled dynamically -->
         </div>
 
-        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 6px;">
+        <div id="waiting-room-actions" style="display: flex; justify-content: center; gap: 10px; margin-top: 6px;">
           <button class="btn btn-gold" onclick="showAllNationsView()">
             <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg> مشاهده سایر کشورهای جهان
           </button>
@@ -2589,7 +2589,7 @@
     "en": "Axis Powers",
     "color": "#ef4444",
     "bg": "rgba(239, 68, 68, 0.15)",
-    "badge_url": "static/badges/axis.svg"
+    "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_PNF_%28National_Fascist_Party%29.svg"
   },
   "allies": {
     "id": "allies",
@@ -2622,7 +2622,7 @@
     "fa": "فاشیسم / نظامی‌گری",
     "en": "Fascism",
     "color": "#a855f7",
-    "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg"
+    "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_PNF_%28National_Fascist_Party%29.svg"
   },
   "communism": {
     "id": "communism",
@@ -2672,11 +2672,16 @@
     }
 
     async function init() {
-      updateStats();
-      renderCards();
-      // Load the server's configured track first, then initialize the player once.
-      await fetchState();
-      setupAudio();
+      if (tg) { try { tg.ready(); tg.expand(); } catch (e) {} }
+      try { updateStats(); renderCards(); await fetchState(); }
+      catch (err) {
+        console.error('Mini App initialization failed:', err);
+        const grid = document.getElementById('countries-grid');
+        if (grid && !grid.children.length) grid.innerHTML = '<div style="grid-column:1/-1;padding:20px;text-align:center;color:#fecaca">بارگذاری کشورها با خطا مواجه شد. صفحه را دوباره باز کنید.</div>';
+      } finally {
+        try { onStateUpdated(); } catch (err) { console.error('Phase rendering failed:', err); }
+        setupAudio();
+      }
     }
 
     // Fetch live state from backend
@@ -2696,7 +2701,7 @@
         }
         if (res.ok) {
           if (data.s) {
-            S.season = data.s.season || 'wait';
+            S.season = (data.s.season === 'alive' ? 'live' : (data.s.season || 'wait'));
             S.p = data.s.p || null;
             S.taken = data.s.taken || [];
             S.owners = data.s.owners || {};
@@ -2760,28 +2765,47 @@
     }
 
     function onStateUpdated() {
+      if (S.season === 'alive') S.season = 'live';
       updateStats();
       renderCards();
       if (geojsonLayer) updateMapStyles();
-      const hasCountry = Boolean(S.p && S.p.c);
-      if (hasCountry) showWaitingRoom();
-      else document.getElementById('section-waiting-room').style.display = 'none';
+      const waitScreen = document.getElementById('section-waiting-room');
       const selection = document.getElementById('section-selection');
-      if (selection) selection.style.display = 'block';
-      const locked = S.season !== 'pick';
+      const title = document.getElementById('season-screen-title');
+      const message = document.getElementById('season-screen-message');
+      const dossier = document.getElementById('player-command-dossier');
+      const actions = document.getElementById('waiting-room-actions');
       const banner = document.getElementById('season-status-banner');
-      if (banner) {
-        banner.style.display = locked ? 'block' : 'none';
-        banner.innerHTML = S.season === 'live'
-          ? '<b>سیزن فعال است</b><br>انتخاب کشور بسته است؛ فهرست کشورها همچنان برای مشاهده در دسترس است.'
-          : '<b>سیزن هنوز شروع نشده است</b><br>در حال حاضر فقط می‌توانید کشورها و اطلاعات آن‌ها را مشاهده کنید. منتظر اعلام ادمین بمانید؛ با اجرای دستور <code>/season pick</code> انتخاب کشور آغاز می‌شود.';
-      }
       const panel = document.getElementById('country-filter-panel');
-      if (panel) panel.style.display = 'block';
       const cards = document.getElementById('cards-view-wrap');
       const map = document.getElementById('map-view-container');
-      if (cards) cards.style.display = currentViewMode === 'cards' ? 'block' : 'none';
-      if (map) map.style.display = currentViewMode === 'map' ? 'block' : 'none';
+      if (S.season === 'wait') {
+        if (waitScreen) waitScreen.style.display = 'block';
+        if (selection) selection.style.display = 'none';
+        if (title) title.textContent = 'سیزن هنوز شروع نشده است';
+        if (message) message.textContent = 'ادمین هنوز سیزن را آغاز نکرده است. در این مرحله امکان انتخاب کشور وجود ندارد؛ پس از اعلام ادمین، صفحهٔ انتخاب کشور فعال می‌شود.';
+        if (dossier) dossier.style.display = 'none';
+        if (actions) actions.style.display = 'none';
+        if (banner) banner.style.display = 'none';
+      } else if (S.season === 'pick') {
+        if (waitScreen) waitScreen.style.display = 'none';
+        if (selection) selection.style.display = 'block';
+        if (dossier) dossier.style.display = 'block';
+        if (actions) actions.style.display = 'flex';
+        if (banner) banner.style.display = 'none';
+      } else {
+        showWaitingRoom();
+        if (waitScreen) waitScreen.style.display = 'block';
+        if (selection) selection.style.display = 'none';
+        if (title) title.textContent = 'مدیریت کشور';
+        if (message) message.textContent = (S.p && S.p.c) ? 'سیزن فعال است؛ اطلاعات و وضعیت کشور تحت فرمانروایی شما در این بخش نمایش داده می‌شود.' : 'سیزن فعال است، اما هنوز کشوری برای حساب شما ثبت نشده است. برای اختصاص کشور با ادمین تماس بگیرید.';
+        if (dossier) dossier.style.display = 'block';
+        if (actions) actions.style.display = 'none';
+        if (banner) banner.style.display = 'none';
+      }
+      if (panel) panel.style.display = S.season === 'pick' ? 'block' : 'none';
+      if (cards) cards.style.display = S.season === 'pick' && currentViewMode === 'cards' ? 'block' : 'none';
+      if (map) map.style.display = S.season === 'pick' && currentViewMode === 'map' ? 'block' : 'none';
     }
 
     function updateStats() {
@@ -2801,8 +2825,6 @@
 
     function showWaitingRoom() {
       document.getElementById('section-waiting-room').style.display = 'block';
-      document.getElementById('section-selection').style.display = 'block';
-
       const dossier = document.getElementById('player-command-dossier');
       if (S.p && S.p.c) {
         const c = COUNTRIES[S.p.c] || {};
@@ -2853,8 +2875,8 @@
       } else {
         dossier.innerHTML = `
           <div style="padding: 20px; text-align: center;">
-            <p style="color: var(--gold); font-size: 15px; margin: 0 0 10px;">شما هنوز کشوری انتخاب نکرده‌اید!</p>
-            <button class="btn btn-gold" onclick="showSelectionView()">${ICONS.swords} انتخاب کشور برای سیزن</button>
+            <p style="color: var(--gold); font-size: 15px; margin: 0 0 10px;">هنوز کشوری برای حساب شما ثبت نشده است.</p>
+            <p style="color: var(--text-muted); font-size: 13px; margin: 0;">در مرحلهٔ فعال، انتخاب کشور بسته است. برای اختصاص کشور با ادمین تماس بگیرید.</p>
           </div>
         `;
       }
@@ -2907,6 +2929,12 @@
       return true;
     }
 
+    // Avoid a ReferenceError when card rendering requests ideology metadata.
+    function getIdeology(country) {
+      const key = String(country && country.ideology || '').toLowerCase();
+      return IDEOLOGIES[key] || { id: key || 'unknown', fa: 'ایدئولوژی نامشخص', en: 'Unknown ideology', color: '#94a3b8', badge_url: 'static/badges/no-faction.svg' };
+    }
+
     // Card Renderer
     function renderCards() {
       const grid = document.getElementById('countries-grid');
@@ -2942,6 +2970,7 @@
                     <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
                     ${fac.fa || ''}
                   </span>
+                  <span class="tactical-badge badge-ideology"><img src="${ideo.badge_url}" class="badge-icon-img" alt="${ideo.fa || 'ایدئولوژی'}"> ${ideo.fa || 'ایدئولوژی نامشخص'}</span>
                   <span class="tactical-badge badge-regime"><img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت"> ${c.regime_fa || 'نوع حکومت نامشخص'}</span>
                   ${c.colony_label ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="قلمرو وابسته"> ' + c.colony_label + '</span>' : ''}
                   ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
@@ -2971,10 +3000,12 @@
                   <span>انتخاب شده توسط:</span>
                   <span class="ruler-name">${ownerLabel}</span>
                 </div>
-              ` : `
+              ` : S.season === 'pick' ? `
                 <button class="claim-btn" onclick="openClaimModal('${code}')">
                   ${ICONS.swords} فرمانروایی بر این کشور
                 </button>
+              ` : `
+                <div class="owner-tag">${S.season === 'wait' ? 'انتخاب کشور پس از اعلام ادمین فعال می‌شود' : 'انتخاب کشور در سیزن فعال بسته است'}</div>
               `}
             </div>
           </div>
@@ -2988,8 +3019,8 @@
       document.getElementById('btn-view-cards').classList.toggle('active', mode === 'cards');
       document.getElementById('btn-view-map').classList.toggle('active', mode === 'map');
 
-      document.getElementById('cards-view-wrap').style.display = mode === 'cards' ? 'block' : 'none';
-      document.getElementById('map-view-container').style.display = mode === 'map' ? 'block' : 'none';
+      document.getElementById('cards-view-wrap').style.display = S.season === 'pick' && mode === 'cards' ? 'block' : 'none';
+      document.getElementById('map-view-container').style.display = S.season === 'pick' && mode === 'map' ? 'block' : 'none';
 
       if (mode === 'map') {
         if (!leafletMap) {
@@ -3030,7 +3061,7 @@
       return {fillColor:taken?'#334155':getFactionColor(country.faction),weight:matches?1:0.2,opacity:matches?0.8:0.08,color:matches?'#1e293b':'#0b1220',fillOpacity:matches?(taken?0.42:0.68):0.015};
     }
     async function initMap() {
-      leafletMap=L.map('map',{center:[30,20],zoom:2.2,minZoom:1.5,maxZoom:6,attributionControl:false,preferCanvas:true,renderer:L.canvas({padding:0.35})});
+      leafletMap=L.map('map',{center:[30,20],zoom:2.2,minZoom:1.5,maxZoom:6,attributionControl:false,preferCanvas:true,renderer:L.canvas({padding:0.5}),zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false,updateWhenZooming:false,updateWhenIdle:true,wheelDebounceTime:80,wheelPxPerZoomLevel:120});
       try {
         const res=await fetch('/world_geo.json',{cache:'force-cache'});
         if(!res.ok)throw new Error('Map data HTTP '+res.status);
@@ -3041,7 +3072,7 @@
       if(!worldGeoData)return;
       if(geojsonLayer)leafletMap.removeLayer(geojsonLayer);
       geojsonLayer=L.geoJSON(worldGeoData,{
-        renderer:L.canvas({padding:0.35}),smoothFactor:1.5,
+        renderer:L.canvas({padding:0.5}),smoothFactor:2.5,
         style:feature=>{const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];return c?mapStyleForCountry(c,code):{fillColor:'#1e293b',weight:0.3,opacity:0.3,color:'#0f172a',fillOpacity:0.12,interactive:false};},
         onEachFeature:(feature,layer)=>{
           const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];
@@ -3218,7 +3249,7 @@
     function setupAudio() {
       const audio = document.getElementById('march-audio');
       if (!audio) return;
-      audio.loop = true; audio.autoplay = false; audio.preload = 'none'; audio.volume = 0.5;
+      audio.loop = true; audio.autoplay = true; audio.preload = 'auto'; audio.volume = 0.5;
       musicSources = [...new Set([S.bg_music, FALLBACK_MUSIC_URL].filter(Boolean))];
       musicSourceIndex = 0;
       audio.addEventListener('play', () => { isAudioPlaying = true; updateAudioUI(); });
@@ -3229,7 +3260,14 @@
           showToast('منبع موسیقی عوض شد؛ دوباره روی «موسیقی» بزنید.');
         } else { isAudioPlaying = false; updateAudioUI(); showToast('موسیقی بارگذاری نشد؛ اتصال اینترنت یا منبع موسیقی را بررسی کنید.'); }
       });
-      if (musicSources.length) { audio.src = musicSources[0]; audio.load(); }
+      if (musicSources.length) {
+        audio.src = musicSources[0]; audio.load();
+        const startPlayback = audio.play();
+        if (startPlayback && typeof startPlayback.catch === 'function') {
+          startPlayback.then(() => { isAudioPlaying = !audio.paused; updateAudioUI(); })
+            .catch(() => { isAudioPlaying = false; updateAudioUI(); });
+        }
+      }
       updateAudioUI();
     }
     async function toggleAudio() {
