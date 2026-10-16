@@ -893,6 +893,9 @@
       .country-name-fa { white-space: normal; overflow-wrap: anywhere; }
     }
 
+    .dossier-leader-avatar { width:58px; height:58px; flex:0 0 58px; overflow:hidden; border-radius:50%; border:2px solid var(--gold); background:#172238; display:grid; place-items:center; }
+    .dossier-leader-avatar img { width:100%; height:100%; object-fit:cover; object-position:center 22%; }
+    .dossier-title-block { min-width:0; flex:1; }
     .tag-pair { display:inline-flex; align-items:center; gap:5px; min-width:0; max-width:100%; white-space:nowrap; }
     .tag-heading { color:var(--text-muted); font-size:10px; font-weight:800; white-space:nowrap; }
     .card-badges, .identity-tags, .history-tags { display:flex; align-items:center; flex-wrap:wrap; gap:7px; min-width:0; }
@@ -932,7 +935,7 @@
     .economy-stat strong { color:#e2e8f0; font-size:13px; line-height:1.5; overflow-wrap:anywhere; }
     .economy-meter { height:5px; background:#263449; border-radius:9px; overflow:hidden; margin-top:4px; }
     .economy-meter i { display:block; height:100%; background:linear-gradient(90deg,#b45309,#fbbf24); border-radius:9px; }
-    @media (max-width: 480px) { .economy-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .economy-stat { padding:8px; } .economy-stat strong { font-size:12px; } .economy-title { font-size:13px; } }
+    @media (max-width: 480px) { .economy-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .economy-stat { padding:8px; } .economy-stat strong { font-size:12px; } .economy-title { font-size:13px; } .identity-tags { gap:6px; } .tag-pair { gap:4px; } .tag-heading { font-size:10px; } .tactical-badge,.regime-chip { max-width:100%; white-space:normal; line-height:1.4; } .dossier-leader-avatar { width:46px; height:46px; flex-basis:46px; } .live-bottom-nav button { min-height:46px; } .history-banner img { width:64px; height:45px; flex-basis:64px; } .history-banner h3 { font-size:16px; } .leader-profile-card { align-items:flex-start; } }
     @media (max-width: 340px) { .economy-grid { grid-template-columns:minmax(0,1fr); } }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
@@ -2982,11 +2985,12 @@
             <div class="dossier-flag">
               <img src="${c.flag_url || FALLBACK_FLAG}" onerror="this.src='${FALLBACK_FLAG}'">
             </div>
-            <div>
+            <div class="dossier-title-block">
               <div style="font-size: 11px; color: var(--gold); font-weight: 700;">پرونده فرماندهی عالی ستاد کل</div>
               <h3 style="margin: 2px 0 0; font-size: 19px; color: #fff;">${c.name_fa || S.p.c}</h3>
               <div style="font-size: 11px; color: var(--text-muted);">${c.name_en || ''} | پایتخت: ${c.capital_fa || ''}</div>
             </div>
+            <div class="dossier-leader-avatar"><img src="${c.leader_url || c.leader_img || FALLBACK_LEADER}" alt="${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this, '${c.flag_url || FALLBACK_FLAG}')"></div>
           </div>
           <div class="dossier-grid">
             <div class="dossier-field">
@@ -3306,9 +3310,9 @@
             <h4 style="margin: 0; font-size: 17px; color: #fff;">${c.name_fa}</h4>
             <div style="font-size: 12px; color: var(--text-muted);">${c.name_en} | پایتخت: ${c.capital_fa || ''}</div>
             <div class="identity-tags">
-              <span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url}" class="badge-icon-img" alt="نشان جناح"> جناح: ${fac.fa || 'بدون جناح'}</span>
+              <div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div>
               <div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="">${getRegimeCategory(c).label}</span></div>
-              ${c.colony_label ? '<span class="tactical-badge badge-colony">مستعمره است</span>' : ''}
+              ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">مستعمره است</span>' : ''}
               ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
               ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
             </div>
