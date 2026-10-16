@@ -5,7 +5,7 @@ Includes authentic historical flags, real faction/ideology badges from Wikimedia
 verified 1930 leaders with Wikipedia portraits, and background military march.
 """
 
-DEFAULT_MUSIC_URL = "https://archive.org/download/the-planets_202501/01%20-%20I.%20Mars%2C%20the%20Bringer%20of%20War.mp3"
+DEFAULT_MUSIC_URL = "https://commons.wikimedia.org/wiki/Special:FilePath/Holst-_mars.ogg"
 FALLBACK_FLAG = "static/flags/default.svg"
 FALLBACK_LEADER = "static/leaders/default.svg"
 
@@ -16,7 +16,7 @@ FACTIONS = {
         "en": "Axis Powers",
         "color": "#ef4444",
         "bg": "rgba(239, 68, 68, 0.15)",
-        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_PNF_%28National_Fascist_Party%29.svg"
+        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg"
     },
     "allies": {
         "id": "allies",
@@ -28,7 +28,7 @@ FACTIONS = {
     },
     "comintern": {
         "id": "comintern",
-        "fa": "کمینترن",
+        "fa": "کمیترن",
         "en": "Comintern",
         "color": "#f97316",
         "bg": "rgba(249, 115, 22, 0.15)",
@@ -50,7 +50,7 @@ IDEOLOGIES = {
         "fa": "فاشیسم / نظامی‌گری",
         "en": "Fascism",
         "color": "#a855f7",
-        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_PNF_%28National_Fascist_Party%29.svg"
+        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg"
     },
     "communism": {
         "id": "communism",

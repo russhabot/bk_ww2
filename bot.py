@@ -4,7 +4,6 @@ import hashlib
 import hmac
 import json
 import os
-import sqlite3
 import time
 from urllib.parse import parse_qsl
 
@@ -24,7 +23,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261016a" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261016b" if URL else ""
 ADMIN_IDS = [int(x.strip()) for x in os.environ.get("ADMINS", "").split(",") if x.strip().isdigit()]
 ANNOUNCE_CHANNEL = os.environ.get("ANNOUNCE_CHANNEL", "").strip()
 PORT = int(os.environ.get("PORT", 8080))
@@ -32,10 +31,6 @@ PORT = int(os.environ.get("PORT", 8080))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INDEX_PATH = os.path.join(BASE_DIR, "index.html")
 GEOJSON_PATH = os.path.join(BASE_DIR, "world_geo.json")
-DB_PATH = os.environ.get("DB_PATH", os.path.join(BASE_DIR, "bk_ww2.db"))
-# Ensure custom DB_PATH parent directories exist (e.g. /data/bk_ww2.db on a mounted volume).
-os.makedirs(os.path.dirname(os.path.abspath(DB_PATH)), exist_ok=True)
-
 BACKGROUND_MUSIC_URL = os.environ.get("BACKGROUND_MUSIC_URL", DEFAULT_MUSIC_URL).strip()
 
 # Mandatory channels that players must join
@@ -56,66 +51,18 @@ REQUIRED_CHANNELS = [
     }
 ]
 
-db = sqlite3.connect(DB_PATH, check_same_thread=False)
-db.execute("PRAGMA journal_mode = WAL;")
-db.execute("CREATE TABLE IF NOT EXISTS kv (k TEXT PRIMARY KEY, v TEXT);")
-db.execute("CREATE TABLE IF NOT EXISTS players (uid INTEGER PRIMARY KEY, data TEXT);")
-db.commit()
+from database import (
+    all_players, find_player_by_country, kget, kset, pdel, pget, pset, reset_season
+)
 
-ACTION_LOCK = asyncio.Lock()
-
-
-def kget(key, default=None):
-    row = db.execute("SELECT v FROM kv WHERE k=?", (key,)).fetchone()
-    return row[0] if row else default
-
-
-def kset(key, value):
-    db.execute("INSERT INTO kv (k, v) VALUES (?, ?) ON CONFLICT(k) DO UPDATE SET v=excluded.v", (key, str(value)))
-    db.commit()
-
-
-# One-time migration: force the first state of the new season workflow to wait,
-# even when an older database had a saved "pick" value. Later admin choices persist.
+# Start the current season workflow in the waiting room on its first launch.
 if kget("season_default_migrated") is None:
     kset("season", "wait")
     kset("season_default_migrated", "1")
 elif kget("season") is None:
     kset("season", "wait")
 
-
-def pget(uid):
-    row = db.execute("SELECT data FROM players WHERE uid=?", (uid,)).fetchone()
-    return json.loads(row[0]) if row else None
-
-
-def pset(uid, data):
-    db.execute("INSERT INTO players (uid, data) VALUES (?, ?) ON CONFLICT(uid) DO UPDATE SET data=excluded.data", (uid, json.dumps(data, ensure_ascii=False)))
-    db.commit()
-
-
-def pdel(uid):
-    db.execute("DELETE FROM players WHERE uid=?", (uid,))
-    db.commit()
-
-
-def all_players():
-    rows = db.execute("SELECT uid, data FROM players").fetchall()
-    result = []
-    for uid, raw in rows:
-        try:
-            result.append((uid, json.loads(raw)))
-        except Exception:
-            pass
-    return result
-
-
-def find_player_by_country(code):
-    code = code.upper()
-    for uid, p in all_players():
-        if str(p.get("c", "")).upper() == code:
-            return uid, p
-    return None, None
+ACTION_LOCK = asyncio.Lock()
 
 
 def auth(init_data):
@@ -393,15 +340,37 @@ if dp:
     async def cmd_season(msg: Message):
         if msg.from_user.id not in ADMIN_IDS:
             return await msg.answer("شما دسترسی مدیریت ندارید.")
-        p = msg.text.split()
+        p = (msg.text or "").split()
         labels = {"wait": "اتاق انتظار؛ انتخاب کشور بسته", "pick": "انتخاب کشور باز", "live": "سیزن فعال؛ انتخاب کشور بسته"}
         if len(p) < 2:
             current = kget("season", "wait")
-            return await msg.answer(f"وضعیت فعلی سیزن: {labels.get(current, current)}\nتغییر با: /season wait یا /season pick یا /season live")
-        if p[1] not in ("wait", "pick", "live"):
-            return await msg.answer("استفاده: /season wait | pick | live")
-        kset("season", p[1])
-        await msg.answer(f"وضعیت سیزن تغییر کرد: {labels[p[1]]}.")
+            number = kget("season_number", "1")
+            return await msg.answer(
+                f"سیزن شمارهٔ {number}\nوضعیت فعلی: {labels.get(current, current)}\n"
+                "دستورات: /season wait | /season pick | /season live | /season reset"
+            )
+        if p[1].lower() in ("reset", "restart"):
+            number, released = reset_season(msg.from_user.id)
+            return await msg.answer(
+                f"✅ سیزن با موفقیت ریست شد.\nشمارهٔ سیزن جدید: {number}\n"
+                f"کشورهای آزادشده: {released}\nوضعیت جدید: اتاق انتظار (wait).\n"
+                "پروفایل بازیکنان حفظ شد؛ انتخاب کشور پس از /season pick فعال می‌شود."
+            )
+        phase = p[1].lower()
+        if phase not in labels:
+            return await msg.answer("استفاده: /season wait | /season pick | /season live | /season reset")
+        kset("season", phase)
+        await msg.answer(f"وضعیت سیزن تغییر کرد: {labels[phase]}.")
+
+    @dp.message(Command("resetseason"))
+    async def cmd_resetseason(msg: Message):
+        if msg.from_user.id not in ADMIN_IDS:
+            return await msg.answer("شما دسترسی مدیریت ندارید.")
+        number, released = reset_season(msg.from_user.id)
+        await msg.answer(
+            f"✅ سیزن ریست شد.\nشمارهٔ جدید: {number}\nکشورهای آزادشده: {released}\n"
+            "وضعیت: اتاق انتظار (wait). پروفایل بازیکنان حفظ شد."
+        )
 
     @dp.message(Command("status"))
     async def cmd_status(msg: Message):

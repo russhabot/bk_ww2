@@ -827,6 +827,12 @@
       margin-left: 5px;
       filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
     }
+    .dossier-fascism-emblem { width:34px; height:34px; object-fit:contain; flex:0 0 34px; background:transparent; }
+    .regime-chip { display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:7px; font-size:11px; font-weight:800; border:1px solid currentColor; }
+    .regime-fascism { color:#d8b4fe; background:rgba(168,85,247,.14); }
+    .regime-communism { color:#fca5a5; background:rgba(239,68,68,.14); }
+    .regime-monarchy { color:#fde68a; background:rgba(245,158,11,.14); }
+    .regime-democracy { color:#7dd3fc; background:rgba(56,189,248,.14); }
     .badge-icon {
       display: inline-flex;
       align-items: center;
@@ -2830,6 +2836,7 @@
         const c = COUNTRIES[S.p.c] || {};
         const fac = FACTIONS[c.faction] || {};
         const ideo = getIdeology(c);
+        const regime = getRegimeCategory(c);
         
         dossier.innerHTML = `
           <div class="dossier-header">
@@ -2848,20 +2855,17 @@
               <span class="dossier-value" style="color: var(--cyan);">${ICONS.crown} ${S.p.name || S.p.username || 'شما'}</span>
             </div>
             <div class="dossier-field">
-              <span class="dossier-label">جناح سناریو</span>
-              <span class="dossier-value" style="color: ${fac.color || '#fff'};">
-                <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
-                ${fac.fa || 'بدون جناح'}
-              </span>
+              <span class="dossier-label">جناح</span>
+              <span class="dossier-value" style="color: ${fac.color || '#fff'};">${fac.fa || 'بدون جناح'}</span>
             </div>
             <div class="dossier-field">
               <span class="dossier-label">نوع حکومت</span>
-              <span class="dossier-value">
-                <img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت">
-                ${c.regime_fa || 'نامشخص'}
+              <span class="dossier-value regime-chip regime-${regime.key}" style="color:${regime.color};">
+                ${regime.key === 'fascism' ? '<img src="' + regime.badge_url + '" class="dossier-fascism-emblem" alt="نشان تاریخی">' : ''}
+                ${regime.label}
               </span>
             </div>
-            ${c.colony_label ? '<div class="dossier-field"><span class="dossier-label">وضعیت استعماری</span><span class="dossier-value">' + c.colony_label + '</span></div>' : ''}
+            ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<div class="dossier-field"><span class="dossier-label">وضعیت استعماری</span><span class="dossier-value" style="color:#86efac;">مستعمره / قلمرو وابسته: ' + (c.colony_label || c.colony_of_fa || 'تحت ادارهٔ کشور دیگر') + '</span></div>' : ''}
             ${c.puppet_label ? '<div class="dossier-field"><span class="dossier-label">وضعیت سیاسی</span><span class="dossier-value">' + c.puppet_label + '</span></div>' : ''}
             <div class="dossier-field">
               <span class="dossier-label">رهبر تاریخی (۱۹۳۴)</span>
@@ -2907,7 +2911,17 @@
       if (geojsonLayer) updateMapStyles();
     }
 
-    function isMonarchy(c) { return /monarchy|regency_monarchy|imperial_monarchy|absolute_monarchy|royal_dictatorship|theocratic_monarchy/.test(String(c?.regime_type || '')); }
+    function isMonarchy(c) { return /monarchy|regency_monarchy|imperial_monarchy|absolute_monarchy|royal_dictatorship|theocratic_monarchy|constitutional_monarchy/.test(String(c?.regime_type || '')); }
+
+    function getRegimeCategory(c) {
+      const ideology = String(c?.ideology || '').toLowerCase();
+      const regimeType = String(c?.regime_type || '').toLowerCase();
+      const regimeFa = String(c?.regime_fa || '').toLowerCase();
+      if (isMonarchy(c)) return { key:'monarchy', label:'پادشاهی', color:'#fbbf24', badge_url:'' };
+      if (ideology === 'fascism' || /fascis|فاشی/.test(regimeType + ' ' + regimeFa)) return { key:'fascism', label:'فاشیستی', color:'#c084fc', badge_url:'https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg' };
+      if (ideology === 'communism' || /communis|کمونی/.test(regimeType + ' ' + regimeFa)) return { key:'communism', label:'کمونیستی', color:'#f87171', badge_url:'static/badges/communism.svg' };
+      return { key:'democracy', label:'دموکراتیک', color:'#38bdf8', badge_url:'static/badges/democracy.svg' };
+    }
 
     function matchesFilter(c, code) {
       const taken = S.taken.includes(code);
@@ -2966,14 +2980,10 @@
                 <p class="country-name-en">${c.name_en}</p>
                 <p class="country-capital">پایتخت: ${c.capital_fa || "نامشخص"}</p>
                 <div class="card-badges">
-                  <span class="tactical-badge badge-${c.faction}">
-                    <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
-                    ${fac.fa || ''}
-                  </span>
-                  <span class="tactical-badge badge-ideology"><img src="${ideo.badge_url}" class="badge-icon-img" alt="${ideo.fa || 'ایدئولوژی'}"> ${ideo.fa || 'ایدئولوژی نامشخص'}</span>
-                  <span class="tactical-badge badge-regime"><img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت"> ${c.regime_fa || 'نوع حکومت نامشخص'}</span>
-                  ${c.colony_label ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="قلمرو وابسته"> ' + c.colony_label + '</span>' : ''}
-                  ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
+                  <span class="tactical-badge badge-${c.faction}">${fac.fa || 'بدون جناح'}</span>
+                  <span class="regime-chip regime-${getRegimeCategory(c).key}">${getRegimeCategory(c).label}</span>
+                  ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">مستعمره / قلمرو وابسته: ' + (c.colony_label || c.colony_of_fa || 'تحت ادارهٔ کشور دیگر') + '</span>' : ''}
+                  ${c.puppet_label ? '<span class="tactical-badge badge-puppet">' + c.puppet_label + '</span>' : ''}
                   ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
                 </div>
               </div>
@@ -3243,7 +3253,7 @@
     }
 
     // Audio starts from a user gesture (required by mobile browsers); fallback handler is registered before loading.
-    const FALLBACK_MUSIC_URL = 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Holst_The_Planets_Mars_the_Bringer_of_War_USAF_Band.ogg';
+    const FALLBACK_MUSIC_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/Holst-_mars.ogg';
     let musicSourceIndex = 0;
     let musicSources = [];
     function setupAudio() {
