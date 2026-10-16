@@ -2671,11 +2671,12 @@
       } catch(e) {}
     }
 
-    function init() {
+    async function init() {
       updateStats();
       renderCards();
+      // Load the server's configured track first, then initialize the player once.
+      await fetchState();
       setupAudio();
-      fetchState();
     }
 
     // Fetch live state from backend
