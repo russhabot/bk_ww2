@@ -469,6 +469,9 @@
     .badge-democracy { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #7dd3fc; }
     .badge-monarchy { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde68a; }
     .badge-colony { background: rgba(34, 197, 94, 0.14); border: 1px solid rgba(34, 197, 94, 0.42); color: #86efac; }
+    .badge-regime { background: rgba(148,163,184,.12); border: 1px solid rgba(148,163,184,.35); color: #e2e8f0; }
+    .badge-puppet { background: rgba(249,115,22,.13); border: 1px solid rgba(249,115,22,.4); color: #fdba74; }
+    .badge-status { background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.35); color: #7dd3fc; }
 
     .leader-row {
       display: flex;
@@ -890,7 +893,7 @@
           <strong id="stat-comintern-count">0</strong>
         </div>
         <div class="stat-pill neutral">
-          <span class="pill-label"><img src="static/badges/neutral.svg" class="badge-icon-img" alt="غیرمتعهد">  غیرمتعهد</span>
+          <span class="pill-label"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح">  بدون جناح</span>
           <strong id="stat-neutral-count">0</strong>
         </div>
       </div>
@@ -926,7 +929,8 @@
     <div id="section-selection">
       
       <!-- Filter & Search Controls -->
-      <div class="filter-panel">
+      <div id="season-status-banner" style="display:none; margin:12px 0; padding:16px; border-radius:12px; border:1px solid var(--gold); background:rgba(245,158,11,.10); color:#fde68a; line-height:1.7;"></div>
+      <div class="filter-panel" id="country-filter-panel">
         <div class="search-box-wrap">
           <input type="text" class="search-input" id="search-input" placeholder="جستجوی کشور، رهبر تاریخی، پایتخت یا ائتلاف..." oninput="handleSearch(this.value)">
           <span class="search-icon-wrap"><svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg></span>
@@ -937,11 +941,11 @@
           <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> متحدین محور</div>
           <div class="chip" onclick="setFilter('allies', this)"><img src="static/badges/allies.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</div>
           <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن">  کمینترن</div>
-          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/neutral.svg" class="badge-icon-img" alt="غیرمتعهد">  غیرمتعهد</div>
+          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح">  بدون جناح</div>
           <div class="chip" onclick="setFilter('fascism', this)"><img src="static/badges/fascism.svg" class="badge-icon-img" alt="فاشیسم"> فاشیست</div>
           <div class="chip" onclick="setFilter('communism', this)"><img src="static/badges/communism.svg" class="badge-icon-img" alt="کمونیسم"> کمونیست</div>
           <div class="chip" onclick="setFilter('democracy', this)"><img src="static/badges/democracy.svg" class="badge-icon-img" alt="دموکراسی"> دموکراتیک</div>
-          <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی">  پادشاهی / مستقل</div>
+          <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی">  پادشاهی</div>
           <div class="chip" onclick="setFilter('free_only', this)"><svg class="ui-icon" viewBox="0 0 24 24" width="10" height="10" fill="#10b981"><circle cx="12" cy="12" r="8"/></svg> فقط کشورهای آزاد</div>
         </div>
       </div>
@@ -972,7 +976,7 @@
           </div>
           <div class="legend-item">
             <div class="legend-color" style="background: #64748b;"></div>
-            <span>کشورهای غیرمتعهد (Neutral)</span>
+            <span>کشورهای بدون جناح</span>
           </div>
         </div>
       </div>
@@ -2580,7 +2584,7 @@
 
     // State
     let S = {
-      season: 'pick',
+      season: 'wait',
       p: null,
       taken: [],
       owners: {},
@@ -2622,10 +2626,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ init: initData })
         });
+        const data = await res.json();
+        if (!res.ok && data.must_join) {
+          S.membership = { ok:false, missing:data.missing || [], channels:data.channels || [] };
+          handleMembershipGate(S.membership);
+          return;
+        }
         if (res.ok) {
-          const data = await res.json();
           if (data.s) {
-            S.season = data.s.season || 'pick';
+            S.season = data.s.season || 'wait';
             S.p = data.s.p || null;
             S.taken = data.s.taken || [];
             S.owners = data.s.owners || {};
@@ -2697,12 +2706,26 @@
         showWaitingRoom();
       } else {
         showSelectionView();
+        const locked = S.season !== 'pick';
+        const banner = document.getElementById('season-status-banner');
+        if (banner) {
+          banner.style.display = locked ? 'block' : 'none';
+          banner.innerHTML = S.season === 'live'
+            ? '<b>سیزن فعال است</b><br>انتخاب کشور بسته شده است.'
+            : '<b>اتاق انتظار سیزن</b><br>ادمین هنوز مرحلهٔ انتخاب کشور را فعال نکرده است. پس از دستور <code>/season pick</code> امکان انتخاب کشور باز می‌شود.';
+        }
+        const panel = document.getElementById('country-filter-panel');
+        if (panel) panel.style.display = locked ? 'none' : 'block';
+        const cards = document.getElementById('cards-view-wrap');
+        const map = document.getElementById('map-view-container');
+        if (cards) cards.style.display = locked ? 'none' : (currentViewMode === 'cards' ? 'block' : 'none');
+        if (map) map.style.display = locked ? 'none' : (currentViewMode === 'map' ? 'block' : 'none');
       }
     }
 
     function updateStats() {
       let axisCount = 0, alliesCount = 0, cominternCount = 0, neutralCount = 0;
-      Object.values(COUNTRIES).forEach(c => {
+      Object.values(COUNTRIES).filter(c => c.selectable !== 'no').forEach(c => {
         if (c.faction === 'axis') axisCount++;
         else if (c.faction === 'allies') alliesCount++;
         else if (c.faction === 'comintern') cominternCount++;
@@ -2751,8 +2774,8 @@
             <div class="dossier-field">
               <span class="dossier-label">نظام ایدئولوژیک</span>
               <span class="dossier-value">
-                <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                ${ideo.fa || 'غیرمتعهد'}
+                <img src="${ideo.badge_url || 'static/badges/regime.svg'}" class="badge-icon-img" alt="${ideo.fa || ''}">
+                ${ideo.fa || 'بدون جناح'}
               </span>
             </div>
             ${isMonarchy(c, S.p.c) ? '<div class="dossier-field"><span class="dossier-label">نوع حکومت</span><span class="dossier-value"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span></div>' : ''}
@@ -2799,23 +2822,7 @@
       if (geojsonLayer) updateMapStyles();
     }
 
-    // Explicit historical monarchy list. Some constitutional monarchies have democratic
-    // ideology, so regime tags must not be inferred from ideology alone.
-    const MONARCHY_CODES = new Set([
-      'IT','JP','HU','RO','BG','TH','GB','CA','AU','NZ','NL','BE','NO','DK',
-      'GR','YU','LU','IR','SE','AF','SA','IQ','EG','ET','TB','NP','BT','YE',
-      'OM','AL','ES','IS'
-    ]);
-
-    function isMonarchy(c, code) {
-      return MONARCHY_CODES.has(code) ||
-        /پادشاهی|امپراتوری|شاهنشاهی|سلطنت|سلطنتی/.test(String(c?.name_fa || '')) ||
-        /kingdom|empire|sultanate/i.test(String(c?.name_en || ''));
-    }
-
-    function getIdeology(c) {
-      return IDEOLOGIES[c?.ideology] || (c?.ideology === 'nonaligned' ? IDEOLOGIES.neutral : {});
-    }
+    function isMonarchy(c) { return /monarchy|regency_monarchy|imperial_monarchy|absolute_monarchy|royal_dictatorship|theocratic_monarchy/.test(String(c?.regime_type || '')); }
 
     function matchesFilter(c, code) {
       const taken = S.taken.includes(code);
@@ -2824,10 +2831,11 @@
       if (currentFilter === 'allies' && c.faction !== 'allies') return false;
       if (currentFilter === 'comintern' && c.faction !== 'comintern') return false;
       if (currentFilter === 'neutral_fac' && c.faction !== 'neutral') return false;
+      if (c.selectable === 'no') return false;
       if (currentFilter === 'fascism' && c.ideology !== 'fascism') return false;
       if (currentFilter === 'communism' && c.ideology !== 'communism') return false;
       if (currentFilter === 'democracy' && c.ideology !== 'democracy') return false;
-      if (currentFilter === 'monarchy' && !isMonarchy(c, code)) return false;
+      if (currentFilter === 'monarchy' && !isMonarchy(c)) return false;
 
       if (searchQuery) {
         const text = `${c.name_fa} ${c.name_en} ${c.leader_fa} ${c.leader_en} ${c.capital_fa} ${c.code} ${c.iso3}`.toLowerCase();
@@ -2839,7 +2847,7 @@
     // Card Renderer
     function renderCards() {
       const grid = document.getElementById('countries-grid');
-      const codes = Object.keys(COUNTRIES);
+      const codes = Object.keys(COUNTRIES).filter(code => COUNTRIES[code].selectable !== 'no');
       
       const filtered = codes.filter(code => matchesFilter(COUNTRIES[code], code));
       
@@ -2871,12 +2879,10 @@
                     <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
                     ${fac.fa || ''}
                   </span>
-                  <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'neutral' : c.ideology}">
-                    <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                    ${ideo.fa || 'غیرمتعهد'}
-                  </span>
-                  ${isMonarchy(c, code) ? '<span class="tactical-badge badge-monarchy"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span>' : ''}
-                  ${c.colony_of_fa ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="مستعمره"> ' + (c.colony_label || 'مستعمرهٔ ' + c.colony_of_fa) + '</span>' : ''}
+                  <span class="tactical-badge badge-regime"><img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت"> ${c.regime_fa || 'نوع حکومت نامشخص'}</span>
+                  ${c.colony_label ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="قلمرو وابسته"> ' + c.colony_label + '</span>' : ''}
+                  ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
+                  ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
                 </div>
               </div>
             </div>
@@ -2886,7 +2892,7 @@
                 <img src="${c.leader_url || FALLBACK_LEADER}" alt="${c.leader_fa}" loading="lazy" onerror="this.src='${FALLBACK_LEADER}'">
               </div>
               <div class="leader-meta">
-                <p class="leader-title">رهبر تاریخی (۱۹۳۴):</p>
+                <p class="leader-title">رهبر تاریخی (۱ ژانویهٔ ۱۹۳۴):</p>
                 <p class="leader-name">${c.leader_fa}</p>
               </div>
             </div>
@@ -2922,7 +2928,7 @@
       document.getElementById('cards-view-wrap').style.display = mode === 'cards' ? 'block' : 'none';
       document.getElementById('map-view-container').style.display = mode === 'map' ? 'block' : 'none';
 
-      if (mode === 'map') {
+      if (mode === 'map' && S.season === 'pick') {
         if (!leafletMap) {
           initMap();
         } else {
@@ -2932,115 +2938,74 @@
     }
 
     // Leaflet World Map
-    async function initMap() {
-      leafletMap = L.map('map', {
-        center: [30, 20],
-        zoom: 2.2,
-        minZoom: 1.5,
-        maxZoom: 6,
-        attributionControl: false
-      });
-
-      try {
-        let res = await fetch('/world_geo.json');
-        if (!res.ok) {
-          res = await fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json');
-        }
-        worldGeoData = await res.json();
-        renderGeoJson();
-      } catch(err) {
-        console.error('Failed to load map data:', err);
-      }
-    }
-
     const iso3ToCode = {
-      'DEU': 'DE', 'RUS': 'SO', 'GBR': 'GB', 'USA': 'US', 'JPN': 'JP',
-      'ITA': 'IT', 'FRA': 'FR', 'CHN': 'CN', 'IRN': 'IR', 'POL': 'PL',
-      'CAN': 'CA', 'AUS': 'AU', 'IND': 'IN', 'ROU': 'RO', 'HUN': 'HU',
-      'FIN': 'FIN', 'BGR': 'BG', 'SRB': 'YU', 'HRV': 'YU', 'GRC': 'GR',
-      'TUR': 'TR', 'ESP': 'ESP', 'SWE': 'SE', 'CHE': 'CH', 'PRT': 'PT',
-      'NLD': 'NL', 'BEL': 'BEL', 'NOR': 'NO', 'DNK': 'DK', 'CZE': 'CZ',
-      'BRA': 'BR', 'MEX': 'MX', 'ARG': 'AR', 'IRQ': 'IQ', 'SAU': 'SA',
-      'EGY': 'EGY', 'ZAF': 'ZA', 'NZL': 'NZ', 'MNG': 'MN', 'THA': 'TH',
-      'IRL': 'IE', 'AFG': 'AF'
+      DEU:'DE',RUS:'SU',GBR:'GB',USA:'US',JPN:'JP',ITA:'IT',FRA:'FR',CHN:'CN',IRN:'IR',POL:'PL',
+      CAN:'CA',AUS:'AU',IND:'IN',PAK:'IN',BGD:'IN',MMR:'IN',ROU:'RO',HUN:'HU',FIN:'FI',BGR:'BG',
+      SRB:'YU',HRV:'YU',SVN:'YU',BIH:'YU',MNE:'YU',MKD:'YU',XKX:'YU',GRC:'GR',TUR:'TR',ESP:'ES',
+      SWE:'SE',CHE:'CH',PRT:'PT',NLD:'NL',BEL:'BE',NOR:'NO',DNK:'DK',CZE:'CZ',SVK:'CZ',BRA:'BR',
+      MEX:'MX',ARG:'AR',IRQ:'IQ',SAU:'SA',EGY:'EG',ZAF:'ZA',NZL:'NZ',MNG:'MN',THA:'TH',IRL:'IE',
+      AFG:'AF',ALB:'AL',COL:'CO',PER:'PE',VEN:'VE',CUB:'CU',EST:'EE',LVA:'LV',LTU:'LT',NPL:'NP',
+      BTN:'BT',YEM:'YE',OMN:'OM',ISL:'IS',URY:'UY',PRY:'PY',BOL:'BO',ECU:'EC',GTM:'GT',HND:'HN',
+      SLV:'SV',NIC:'NI',CRI:'CR',PAN:'PA',DOM:'DO',HTI:'HT',LBR:'LR',PHL:'PH',
+      BLR:'SU',UKR:'SU',KAZ:'SU',KGZ:'SU',TJK:'SU',TKM:'SU',UZB:'SU',GEO:'SU',ARM:'SU',AZE:'SU',MDA:'SU'
     };
-
-    function getFactionColor(faction) {
-      if (faction === 'axis') return '#ef4444';
-      if (faction === 'allies') return '#3b82f6';
-      if (faction === 'comintern') return '#f97316';
-      return '#64748b';
+    const mapNameAliases = {'united states of america':'US','united states':'US','russian federation':'SU','russia':'SU','iran':'IR','iran (islamic republic of)':'IR','united kingdom':'GB','czech republic':'CZ','czechia':'CZ','slovakia':'CZ','republic of the philippines':'PH','myanmar':'IN','burma':'IN','bangladesh':'IN','pakistan':'IN','belarus':'SU','ukraine':'SU','kazakhstan':'SU','uzbekistan':'SU','turkmenistan':'SU','tajikistan':'SU','kyrgyzstan':'SU','georgia':'SU','armenia':'SU','azerbaijan':'SU','serbia':'YU','croatia':'YU','bosnia and herzegovina':'YU','slovenia':'YU','montenegro':'YU','north macedonia':'YU','the netherlands':'NL','republic of moldova':'SU'};
+    function getFeatureGameCode(feature) {
+      const p=feature?.properties||{};
+      for(const raw of [feature?.id,p.ISO_A3,p.ADM0_A3,p.SOV_A3,p.iso_a3,p.ISO3,p.code,p.ISO_A2,p.iso_a2]) {
+        if(raw==null) continue;
+        const k=String(raw).trim().toUpperCase();
+        if(iso3ToCode[k]) return iso3ToCode[k];
+        if(COUNTRIES[k]) return k;
+      }
+      const name=String(p.ADMIN||p.NAME||p.name||p.NAME_EN||'').trim().toLowerCase();
+      return mapNameAliases[name]||Object.values(COUNTRIES).find(c=>c.name_en?.toLowerCase()===name)?.code||null;
     }
-
+    function getFactionColor(faction) { if(faction==='axis')return '#ef4444';if(faction==='allies')return '#3b82f6';if(faction==='comintern')return '#f97316';return '#64748b'; }
+    function mapStyleForCountry(country,code) {
+      const taken=S.taken.includes(code), matches=matchesFilter(country,code);
+      return {fillColor:taken?'#334155':getFactionColor(country.faction),weight:matches?1:0.2,opacity:matches?0.8:0.08,color:matches?'#1e293b':'#0b1220',fillOpacity:matches?(taken?0.42:0.68):0.015};
+    }
+    async function initMap() {
+      leafletMap=L.map('map',{center:[30,20],zoom:2.2,minZoom:1.5,maxZoom:6,attributionControl:false,preferCanvas:true,renderer:L.canvas({padding:0.35})});
+      try {
+        const res=await fetch('/world_geo.json',{cache:'force-cache'});
+        if(!res.ok)throw new Error('Map data HTTP '+res.status);
+        worldGeoData=await res.json();renderGeoJson();
+      } catch(err) { console.error('Failed to load local map data:',err);showToast('دادهٔ نقشه بارگذاری نشد. صفحه را تازه‌سازی کنید.'); }
+    }
     function renderGeoJson() {
-      if (!worldGeoData) return;
-      if (geojsonLayer) leafletMap.removeLayer(geojsonLayer);
-
-      geojsonLayer = L.geoJSON(worldGeoData, {
-        style: feature => {
-          const iso = feature.id || feature.properties?.code;
-          const code = iso3ToCode[iso] || feature.properties?.code || feature.id;
-          const country = COUNTRIES[code];
-          const isTaken = S.taken.includes(code);
-
-          if (country) {
-            const baseColor = getFactionColor(country.faction);
-            if (!matchesFilter(country, code)) {
-              return { fillColor: '#0b1220', weight: 0.1, opacity: 0.08, color: '#0b1220', fillOpacity: 0.025 };
-            }
-            return {
-              fillColor: isTaken ? '#334155' : baseColor,
-              weight: 1.2,
-              opacity: 0.8,
-              color: '#1e293b',
-              fillOpacity: isTaken ? 0.4 : 0.7
-            };
-          }
-          return {
-            fillColor: '#1e293b',
-            weight: 0.8,
-            opacity: 0.4,
-            color: '#0f172a',
-            fillOpacity: 0.2
-          };
-        },
-        onEachFeature: (feature, layer) => {
-          const iso = feature.id || feature.properties?.code;
-          const code = iso3ToCode[iso] || feature.properties?.code || feature.id;
-          const country = COUNTRIES[code];
-
-          if (country) {
-            const isTaken = S.taken.includes(code);
-            const owner = S.owners[code] || S.owners[code?.toLowerCase()];
-            const ownerLabel = owner ? (owner.name || '@' + owner.username) : 'کاربر';
-
-            layer.bindTooltip(`
-              <div style="direction: rtl; text-align: right; font-family: Vazirmatn, sans-serif; font-size: 12px;">
-                <b>${country.name_fa}</b> (${country.name_en})<br>
-                <span>رهبر: ${country.leader_fa}</span><br>                ${country.capital_fa ? '<span>پایتخت: ' + country.capital_fa + '</span><br>' : ''}
-                ${country.colony_of_fa ? '<span style="color:#86efac;">' + (country.colony_label || 'مستعمرهٔ ' + country.colony_of_fa) + '</span><br>' : ''}
-                ${isTaken ? '<span style="color:#ef4444;">اشغال‌شده توسط: ' + ownerLabel + '</span>' : '<span style="color:#10b981;">آماده تصاحب</span>'}
-              </div>
-            `, { sticky: true });
-
-            layer.on({
-              mouseover: e => {
-                e.target.setStyle({ weight: 2.5, color: '#f59e0b', fillOpacity: 0.9 });
-              },
-              mouseout: e => {
-                geojsonLayer.resetStyle(e.target);
-              },
-              click: () => {
-                openClaimModal(code);
-              }
-            });
-          }
+      if(!worldGeoData)return;
+      if(geojsonLayer)leafletMap.removeLayer(geojsonLayer);
+      geojsonLayer=L.geoJSON(worldGeoData,{
+        renderer:L.canvas({padding:0.35}),smoothFactor:1.5,
+        style:feature=>{const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];return c?mapStyleForCountry(c,code):{fillColor:'#1e293b',weight:0.3,opacity:0.3,color:'#0f172a',fillOpacity:0.12,interactive:false};},
+        onEachFeature:(feature,layer)=>{
+          const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];
+          if(!c||c.selectable==='no'){layer.options.interactive=false;return;}
+          const owner=S.owners[code]||S.owners[code?.toLowerCase()],ownerLabel=owner?(owner.name||'@'+owner.username):'کاربر';
+          layer.bindTooltip(`<div style="direction:rtl;text-align:right;font-family:Vazirmatn,sans-serif;font-size:12px"><b>${c.name_fa}</b> (${c.name_en})<br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa||'نامشخص'}<br>جناح: ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>حکومت: ${c.regime_fa||'نامشخص'}<br>${c.colony_label?'<span style="color:#86efac">'+c.colony_label+'</span><br>':''}${c.puppet_label?'<span style="color:#fdba74">'+c.puppet_label+'</span><br>':''}${S.taken.includes(code)?'<span style="color:#ef4444">اشغال‌شده توسط: '+ownerLabel+'</span>':'<span style="color:#10b981">آماده تصاحب</span>'}</div>`,{sticky:true});
+          layer.on({mouseover:e=>{if(matchesFilter(c,code))e.target.setStyle({weight:2,color:'#f59e0b',fillOpacity:0.88});},mouseout:e=>{if(geojsonLayer)geojsonLayer.resetStyle(e.target);},click:()=>{if(matchesFilter(c,code)&&S.season==='pick')openClaimModal(code);}});
+          layer.options.interactive=matchesFilter(c,code)&&S.season==='pick';
         }
       }).addTo(leafletMap);
+      renderSpecialHistoricalPolygons();
     }
-
+    let specialHistoricalLayers=null;
+    function renderSpecialHistoricalPolygons() {
+      if(!leafletMap)return;
+      if(specialHistoricalLayers)leafletMap.removeLayer(specialHistoricalLayers);
+      specialHistoricalLayers=L.layerGroup().addTo(leafletMap);
+      const overlays=[
+        {code:'MZ',coords:[[53,121],[53,130],[49,134],[45,131],[41,126],[40,120],[43,117],[47,118],[50,120]]},
+        {code:'TB',coords:[[36,78],[36,88],[34,96],[30,100],[27,97],[26,89],[28,82],[31,78]]},
+        {code:'TU',coords:[[52.5,89],[52.5,98],[50.5,101],[49,96],[49.5,91]]}
+      ];
+      overlays.forEach(item=>{const c=COUNTRIES[item.code];if(!c)return;const active=matchesFilter(c,item.code),poly=L.polygon(item.coords,{renderer:L.canvas({padding:0.35}),smoothFactor:2,bubblingMouseEvents:false,color:active?'#f8fafc':'#0b1220',weight:active?1.2:0.2,fillColor:active?getFactionColor(c.faction):'#0b1220',fillOpacity:active?0.7:0.01,opacity:active?0.85:0.05,interactive:active&&S.season==='pick'});poly.bindTooltip(`<b>${c.name_fa}</b><br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa}<br>جناح: ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>حکومت: ${c.regime_fa}`);poly.on('click',()=>{if(active&&S.season==='pick')openClaimModal(item.code)});poly.addTo(specialHistoricalLayers);});
+    }
     function updateMapStyles() {
-      if (geojsonLayer) geojsonLayer.setStyle();
+      if(geojsonLayer)geojsonLayer.eachLayer(layer=>{const code=getFeatureGameCode(layer.feature),c=code&&COUNTRIES[code];if(c&&layer.setStyle)layer.setStyle(mapStyleForCountry(c,code));if(c)layer.options.interactive=matchesFilter(c,code)&&S.season==='pick';});
+      renderSpecialHistoricalPolygons();
     }
 
     // Claim Modal Logic
@@ -3070,11 +3035,10 @@
                 <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
                 ${fac.fa || ''}
               </span>
-              <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'neutral' : c.ideology}">
-                <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                ${ideo.fa || 'غیرمتعهد'}
-              </span>
-              ${isMonarchy(c, code) ? '<span class="tactical-badge badge-monarchy"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span>' : ''}
+              <span class="tactical-badge badge-regime"><img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت"> ${c.regime_fa || 'نوع حکومت نامشخص'}</span>
+              ${c.colony_label ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="قلمرو وابسته"> ' + c.colony_label + '</span>' : ''}
+              ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
+              ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
             </div>
           </div>
         </div>
@@ -3084,7 +3048,7 @@
             <img src="${c.leader_url || FALLBACK_LEADER}" style="width: 100%; height: 100%; object-fit: cover; object-position: center 22%;" onerror="this.src='${FALLBACK_LEADER}'">
           </div>
           <div>
-            <div style="font-size: 11px; color: var(--text-muted);">رهبر تاریخی (دوران ۱۹۳۴):</div>
+            <div style="font-size: 11px; color: var(--text-muted);">رهبر تاریخی (۱ ژانویهٔ ۱۹۳۴):</div>
             <div style="font-size: 14px; font-weight: 700; color: #fff;">${c.leader_fa}</div>
             <div style="font-size: 11px; color: var(--text-muted);">${c.leader_en}</div>
           </div>
@@ -3164,12 +3128,7 @@
           }
         }
       } catch(err) {
-        // Fallback simulate local claim
-        showToast('فرمانروایی بر ' + (COUNTRIES[selectedCountryCode]?.name_fa || '') + ' ثبت شد.');
-        S.p = { c: selectedCountryCode };
-        if (!S.taken.includes(selectedCountryCode)) S.taken.push(selectedCountryCode);
-        closeModal();
-        onStateUpdated();
+        showToast('ارتباط با سرور برقرار نشد؛ کشور ثبت نشده است. دوباره تلاش کنید.');
       } finally {
         btn.disabled = false;
         btn.innerHTML = ICONS.swords + ' تأیید و تصاحب کشور';
