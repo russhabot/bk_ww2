@@ -2892,6 +2892,10 @@
       const filter = document.getElementById('country-filter-panel');
       const cards = document.getElementById('cards-view-wrap');
       const map = document.getElementById('map-view-container');
+      const viewCardsButton = document.getElementById('btn-view-cards');
+      const viewMapButton = document.getElementById('btn-view-map');
+      if (viewCardsButton) viewCardsButton.style.display = tab === 'world' ? 'inline-flex' : 'none';
+      if (viewMapButton) viewMapButton.style.display = tab === 'world' ? 'inline-flex' : 'none';
       if (nav) { nav.style.display = 'flex'; nav.querySelectorAll('button').forEach(btn => btn.classList.toggle('active', btn.dataset.liveTab === tab)); }
       if (tab === 'world') {
         if (waitScreen) waitScreen.style.display = 'none';
@@ -2999,7 +3003,7 @@
             </div>
             <div class="dossier-field">
               <span class="dossier-label">جناح</span>
-              <span class="dossier-value" style="color: ${fac.color || '#fff'};">${fac.fa || 'بدون جناح'}</span>
+              <span class="dossier-value"><span class="tactical-badge badge-${c.faction}">${fac.fa || 'بدون جناح'}</span></span>
             </div>
             <div class="dossier-field">
               <span class="dossier-label">نوع حکومت</span>
@@ -3008,7 +3012,7 @@
                 ${regime.label}
               </span>
             </div>
-            ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<div class="dossier-field"><span class="dossier-label">وضعیت استعماری</span><span class="dossier-value" style="color:#86efac;">مستعمره / قلمرو وابسته: ' + (c.colony_label || c.colony_of_fa || 'تحت ادارهٔ کشور دیگر') + '</span></div>' : ''}
+            ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<div class="dossier-field"><span class="dossier-label">وضعیت استعماری</span><span class="dossier-value" style="color:#86efac;">' + getColonyTag(c) + '</span></div>' : ''}
             ${c.puppet_label ? '<div class="dossier-field"><span class="dossier-label">وضعیت سیاسی</span><span class="dossier-value">' + c.puppet_label + '</span></div>' : ''}
             <div class="dossier-field">
               <span class="dossier-label">رهبر تاریخی (۱۹۳۴)</span>
