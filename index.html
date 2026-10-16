@@ -893,6 +893,17 @@
       .country-name-fa { white-space: normal; overflow-wrap: anywhere; }
     }
 
+    .country-economy-panel { margin-top:16px; padding:14px; border:1px solid var(--border-bright); border-radius:12px; background:linear-gradient(145deg,rgba(17,28,48,.96),rgba(8,15,27,.96)); }
+    .economy-title { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:10px; color:#f8fafc; font-weight:800; font-size:14px; }
+    .economy-title span { color:var(--text-muted); font-size:10px; font-weight:500; }
+    .economy-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .economy-stat { min-width:0; padding:10px; border:1px solid rgba(45,67,109,.72); border-radius:9px; background:rgba(5,12,22,.62); display:flex; flex-direction:column; gap:3px; }
+    .economy-stat span { color:var(--text-muted); font-size:11px; overflow-wrap:anywhere; }
+    .economy-stat strong { color:#e2e8f0; font-size:13px; line-height:1.5; overflow-wrap:anywhere; }
+    .economy-meter { height:5px; background:#263449; border-radius:9px; overflow:hidden; margin-top:4px; }
+    .economy-meter i { display:block; height:100%; background:linear-gradient(90deg,#b45309,#fbbf24); border-radius:9px; }
+    @media (max-width: 480px) { .economy-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .economy-stat { padding:8px; } .economy-stat strong { font-size:12px; } .economy-title { font-size:13px; } }
+    @media (max-width: 340px) { .economy-grid { grid-template-columns:minmax(0,1fr); } }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
@@ -908,7 +919,7 @@
 <body>
 
   <!-- Audio Element -->
-  <audio id="march-audio" preload="none" loop></audio>
+  <audio id="march-audio" preload="auto" autoplay loop playsinline></audio>
 
   <div class="app-container">
 
@@ -948,19 +959,19 @@
       <!-- Live Global Power Balance -->
       <div class="tension-bar" id="tension-bar">
         <div class="stat-pill axis">
-          <span class="pill-label"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> متحدین محور</span>
+          <span class="pill-label"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> جناح: محور</span>
           <strong id="stat-axis-count">0</strong>
         </div>
         <div class="stat-pill allies">
-          <span class="pill-label"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</span>
+          <span class="pill-label"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> جناح: متفقین</span>
           <strong id="stat-allies-count">0</strong>
         </div>
         <div class="stat-pill comintern">
-          <span class="pill-label"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن">  کمینترن</span>
+          <span class="pill-label"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن"> جناح: کمینترن</span>
           <strong id="stat-comintern-count">0</strong>
         </div>
         <div class="stat-pill neutral">
-          <span class="pill-label"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح">  بدون جناح</span>
+          <span class="pill-label"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح"> جناح: بدون جناح</span>
           <strong id="stat-neutral-count">0</strong>
         </div>
       </div>
@@ -1005,14 +1016,14 @@
 
         <div class="filter-chips">
           <div class="chip active" onclick="setFilter('all', this)">همه</div>
-          <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> متحدین محور</div>
-          <div class="chip" onclick="setFilter('allies', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</div>
-          <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن">  کمینترن</div>
-          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح">  بدون جناح</div>
-          <div class="chip" onclick="setFilter('fascism', this)"><img src="static/badges/fascism.svg" class="badge-icon-img" alt="فاشیسم"> فاشیست</div>
-          <div class="chip" onclick="setFilter('communism', this)"><img src="static/badges/communism.svg" class="badge-icon-img" alt="کمونیسم"> کمونیست</div>
-          <div class="chip" onclick="setFilter('democracy', this)"><img src="static/badges/democracy.svg" class="badge-icon-img" alt="دموکراسی"> دموکراتیک</div>
-          <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی">  پادشاهی</div>
+          <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> جناح: محور</div>
+          <div class="chip" onclick="setFilter('allies', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> جناح: متفقین</div>
+          <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن"> جناح: کمینترن</div>
+          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح"> جناح: بدون جناح</div>
+          <div class="chip" onclick="setFilter('fascism', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg" class="badge-icon-img" alt="نشان فاشیسم"> نوع حکومت: فاشیست</div>
+          <div class="chip" onclick="setFilter('communism', this)"><img src="static/badges/communism.svg" class="badge-icon-img" alt="کمونیسم"> نوع حکومت: کمونیستی</div>
+          <div class="chip" onclick="setFilter('democracy', this)"><img src="static/badges/democracy.svg" class="badge-icon-img" alt="دموکراسی"> نوع حکومت: دموکراتیک</div>
+          <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> نوع حکومت: پادشاهی</div>
           <div class="chip" onclick="setFilter('free_only', this)"><svg class="ui-icon" viewBox="0 0 24 24" width="10" height="10" fill="#10b981"><circle cx="12" cy="12" r="8"/></svg> فقط کشورهای آزاد</div>
         </div>
       </div>
@@ -2793,11 +2804,20 @@
         if (dossier) dossier.style.display = 'none';
         if (actions) actions.style.display = 'none';
         if (banner) banner.style.display = 'none';
+      } else if (S.season === 'pick' && S.p && S.p.c) {
+        showWaitingRoom();
+        if (waitScreen) waitScreen.style.display = 'block';
+        if (selection) selection.style.display = 'none';
+        if (title) title.textContent = 'کشور شما ثبت شد';
+        if (message) message.textContent = 'کشور با موفقیت انتخاب شده است؛ تا آغاز رسمی سیزن توسط ادمین در اتاق فرماندهی منتظر بمانید.';
+        if (dossier) dossier.style.display = 'block';
+        if (actions) actions.style.display = 'none';
+        if (banner) banner.style.display = 'none';
       } else if (S.season === 'pick') {
         if (waitScreen) waitScreen.style.display = 'none';
         if (selection) selection.style.display = 'block';
-        if (dossier) dossier.style.display = 'block';
-        if (actions) actions.style.display = 'flex';
+        if (dossier) dossier.style.display = 'none';
+        if (actions) actions.style.display = 'none';
         if (banner) banner.style.display = 'none';
       } else {
         showWaitingRoom();
@@ -2809,9 +2829,10 @@
         if (actions) actions.style.display = 'none';
         if (banner) banner.style.display = 'none';
       }
-      if (panel) panel.style.display = S.season === 'pick' ? 'block' : 'none';
-      if (cards) cards.style.display = S.season === 'pick' && currentViewMode === 'cards' ? 'block' : 'none';
-      if (map) map.style.display = S.season === 'pick' && currentViewMode === 'map' ? 'block' : 'none';
+      const canChoose = S.season === 'pick' && !(S.p && S.p.c);
+      if (panel) panel.style.display = canChoose ? 'block' : 'none';
+      if (cards) cards.style.display = canChoose && currentViewMode === 'cards' ? 'block' : 'none';
+      if (map) map.style.display = canChoose && currentViewMode === 'map' ? 'block' : 'none';
     }
 
     function updateStats() {
@@ -2829,6 +2850,33 @@
       document.getElementById('stat-neutral-count').innerText = `${S.taken.filter(code => COUNTRIES[code]?.faction === 'neutral').length} / ${neutralCount}`;
     }
 
+    function getStartingResources(c) {
+      const profiles = {
+        DE:{power:86,money:85000,income:6200,infantry:620000,satisfaction:72,oil:18000,food:42000},
+        IT:{power:68,money:59000,income:4100,infantry:390000,satisfaction:69,oil:8500,food:31000},
+        JP:{power:79,money:71000,income:5000,infantry:500000,satisfaction:73,oil:8000,food:36000},
+        GB:{power:88,money:101000,income:6900,infantry:450000,satisfaction:76,oil:32000,food:56000},
+        US:{power:100,money:125000,income:9500,infantry:700000,satisfaction:82,oil:90000,food:90000},
+        FR:{power:82,money:78000,income:5200,infantry:500000,satisfaction:74,oil:12000,food:48000},
+        SU:{power:96,money:92000,income:7000,infantry:900000,satisfaction:68,oil:24000,food:70000},
+        RU:{power:96,money:92000,income:7000,infantry:900000,satisfaction:68,oil:24000,food:70000},
+        CN:{power:60,money:35000,income:2200,infantry:350000,satisfaction:58,oil:2000,food:50000},
+        PL:{power:64,money:42000,income:2600,infantry:300000,satisfaction:70,oil:1000,food:28000},
+        IR:{power:50,money:25000,income:1700,infantry:120000,satisfaction:75,oil:5000,food:30000},
+        IN:{power:57,money:30000,income:2100,infantry:280000,satisfaction:63,oil:3500,food:45000},
+        CA:{power:58,money:48000,income:3300,infantry:160000,satisfaction:80,oil:18000,food:36000},
+        AU:{power:48,money:37000,income:2400,infantry:110000,satisfaction:79,oil:7000,food:28000},
+        BR:{power:45,money:33000,income:2100,infantry:140000,satisfaction:73,oil:4000,food:38000},
+        TR:{power:52,money:31000,income:2000,infantry:220000,satisfaction:67,oil:2500,food:30000},
+        ES:{power:49,money:32000,income:1900,infantry:180000,satisfaction:61,oil:1500,food:26000}
+      };
+      if (profiles[c.code]) return profiles[c.code];
+      const seed = String(c.code || c.name_en || 'XX').split('').reduce((n,ch)=>n+ch.charCodeAt(0),0);
+      const tier = seed % 5 === 0 ? 0.78 : seed % 3 === 0 ? 0.64 : 0.48;
+      const factionBoost = c.faction === 'allies' ? 1.04 : c.faction === 'comintern' ? 1.02 : c.faction === 'axis' ? 1 : 0.88;
+      return {power:Math.round((30+seed%38)*factionBoost),money:Math.round((16000+(seed%15)*1800)*tier),income:Math.round((900+(seed%11)*170)*tier),infantry:Math.round((45000+(seed%16)*18000)*tier),satisfaction:55+seed%31,oil:Math.round((500+(seed%13)*900)*tier),food:Math.round((8000+(seed%17)*2100)*tier)};
+    }
+
     function showWaitingRoom() {
       document.getElementById('section-waiting-room').style.display = 'block';
       const dossier = document.getElementById('player-command-dossier');
@@ -2837,7 +2885,8 @@
         const fac = FACTIONS[c.faction] || {};
         const ideo = getIdeology(c);
         const regime = getRegimeCategory(c);
-        
+        const resources = getStartingResources({ ...c, code: S.p.c });
+        const fmt = value => new Intl.NumberFormat('fa-IR').format(value);
         dossier.innerHTML = `
           <div class="dossier-header">
             <div class="dossier-flag">
@@ -2872,6 +2921,18 @@
               <span class="dossier-value">${c.leader_fa || ''}</span>
             </div>
           </div>
+          <section class="country-economy-panel" aria-label="منابع آغازین کشور">
+            <div class="economy-title">وضعیت آغازین کشور <span>مقادیر پایه سیزن</span></div>
+            <div class="economy-grid">
+              <div class="economy-stat"><span>قدرت سیاسی</span><strong>${fmt(resources.power)} / ۱۰۰</strong></div>
+              <div class="economy-stat"><span>خزانه</span><strong>${fmt(resources.money)} میلیون</strong></div>
+              <div class="economy-stat"><span>درآمد دوره‌ای</span><strong>${fmt(resources.income)} میلیون</strong></div>
+              <div class="economy-stat"><span>پیاده‌نظام</span><strong>${fmt(resources.infantry)} نفر</strong></div>
+              <div class="economy-stat"><span>رضایت عمومی</span><strong>${fmt(resources.satisfaction)}٪</strong><div class="economy-meter"><i style="width:${resources.satisfaction}%"></i></div></div>
+              <div class="economy-stat"><span>ذخیره نفت</span><strong>${fmt(resources.oil)} بشکه</strong></div>
+              <div class="economy-stat"><span>ذخیره غذا</span><strong>${fmt(resources.food)} واحد</strong></div>
+            </div>
+          </section>
           <div style="margin-top: 14px; background: rgba(30, 41, 59, 0.5); padding: 10px; border-radius: 8px; font-size: 12px; color: var(--text-muted);">
             <b>وضعیت آمادگی:</b> تمامی لشکرهای پیاده و زرهی سازماندهی شده‌اند. با دستور ستاد کل در لحظه آغاز سیزن، نبرد در سراسر جبهه‌ها آغاز خواهد شد.
           </div>
@@ -2917,8 +2978,8 @@
       const ideology = String(c?.ideology || '').toLowerCase();
       const regimeType = String(c?.regime_type || '').toLowerCase();
       const regimeFa = String(c?.regime_fa || '').toLowerCase();
-      if (isMonarchy(c)) return { key:'monarchy', label:'پادشاهی', color:'#fbbf24', badge_url:'' };
-      if (ideology === 'fascism' || /fascis|فاشی/.test(regimeType + ' ' + regimeFa)) return { key:'fascism', label:'فاشیستی', color:'#c084fc', badge_url:'https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg' };
+      if (isMonarchy(c)) return { key:'monarchy', label:'پادشاهی', color:'#fbbf24', badge_url:'static/badges/monarchy.svg' };
+      if (ideology === 'fascism' || /fascis|فاشی/.test(regimeType + ' ' + regimeFa)) return { key:'fascism', label:'فاشیست', color:'#c084fc', badge_url:'https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg' };
       if (ideology === 'communism' || /communis|کمونی/.test(regimeType + ' ' + regimeFa)) return { key:'communism', label:'کمونیستی', color:'#f87171', badge_url:'static/badges/communism.svg' };
       return { key:'democracy', label:'دموکراتیک', color:'#38bdf8', badge_url:'static/badges/democracy.svg' };
     }
@@ -2980,8 +3041,8 @@
                 <p class="country-name-en">${c.name_en}</p>
                 <p class="country-capital">پایتخت: ${c.capital_fa || "نامشخص"}</p>
                 <div class="card-badges">
-                  <span class="tactical-badge badge-${c.faction}">${fac.fa || 'بدون جناح'}</span>
-                  <span class="regime-chip regime-${getRegimeCategory(c).key}">${getRegimeCategory(c).label}</span>
+                  <span class="tactical-badge badge-${c.faction}">جناح: ${fac.fa || 'بدون جناح'}</span>
+                  <span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="نشان نوع حکومت"> نوع حکومت: ${getRegimeCategory(c).label}</span>
                   ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">مستعمره / قلمرو وابسته: ' + (c.colony_label || c.colony_of_fa || 'تحت ادارهٔ کشور دیگر') + '</span>' : ''}
                   ${c.puppet_label ? '<span class="tactical-badge badge-puppet">' + c.puppet_label + '</span>' : ''}
                   ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
@@ -3139,11 +3200,8 @@
             <h4 style="margin: 0; font-size: 17px; color: #fff;">${c.name_fa}</h4>
             <div style="font-size: 12px; color: var(--text-muted);">${c.name_en} | پایتخت: ${c.capital_fa || ''}</div>
             <div style="display: flex; gap: 6px; margin-top: 6px;">
-              <span class="tactical-badge badge-${c.faction}">
-                <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
-                ${fac.fa || ''}
-              </span>
-              <span class="tactical-badge badge-regime"><img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت"> ${c.regime_fa || 'نوع حکومت نامشخص'}</span>
+              <span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url}" class="badge-icon-img" alt="نشان جناح"> جناح: ${fac.fa || 'بدون جناح'}</span>
+              <span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="نشان نوع حکومت"> نوع حکومت: ${getRegimeCategory(c).label}</span>
               ${c.colony_label ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="قلمرو وابسته"> ' + c.colony_label + '</span>' : ''}
               ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
               ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
