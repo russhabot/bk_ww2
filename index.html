@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <title>کارزار جهانی دوم ۱۹۳۴ | Burnt Kingdoms WW2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -833,6 +833,63 @@
       justify-content: center;
     }
 
+
+    /* Responsive layout for phones and Telegram Mini App */
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    img, svg, video, canvas { max-width: 100%; }
+    button, input, select, textarea { font: inherit; }
+    .badge-icon-img { object-fit: contain; }
+
+    @media (max-width: 760px) {
+      body { line-height: 1.5; }
+      .app-container { padding: max(8px, env(safe-area-inset-top)) 8px max(18px, env(safe-area-inset-bottom)); }
+      header.tactical-header { padding: 11px; margin-bottom: 10px; gap: 10px; border-radius: 12px; }
+      .header-top { align-items: stretch; gap: 9px; }
+      .brand-title { gap: 8px; min-width: 0; }
+      .brand-text { min-width: 0; }
+      .brand-text h1 { font-size: clamp(14px, 4vw, 17px); gap: 5px; flex-wrap: wrap; }
+      .brand-text p { font-size: 11px; }
+      .header-controls { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+      .header-controls > * { min-width: 0; }
+      .btn { min-height: 40px; padding: 8px 9px; font-size: 12px; white-space: normal; }
+      .audio-pill { justify-content: center; min-height: 38px; padding: 6px 8px; }
+      .tension-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding: 7px; }
+      .stat-pill { padding: 6px; gap: 4px; font-size: 11px; min-width: 0; }
+      .stat-pill .pill-label { gap: 3px; min-width: 0; }
+      .badge-icon-img { width: 14px; height: 14px; margin-left: 2px; }
+      .filter-panel { padding: 10px; margin-bottom: 10px; gap: 9px; }
+      .search-input { min-height: 42px; font-size: 16px; padding: 9px 38px 9px 10px; }
+      .filter-chips { gap: 5px; margin-inline: -2px; }
+      .chip { min-height: 34px; padding: 6px 10px; font-size: 11px; }
+      .countries-grid { grid-template-columns: minmax(0, 1fr); gap: 9px; }
+      .country-card { padding: 11px; gap: 8px; border-radius: 12px; }
+      .country-card:hover:not(.taken) { transform: none; }
+      .card-top { gap: 9px; }
+      .flag-box { width: 58px; height: 40px; }
+      .country-name-fa { font-size: 14px; }
+      .modal-backdrop { padding: 8px; align-items: flex-end; }
+      .modal-card { max-height: min(88dvh, 760px); padding: 15px; gap: 12px; border-radius: 16px 16px 10px 10px; }
+      .modal-title { font-size: 16px; }
+      #map { height: 58dvh; min-height: 300px; }
+      .map-legend { max-width: calc(100vw - 28px); }
+      #season-status-banner { padding: 12px !important; font-size: 13px; }
+      .toast { max-width: calc(100vw - 24px); white-space: normal; text-align: center; bottom: max(12px, env(safe-area-inset-bottom)); }
+    }
+
+    @media (max-width: 380px) {
+      .app-container { padding-inline: 6px; }
+      .brand-badge { padding: 3px 7px; font-size: 10px; }
+      .header-controls { grid-template-columns: minmax(0, 1fr); }
+      .tension-bar { grid-template-columns: minmax(0, 1fr); }
+      .stat-pill { font-size: 12px; }
+      .card-top { align-items: flex-start; }
+      .flag-box { width: 50px; height: 35px; }
+      .country-name-fa { white-space: normal; overflow-wrap: anywhere; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
   </style>
 </head>
 <body>
@@ -885,7 +942,7 @@
           <strong id="stat-axis-count">0</strong>
         </div>
         <div class="stat-pill allies">
-          <span class="pill-label"><img src="static/badges/allies.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</span>
+          <span class="pill-label"><img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Allied_Powers_Flag.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</span>
           <strong id="stat-allies-count">0</strong>
         </div>
         <div class="stat-pill comintern">
@@ -939,7 +996,7 @@
         <div class="filter-chips">
           <div class="chip active" onclick="setFilter('all', this)">همه</div>
           <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> متحدین محور</div>
-          <div class="chip" onclick="setFilter('allies', this)"><img src="static/badges/allies.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</div>
+          <div class="chip" onclick="setFilter('allies', this)"><img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Allied_Powers_Flag.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</div>
           <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن">  کمینترن</div>
           <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح">  بدون جناح</div>
           <div class="chip" onclick="setFilter('fascism', this)"><img src="static/badges/fascism.svg" class="badge-icon-img" alt="فاشیسم"> فاشیست</div>
@@ -2536,7 +2593,7 @@
     "en": "Allied Powers",
     "color": "#3b82f6",
     "bg": "rgba(59, 130, 246, 0.15)",
-    "badge_url": "static/badges/allies.svg"
+    "badge_url": "https://upload.wikimedia.org/wikipedia/commons/0/03/Allied_Powers_Flag.svg"
   },
   "comintern": {
     "id": "comintern",
@@ -2712,7 +2769,7 @@
           banner.style.display = locked ? 'block' : 'none';
           banner.innerHTML = S.season === 'live'
             ? '<b>سیزن فعال است</b><br>انتخاب کشور بسته است؛ فهرست کشورها همچنان برای مشاهده در دسترس است.'
-            : '<b>اتاق انتظار سیزن</b><br>فهرست کشورها نمایش داده می‌شود، اما انتخاب تا اجرای دستور <code>/season pick</code> غیرفعال است.';
+            : '<b>سیزن هنوز شروع نشده است</b><br>در حال حاضر فقط می‌توانید کشورها و اطلاعات آن‌ها را مشاهده کنید. منتظر اعلام ادمین بمانید؛ با اجرای دستور <code>/season pick</code> انتخاب کشور آغاز می‌شود.';
         }
         // Keep the country list and map visible in every phase. Only claiming is locked.
         const panel = document.getElementById('country-filter-panel');
