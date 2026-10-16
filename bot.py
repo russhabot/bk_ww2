@@ -346,14 +346,14 @@ if dp:
             current = kget("season", "wait")
             number = kget("season_number", "1")
             return await msg.answer(
-                f"سیزن شمارهٔ {number}\\nوضعیت فعلی: {labels.get(current, current)}\\n"
+                f"سیزن شمارهٔ {number}\nوضعیت فعلی: {labels.get(current, current)}\n"
                 "دستورات: /season wait | /season pick | /season live | /season reset"
             )
         if p[1].lower() in ("reset", "restart"):
             number, released = reset_season(msg.from_user.id)
             return await msg.answer(
-                f"✅ سیزن با موفقیت ریست شد.\\nشمارهٔ سیزن جدید: {number}\\n"
-                f"کشورهای آزادشده: {released}\\nوضعیت جدید: اتاق انتظار (wait).\\n"
+                f"✅ سیزن با موفقیت ریست شد.\nشمارهٔ سیزن جدید: {number}\n"
+                f"کشورهای آزادشده: {released}\nوضعیت جدید: اتاق انتظار (wait).\n"
                 "پروفایل بازیکنان حفظ شد؛ انتخاب کشور پس از /season pick فعال می‌شود."
             )
         phase = p[1].lower()
@@ -368,7 +368,7 @@ if dp:
             return await msg.answer("شما دسترسی مدیریت ندارید.")
         number, released = reset_season(msg.from_user.id)
         await msg.answer(
-            f"✅ سیزن ریست شد.\\nشمارهٔ جدید: {number}\\nکشورهای آزادشده: {released}\\n"
+            f"✅ سیزن ریست شد.\nشمارهٔ جدید: {number}\nکشورهای آزادشده: {released}\n"
             "وضعیت: اتاق انتظار (wait). پروفایل بازیکنان حفظ شد."
         )
 
