@@ -3205,8 +3205,9 @@
       document.getElementById('btn-view-cards').classList.toggle('active', mode === 'cards');
       document.getElementById('btn-view-map').classList.toggle('active', mode === 'map');
 
-      document.getElementById('cards-view-wrap').style.display = S.season === 'pick' && mode === 'cards' ? 'block' : 'none';
-      document.getElementById('map-view-container').style.display = S.season === 'pick' && mode === 'map' ? 'block' : 'none';
+      const worldViewAllowed = S.season === 'pick' || (S.season === 'live' && liveTab === 'world');
+      document.getElementById('cards-view-wrap').style.display = worldViewAllowed && mode === 'cards' ? 'block' : 'none';
+      document.getElementById('map-view-container').style.display = worldViewAllowed && mode === 'map' ? 'block' : 'none';
 
       if (mode === 'map') {
         if (!leafletMap) {
