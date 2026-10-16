@@ -1016,14 +1016,14 @@
 
         <div class="filter-chips">
           <div class="chip active" onclick="setFilter('all', this)">همه</div>
-          <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> جناح: محور</div>
-          <div class="chip" onclick="setFilter('allies', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> جناح: متفقین</div>
-          <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن"> جناح: کمینترن</div>
-          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح"> جناح: بدون جناح</div>
-          <div class="chip" onclick="setFilter('fascism', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg" class="badge-icon-img" alt="نشان فاشیسم"> نوع حکومت: فاشیست</div>
-          <div class="chip" onclick="setFilter('communism', this)"><img src="static/badges/communism.svg" class="badge-icon-img" alt="کمونیسم"> نوع حکومت: کمونیستی</div>
-          <div class="chip" onclick="setFilter('democracy', this)"><img src="static/badges/democracy.svg" class="badge-icon-img" alt="دموکراسی"> نوع حکومت: دموکراتیک</div>
-          <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> نوع حکومت: پادشاهی</div>
+          <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> محور</div>
+          <div class="chip" onclick="setFilter('allies', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> متفقین</div>
+          <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن"> کمینترن</div>
+          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح"> بدون جناح</div>
+          <div class="chip" onclick="setFilter('fascism', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg" class="badge-icon-img" alt="نشان فاشیسم"> فاشیست</div>
+          <div class="chip" onclick="setFilter('communism', this)"><img src="static/badges/communism.svg" class="badge-icon-img" alt="کمونیسم"> کمونیستی</div>
+          <div class="chip" onclick="setFilter('democracy', this)"><img src="static/badges/democracy.svg" class="badge-icon-img" alt="دموکراسی"> دموکراتیک</div>
+          <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</div>
           <div class="chip" onclick="setFilter('free_only', this)"><svg class="ui-icon" viewBox="0 0 24 24" width="10" height="10" fill="#10b981"><circle cx="12" cy="12" r="8"/></svg> فقط کشورهای آزاد</div>
         </div>
       </div>
@@ -2926,13 +2926,13 @@
           <section class="country-economy-panel" aria-label="منابع آغازین کشور">
             <div class="economy-title">وضعیت آغازین کشور <span>مقادیر پایه سیزن</span></div>
             <div class="economy-grid">
-              <div class="economy-stat"><span>قدرت سیاسی</span><strong>${fmt(resources.power)} / ۱۰۰</strong></div>
-              <div class="economy-stat"><span>خزانه</span><strong>${fmt(resources.money)} میلیون</strong></div>
-              <div class="economy-stat"><span>درآمد دوره‌ای</span><strong>${fmt(resources.income)} میلیون</strong></div>
-              <div class="economy-stat"><span>پیاده‌نظام</span><strong>${fmt(resources.infantry)} نفر</strong></div>
-              <div class="economy-stat"><span>رضایت عمومی</span><strong>${fmt(resources.satisfaction)}٪</strong><div class="economy-meter"><i style="width:${resources.satisfaction}%"></i></div></div>
-              <div class="economy-stat"><span>ذخیره نفت</span><strong>${fmt(resources.oil)} بشکه</strong></div>
-              <div class="economy-stat"><span>ذخیره غذا</span><strong>${fmt(resources.food)} واحد</strong></div>
+              <div class="economy-stat"><span class="economy-stat-label"><b>🏛️</b> قدرت سیاسی</span><strong>${fmt(resources.power)} / ۱۰۰</strong></div>
+              <div class="economy-stat"><span class="economy-stat-label"><b>💰</b> خزانه</span><strong>${fmt(resources.money)} میلیون</strong></div>
+              <div class="economy-stat"><span class="economy-stat-label"><b>📈</b> درآمد دوره‌ای</span><strong>${fmt(resources.income)} میلیون</strong></div>
+              <div class="economy-stat"><span class="economy-stat-label"><b>🪖</b> پیاده‌نظام</span><strong>${fmt(resources.infantry)} نفر</strong></div>
+              <div class="economy-stat"><span class="economy-stat-label"><b>😊</b> رضایت عمومی</span><strong>${fmt(resources.satisfaction)}٪</strong><div class="economy-meter"><i style="width:${resources.satisfaction}%"></i></div></div>
+              <div class="economy-stat"><span class="economy-stat-label"><b>🛢️</b> ذخیره نفت</span><strong>${fmt(resources.oil)} بشکه</strong></div>
+              <div class="economy-stat"><span class="economy-stat-label"><b>🌾</b> ذخیره غذا</span><strong>${fmt(resources.food)} واحد</strong></div>
             </div>
           </section>
           <div style="margin-top: 14px; background: rgba(30, 41, 59, 0.5); padding: 10px; border-radius: 8px; font-size: 12px; color: var(--text-muted);">
@@ -3043,9 +3043,9 @@
                 <p class="country-name-en">${c.name_en}</p>
                 <p class="country-capital">پایتخت: ${c.capital_fa || "نامشخص"}</p>
                 <div class="card-badges">
-                  <span class="tactical-badge badge-${c.faction}">جناح: ${fac.fa || 'بدون جناح'}</span>
-                  <span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="نشان نوع حکومت"> نوع حکومت: ${getRegimeCategory(c).label}</span>
-                  ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">مستعمره / قلمرو وابسته: ' + (c.colony_label || c.colony_of_fa || 'تحت ادارهٔ کشور دیگر') + '</span>' : ''}
+                  <div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}">${fac.fa || 'بدون جناح'}</span></div>
+                  <div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="">${getRegimeCategory(c).label}</span></div>
+                  ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">مستعمره است</span>' : ''}
                   ${c.puppet_label ? '<span class="tactical-badge badge-puppet">' + c.puppet_label + '</span>' : ''}
                   ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
                 </div>
@@ -3054,7 +3054,7 @@
 
             <div class="leader-row">
               <div class="leader-photo">
-                <img src="${c.leader_url || FALLBACK_LEADER}" alt="${c.leader_fa}" loading="lazy" onerror="this.src='${FALLBACK_LEADER}'">
+                <img src="${c.leader_url || c.leader_img || FALLBACK_LEADER}" alt="${c.leader_fa || c.leader_en || 'رهبر تاریخی'}" loading="lazy" onerror="handleLeaderImageError(this, '${c.flag_url || FALLBACK_FLAG}')">
               </div>
               <div class="leader-meta">
                 <p class="leader-title">رهبر تاریخی (۱ ژانویهٔ ۱۹۳۴):</p>
@@ -3194,17 +3194,17 @@
 
       const body = document.getElementById('modal-content-body');
       body.innerHTML = `
-        <div style="display: flex; gap: 14px; align-items: center; background: #111c30; padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
+        <div style="display: flex; gap: 14px; align-items: center; background: #111c30; padding: 12px; border-radius: 10px; border: 1px solid var(--border); flex-wrap: wrap; min-width: 0;">
           <div style="width: 80px; height: 54px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;">
             <img src="${c.flag_url || FALLBACK_FLAG}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='${FALLBACK_FLAG}'">
           </div>
           <div>
             <h4 style="margin: 0; font-size: 17px; color: #fff;">${c.name_fa}</h4>
             <div style="font-size: 12px; color: var(--text-muted);">${c.name_en} | پایتخت: ${c.capital_fa || ''}</div>
-            <div style="display: flex; gap: 6px; margin-top: 6px;">
+            <div class="identity-tags">
               <span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url}" class="badge-icon-img" alt="نشان جناح"> جناح: ${fac.fa || 'بدون جناح'}</span>
-              <span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="نشان نوع حکومت"> نوع حکومت: ${getRegimeCategory(c).label}</span>
-              ${c.colony_label ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="قلمرو وابسته"> ' + c.colony_label + '</span>' : ''}
+              <div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="">${getRegimeCategory(c).label}</span></div>
+              ${c.colony_label ? '<span class="tactical-badge badge-colony">مستعمره است</span>' : ''}
               ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
               ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
             </div>
@@ -3213,7 +3213,7 @@
 
         <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0; background: #0f1828; padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
           <div style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold); flex-shrink: 0;">
-            <img src="${c.leader_url || FALLBACK_LEADER}" style="width: 100%; height: 100%; object-fit: cover; object-position: center 22%;" onerror="this.src='${FALLBACK_LEADER}'">
+            <img src="${c.leader_url || c.leader_img || FALLBACK_LEADER}" style="width: 100%; height: 100%; object-fit: cover; object-position: center 22%;" alt="${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this, '${c.flag_url || FALLBACK_FLAG}')">
           </div>
           <div>
             <div style="font-size: 11px; color: var(--text-muted);">رهبر تاریخی (۱ ژانویهٔ ۱۹۳۴):</div>
