@@ -23,6 +23,8 @@ load_dotenv()
 
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
+# Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261016a" if URL else ""
 ADMIN_IDS = [int(x.strip()) for x in os.environ.get("ADMINS", "").split(",") if x.strip().isdigit()]
 ANNOUNCE_CHANNEL = os.environ.get("ANNOUNCE_CHANNEL", "").strip()
 PORT = int(os.environ.get("PORT", 8080))
@@ -367,7 +369,7 @@ if dp:
             )
             return
         kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="ورود به کارزار جهانی دوم (Mini App)", web_app=WebAppInfo(url=URL))]
+            [InlineKeyboardButton(text="ورود به کارزار جهانی دوم (Mini App)", web_app=WebAppInfo(url=WEBAPP_LINK))]
         ]) if URL else None
         await msg.answer(
             "⚔️ <b>به کارزار جهانی دوم ۱۹۳۴ خوش آمدید!</b>\n\nسناریو از ۱ ژانویهٔ ۱۹۳۴ آغاز می‌شود. رهبران و ساختار حکومت‌ها بر اساس همین تاریخ ثبت شده‌اند.\n\nمرحلهٔ سیزن توسط ادمین تعیین می‌شود: wait، pick یا live.",
@@ -382,7 +384,7 @@ if dp:
             return
         await call.answer("عضویت تأیید شد.")
         kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="ورود به کارزار جهانی دوم (Mini App)", web_app=WebAppInfo(url=URL))]
+            [InlineKeyboardButton(text="ورود به کارزار جهانی دوم (Mini App)", web_app=WebAppInfo(url=WEBAPP_LINK))]
         ]) if URL else None
         if call.message:
             await call.message.answer("✅ عضویت تأیید شد. اکنون می‌توانید وارد بازی شوید.", reply_markup=kb)
