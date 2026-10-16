@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <title>کارزار جهانی دوم ۱۹۳۰ | Burnt Kingdoms WW2</title>
+  <title>کارزار جهانی دوم ۱۹۳۴ | Burnt Kingdoms WW2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -469,6 +469,9 @@
     .badge-democracy { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #7dd3fc; }
     .badge-monarchy { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde68a; }
     .badge-colony { background: rgba(34, 197, 94, 0.14); border: 1px solid rgba(34, 197, 94, 0.42); color: #86efac; }
+    .badge-regime { background: rgba(148,163,184,.12); border: 1px solid rgba(148,163,184,.35); color: #e2e8f0; }
+    .badge-puppet { background: rgba(249,115,22,.13); border: 1px solid rgba(249,115,22,.4); color: #fdba74; }
+    .badge-status { background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.35); color: #7dd3fc; }
 
     .leader-row {
       display: flex;
@@ -846,7 +849,7 @@
     <header class="tactical-header">
       <div class="header-top">
         <div class="brand-title">
-          <span class="brand-badge">WW2 1930</span>
+          <span class="brand-badge">WW2 1934</span>
           <div class="brand-text">
             <h1><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="m13 19 6 2 2-6-2-2-6 2z"/><path d="m2 22 3-3"/><path d="m19 5 3-3"/><path d="m5 2 4 4"/><path d="m2 5 4 4"/></svg> کارزار جهانی دوم</h1>
             <p>سامانه استراتژیک انتخاب کشور و اتاق فرماندهی جنگ</p>
@@ -890,7 +893,7 @@
           <strong id="stat-comintern-count">0</strong>
         </div>
         <div class="stat-pill neutral">
-          <span class="pill-label"><img src="static/badges/neutral.svg" class="badge-icon-img" alt="غیرمتعهد">  غیرمتعهد</span>
+          <span class="pill-label"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح">  بدون جناح</span>
           <strong id="stat-neutral-count">0</strong>
         </div>
       </div>
@@ -926,7 +929,8 @@
     <div id="section-selection">
       
       <!-- Filter & Search Controls -->
-      <div class="filter-panel">
+      <div id="season-status-banner" style="display:none; margin:12px 0; padding:16px; border-radius:12px; border:1px solid var(--gold); background:rgba(245,158,11,.10); color:#fde68a; line-height:1.7;"></div>
+      <div class="filter-panel" id="country-filter-panel">
         <div class="search-box-wrap">
           <input type="text" class="search-input" id="search-input" placeholder="جستجوی کشور، رهبر تاریخی، پایتخت یا ائتلاف..." oninput="handleSearch(this.value)">
           <span class="search-icon-wrap"><svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg></span>
@@ -937,11 +941,11 @@
           <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> متحدین محور</div>
           <div class="chip" onclick="setFilter('allies', this)"><img src="static/badges/allies.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</div>
           <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن">  کمینترن</div>
-          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/neutral.svg" class="badge-icon-img" alt="غیرمتعهد">  غیرمتعهد</div>
+          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح">  بدون جناح</div>
           <div class="chip" onclick="setFilter('fascism', this)"><img src="static/badges/fascism.svg" class="badge-icon-img" alt="فاشیسم"> فاشیست</div>
           <div class="chip" onclick="setFilter('communism', this)"><img src="static/badges/communism.svg" class="badge-icon-img" alt="کمونیسم"> کمونیست</div>
           <div class="chip" onclick="setFilter('democracy', this)"><img src="static/badges/democracy.svg" class="badge-icon-img" alt="دموکراسی"> دموکراتیک</div>
-          <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی">  پادشاهی / مستقل</div>
+          <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی">  پادشاهی</div>
           <div class="chip" onclick="setFilter('free_only', this)"><svg class="ui-icon" viewBox="0 0 24 24" width="10" height="10" fill="#10b981"><circle cx="12" cy="12" r="8"/></svg> فقط کشورهای آزاد</div>
         </div>
       </div>
@@ -957,7 +961,7 @@
       <div id="map-view-container" style="display: none;">
         <div id="map"></div>
         <div class="map-legend">
-          <div style="font-weight: 700; color: var(--gold); margin-bottom: 4px;">ائتلاف‌های سال ۱۹۳۰</div>
+          <div style="font-weight: 700; color: var(--gold); margin-bottom: 4px;">ائتلاف‌های سال ۱۹۳۴</div>
           <div class="legend-item">
             <div class="legend-color" style="background: #ef4444;"></div>
             <span>متحدین محور (Axis)</span>
@@ -972,7 +976,7 @@
           </div>
           <div class="legend-item">
             <div class="legend-color" style="background: #64748b;"></div>
-            <span>کشورهای غیرمتعهد (Neutral)</span>
+            <span>کشورهای بدون جناح</span>
           </div>
         </div>
       </div>
@@ -995,12 +999,12 @@
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 8px; margin: 6px 0;">
-        <a href="https://t.me/Burnt_kingdoms" target="_blank" class="join-channel-btn">
+        <a href="https://t.me/burnt_kingdoms" target="_blank" class="join-channel-btn">
           <span style="display: flex; align-items: center; gap: 8px;">
             <span style="color: var(--cyan);"><svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.943z"/></svg></span>
             کانال اصلی Burnt Kingdoms
           </span>
-          <span style="color: var(--gold); font-size: 11px;">@Burnt_kingdoms</span>
+          <span style="color: var(--gold); font-size: 11px;">@burnt_kingdoms</span>
         </a>
         <a href="https://t.me/bk_chatt" target="_blank" class="join-channel-btn">
           <span style="display: flex; align-items: center; gap: 8px;">
@@ -1060,11 +1064,15 @@
     "ideology": "fascism",
     "leader": "آدولف هیتلر",
     "leader_fa": "آدولف هیتلر",
-    "leader_title": "پیشوا و صدراعظم",
+    "leader_title": "صدراعظم و رهبر آلمان",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Hitler_portrait_crop.jpg/250px-Hitler_portrait_crop.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Hitler_portrait_crop.jpg/250px-Hitler_portrait_crop.jpg",
     "flag_url": "static/flags/DE.svg",
-    "desc": "کشور آلمان (رایش سوم) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده آدولف هیتلر بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور آدولف هیتلر (Adolf Hitler) بود. نوع حکومت: دیکتاتوری تک‌حزبی نازی. جناح سناریویی: محور.",
+    "leader_en": "Adolf Hitler",
+    "regime_type": "fascist_dictatorship",
+    "regime_fa": "دیکتاتوری تک‌حزبی نازی",
+    "scenario_date": "1934-01-01"
   },
   "IT": {
     "code": "IT",
@@ -1075,11 +1083,15 @@
     "ideology": "fascism",
     "leader": "بنیتو موسولینی",
     "leader_fa": "بنیتو موسولینی",
-    "leader_title": "دوچه فاشیسم",
+    "leader_title": "نخست‌وزیر و رهبر فاشیست",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Mussolini_mezzobusto.jpg/250px-Mussolini_mezzobusto.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Mussolini_mezzobusto.jpg/250px-Mussolini_mezzobusto.jpg",
     "flag_url": "static/flags/IT.svg",
-    "desc": "کشور پادشاهی ایتالیا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده بنیتو موسولینی بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور بنیتو موسولینی (Benito Mussolini) بود. نوع حکومت: پادشاهی با حکومت دیکتاتوری فاشیستی. جناح سناریویی: محور.",
+    "leader_en": "Benito Mussolini",
+    "regime_type": "fascist_dictatorship",
+    "regime_fa": "پادشاهی با حکومت دیکتاتوری فاشیستی",
+    "scenario_date": "1934-01-01"
   },
   "JP": {
     "code": "JP",
@@ -1094,7 +1106,11 @@
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Hirohito_in_dress_uniform_%28cropped%29.jpg/250px-Hirohito_in_dress_uniform_%28cropped%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Hirohito_in_dress_uniform_%28cropped%29.jpg/250px-Hirohito_in_dress_uniform_%28cropped%29.jpg",
     "flag_url": "static/flags/JP.svg",
-    "desc": "کشور امپراتوری ژاپن در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده امپراتور هیروهیتو بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور امپراتور هیروهیتو (Emperor Hirohito) بود. نوع حکومت: امپراتوری با نفوذ شدید نظامیان. جناح سناریویی: محور.",
+    "leader_en": "Emperor Hirohito",
+    "regime_type": "imperial_monarchy",
+    "regime_fa": "امپراتوری با نفوذ شدید نظامیان",
+    "scenario_date": "1934-01-01"
   },
   "HU": {
     "code": "HU",
@@ -1105,11 +1121,15 @@
     "ideology": "fascism",
     "leader": "میکلوش هورتی",
     "leader_fa": "میکلوش هورتی",
-    "leader_title": "نایب‌السلطنه",
+    "leader_title": "نایب‌السلطنهٔ مجارستان",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/TF_62_2304_Nr001.jpg/250px-TF_62_2304_Nr001.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/TF_62_2304_Nr001.jpg/250px-TF_62_2304_Nr001.jpg",
     "flag_url": "https://flagcdn.com/w320/hu.png",
-    "desc": "کشور پادشاهی مجارستان در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده میکلوش هورتی بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور میکلوش هورتی (Miklós Horthy) بود. نوع حکومت: پادشاهی بدون پادشاه؛ نیابت سلطنت هورتی. جناح سناریویی: محور.",
+    "leader_en": "Miklós Horthy",
+    "regime_type": "regency_monarchy",
+    "regime_fa": "پادشاهی بدون پادشاه؛ نیابت سلطنت هورتی",
+    "scenario_date": "1934-01-01"
   },
   "RO": {
     "code": "RO",
@@ -1118,13 +1138,17 @@
     "capital_fa": "بخارست",
     "faction": "axis",
     "ideology": "fascism",
-    "leader": "یون آنتونسکو",
-    "leader_fa": "یون آنتونسکو",
-    "leader_title": "کوندوکاتور رومانی",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ion_Antonescu_1941.jpg/250px-Ion_Antonescu_1941.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ion_Antonescu_1941.jpg/250px-Ion_Antonescu_1941.jpg",
+    "leader": "شاه کارول دوم",
+    "leader_fa": "شاه کارول دوم",
+    "leader_title": "پادشاه رومانی",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Carol_II_of_Romania.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Carol_II_of_Romania.jpg",
     "flag_url": "https://flagcdn.com/w320/ro.png",
-    "desc": "کشور پادشاهی رومانی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده یون آنتونسکو بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور شاه کارول دوم (King Carol II) بود. نوع حکومت: پادشاهی مشروطه. جناح سناریویی: محور.",
+    "leader_en": "King Carol II",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطه",
+    "scenario_date": "1934-01-01"
   },
   "BG": {
     "code": "BG",
@@ -1132,14 +1156,18 @@
     "name_en": "Bulgaria",
     "capital_fa": "صوفیه",
     "faction": "axis",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "تزار بوریس سوم",
     "leader_fa": "تزار بوریس سوم",
     "leader_title": "تزار بلغارستان",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/BASA-3K-7-342-28-Boris_III_of_Bulgaria.jpeg/250px-BASA-3K-7-342-28-Boris_III_of_Bulgaria.jpeg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/BASA-3K-7-342-28-Boris_III_of_Bulgaria.jpeg/250px-BASA-3K-7-342-28-Boris_III_of_Bulgaria.jpeg",
     "flag_url": "https://flagcdn.com/w320/bg.png",
-    "desc": "کشور پادشاهی بلغارستان در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده تزار بوریس سوم بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور تزار بوریس سوم (Tsar Boris III) بود. نوع حکومت: پادشاهی مشروطه. جناح سناریویی: محور.",
+    "leader_en": "Tsar Boris III",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطه",
+    "scenario_date": "1934-01-01"
   },
   "FI": {
     "code": "FI",
@@ -1148,13 +1176,17 @@
     "capital_fa": "هلسینکی",
     "faction": "axis",
     "ideology": "democracy",
-    "leader": "کارل گوستاف مانرهایم",
-    "leader_fa": "کارل گوستاف مانرهایم",
-    "leader_title": "مارشال فنلاند",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Mannerheim1940.jpg/250px-Mannerheim1940.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Mannerheim1940.jpg/250px-Mannerheim1940.jpg",
+    "leader": "پِهر اِوینْد سوینهوفود",
+    "leader_fa": "پِهر اِوینْد سوینهوفود",
+    "leader_title": "رئیس‌جمهور فنلاند",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Pehr_Evind_Svinhufvud.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Pehr_Evind_Svinhufvud.jpg",
     "flag_url": "https://flagcdn.com/w320/fi.png",
-    "desc": "کشور جمهوری فنلاند در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده کارل گوستاف مانرهایم بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور پِهر اِوینْد سوینهوفود (Pehr Evind Svinhufvud) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: محور.",
+    "leader_en": "Pehr Evind Svinhufvud",
+    "regime_type": "parliamentary_republic",
+    "regime_fa": "جمهوری پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "TH": {
     "code": "TH",
@@ -1163,13 +1195,17 @@
     "capital_fa": "بانکوک",
     "faction": "axis",
     "ideology": "fascism",
-    "leader": "پلاک فیبونسونگکرام",
-    "leader_fa": "پلاک فیبونسونگکرام",
-    "leader_title": "نخست‌وزیر",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Plaek_Phibunsongkhram_%28cropped%29.jpg/250px-Plaek_Phibunsongkhram_%28cropped%29.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Plaek_Phibunsongkhram_%28cropped%29.jpg/250px-Plaek_Phibunsongkhram_%28cropped%29.jpg",
+    "leader": "فرايا فاهون‌فون‌فایوه‌سنا",
+    "leader_fa": "فرايا فاهون‌فون‌فایوه‌سنا",
+    "leader_title": "نخست‌وزیر سیام",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Phraya_Phahon_Phonphayuhasena.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Phraya_Phahon_Phonphayuhasena.jpg",
     "flag_url": "https://flagcdn.com/w320/th.png",
-    "desc": "کشور پادشاهی تایلند (سیام) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده پلاک فیبونسونگکرام بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور فرايا فاهون‌فون‌فایوه‌سنا (Phraya Phahon Phonphayuhasena) بود. نوع حکومت: پادشاهی مشروطه. جناح سناریویی: محور.",
+    "leader_en": "Phraya Phahon Phonphayuhasena",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطه",
+    "scenario_date": "1934-01-01"
   },
   "GB": {
     "code": "GB",
@@ -1178,13 +1214,17 @@
     "capital_fa": "لندن",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "وینستون چرچیل",
-    "leader_fa": "وینستون چرچیل",
-    "leader_title": "نخست‌وزیر",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Sir_Winston_Churchill_-_19086236948_%28restored%29.jpg/250px-Sir_Winston_Churchill_-_19086236948_%28restored%29.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Sir_Winston_Churchill_-_19086236948_%28restored%29.jpg/250px-Sir_Winston_Churchill_-_19086236948_%28restored%29.jpg",
+    "leader": "رامسی مک‌دونالد",
+    "leader_fa": "رامسی مک‌دونالد",
+    "leader_title": "نخست‌وزیر بریتانیا",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Ramsay_MacDonald.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Ramsay_MacDonald.jpg",
     "flag_url": "static/flags/GB.svg",
-    "desc": "کشور بریتانیای کبیر در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده وینستون چرچیل بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور رامسی مک‌دونالد (Ramsay MacDonald) بود. نوع حکومت: پادشاهی مشروطهٔ پارلمانی. جناح سناریویی: متفقین.",
+    "leader_en": "Ramsay MacDonald",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطهٔ پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "US": {
     "code": "US",
@@ -1195,11 +1235,15 @@
     "ideology": "democracy",
     "leader": "فرانکلین دی. روزولت",
     "leader_fa": "فرانکلین دی. روزولت",
-    "leader_title": "رئیس‌جمهور",
+    "leader_title": "رئیس‌جمهور ایالات متحده",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/FDR-1944-Campaign-Portrait_%283x4_retouched%2C_cropped%29.jpg/250px-FDR-1944-Campaign-Portrait_%283x4_retouched%2C_cropped%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/FDR-1944-Campaign-Portrait_%283x4_retouched%2C_cropped%29.jpg/250px-FDR-1944-Campaign-Portrait_%283x4_retouched%2C_cropped%29.jpg",
     "flag_url": "static/flags/US.svg",
-    "desc": "کشور ایالات متحده آمریکا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده فرانکلین دی. روزولت بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور فرانکلین دی. روزولت (Franklin D. Roosevelt) بود. نوع حکومت: جمهوری فدرال ریاستی. جناح سناریویی: متفقین.",
+    "leader_en": "Franklin D. Roosevelt",
+    "regime_type": "presidential_republic",
+    "regime_fa": "جمهوری فدرال ریاستی",
+    "scenario_date": "1934-01-01"
   },
   "FR": {
     "code": "FR",
@@ -1208,13 +1252,17 @@
     "capital_fa": "پاریس",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "شارل دو گل",
-    "leader_fa": "شارل دو گل",
-    "leader_title": "رهبر فرانسه آزاد",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/De_Gaulle-OWI_%28cropped%29_%28c%29%282%29.jpg/250px-De_Gaulle-OWI_%28cropped%29_%28c%29%282%29.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/De_Gaulle-OWI_%28cropped%29_%28c%29%282%29.jpg/250px-De_Gaulle-OWI_%28cropped%29_%28c%29%282%29.jpg",
+    "leader": "ادوارد دالادیه",
+    "leader_fa": "ادوارد دالادیه",
+    "leader_title": "نخست‌وزیر فرانسه",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/%C3%89douard_Daladier.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/%C3%89douard_Daladier.jpg",
     "flag_url": "static/flags/FR.svg",
-    "desc": "کشور جمهوری فرانسه در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده شارل دو گل بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور ادوارد دالادیه (Édouard Daladier) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: متفقین.",
+    "leader_en": "Édouard Daladier",
+    "regime_type": "parliamentary_republic",
+    "regime_fa": "جمهوری پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "PL": {
     "code": "PL",
@@ -1223,13 +1271,17 @@
     "capital_fa": "ورشو",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "ولادیسلاو راچکیویچ",
-    "leader_fa": "ولادیسلاو راچکیویچ",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Ignacy_Mo%C5%9Bcicki_%28-1934%29.jpg/250px-Ignacy_Mo%C5%9Bcicki_%28-1934%29.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Ignacy_Mo%C5%9Bcicki_%28-1934%29.jpg/250px-Ignacy_Mo%C5%9Bcicki_%28-1934%29.jpg",
+    "leader": "یوزف پیلسودسکی",
+    "leader_fa": "یوزف پیلسودسکی",
+    "leader_title": "رهبر دوفاکتوی لهستان",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/J%C3%B3zef_Pi%C5%82sudski.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/J%C3%B3zef_Pi%C5%82sudski.jpg",
     "flag_url": "https://flagcdn.com/w320/pl.png",
-    "desc": "کشور جمهوری لهستان در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ولادیسلاو راچکیویچ بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور یوزف پیلسودسکی (Józef Piłsudski) بود. نوع حکومت: جمهوری اقتدارگرا. جناح سناریویی: متفقین.",
+    "leader_en": "Józef Piłsudski",
+    "regime_type": "authoritarian_republic",
+    "regime_fa": "جمهوری اقتدارگرا",
+    "scenario_date": "1934-01-01"
   },
   "CN": {
     "code": "CN",
@@ -1237,14 +1289,18 @@
     "name_en": "Republic of China",
     "capital_fa": "نانجینگ",
     "faction": "allies",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "چیانگ کای‌شک",
     "leader_fa": "چیانگ کای‌شک",
-    "leader_title": "ژنرالیسیمو",
+    "leader_title": "رهبر دولت ملی‌گرای چین",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/%E8%94%A3%E4%B8%AD%E6%AD%A3%E7%B8%BD%E7%B5%B1%E7%8E%89%E7%85%A7.png/250px-%E8%94%A3%E4%B8%AD%E6%AD%A3%E7%B8%BD%E7%B5%B1%E7%8E%89%E7%85%A7.png",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/%E8%94%A3%E4%B8%AD%E6%AD%A3%E7%B8%BD%E7%B5%B1%E7%8E%89%E7%85%A7.png/250px-%E8%94%A3%E4%B8%AD%E6%AD%A3%E7%B8%BD%E7%B5%B1%E7%8E%89%E7%85%A7.png",
     "flag_url": "static/flags/CN.svg",
-    "desc": "کشور جمهوری چین (ملی‌گرا) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده چیانگ کای‌شک بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور چیانگ کای‌شک (Chiang Kai-shek) بود. نوع حکومت: جمهوری ملی‌گرا با حکومت اقتدارگرا. جناح سناریویی: متفقین.",
+    "leader_en": "Chiang Kai-shek",
+    "regime_type": "authoritarian_republic",
+    "regime_fa": "جمهوری ملی‌گرا با حکومت اقتدارگرا",
+    "scenario_date": "1934-01-01"
   },
   "CA": {
     "code": "CA",
@@ -1253,13 +1309,19 @@
     "capital_fa": "اتاوا",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "مکنزی کینگ",
-    "leader_fa": "مکنزی کینگ",
-    "leader_title": "نخست‌وزیر",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/William_Lyon_Mackenzie_King_1942_%28cropped%29.jpg/250px-William_Lyon_Mackenzie_King_1942_%28cropped%29.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/William_Lyon_Mackenzie_King_1942_%28cropped%29.jpg/250px-William_Lyon_Mackenzie_King_1942_%28cropped%29.jpg",
+    "leader": "آر. بی. بنت",
+    "leader_fa": "آر. بی. بنت",
+    "leader_title": "نخست‌وزیر کانادا",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/R._B._Bennett.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/R._B._Bennett.jpg",
     "flag_url": "static/flags/CA.svg",
-    "desc": "کشور دومینیون کانادا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده مکنزی کینگ بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور آر. بی. بنت (R. B. Bennett) بود. نوع حکومت: دومینیون خودگردان با پادشاهی مشروطه. جناح سناریویی: متفقین. وضعیت وابستگی: دومینیون خودگردان در امپراتوری بریتانیا (کانادا)؛ مستعمرهٔ مستقیم نبود.",
+    "leader_en": "R. B. Bennett",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "دومینیون خودگردان با پادشاهی مشروطه",
+    "scenario_date": "1934-01-01",
+    "relationship_fa": "دومینیون خودگردان در امپراتوری بریتانیا (کانادا)؛ مستعمرهٔ مستقیم نبود",
+    "relationship_label": "دومینیون خودگردان"
   },
   "AU": {
     "code": "AU",
@@ -1268,13 +1330,19 @@
     "capital_fa": "کانبرا",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "جان کورتین",
-    "leader_fa": "جان کورتین",
-    "leader_title": "نخست‌وزیر",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Portrait_Menzies_1950s.jpg/250px-Portrait_Menzies_1950s.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Portrait_Menzies_1950s.jpg/250px-Portrait_Menzies_1950s.jpg",
+    "leader": "جوزف لاینز",
+    "leader_fa": "جوزف لاینز",
+    "leader_title": "نخست‌وزیر استرالیا",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Joseph_Lyons.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Joseph_Lyons.jpg",
     "flag_url": "static/flags/AU.svg",
-    "desc": "کشور استرالیا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده جان کورتین بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور جوزف لاینز (Joseph Lyons) بود. نوع حکومت: دومینیون خودگردان با پادشاهی مشروطه. جناح سناریویی: متفقین. وضعیت وابستگی: دومینیون خودگردان در امپراتوری بریتانیا (استرالیا)؛ مستعمرهٔ مستقیم نبود.",
+    "leader_en": "Joseph Lyons",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "دومینیون خودگردان با پادشاهی مشروطه",
+    "scenario_date": "1934-01-01",
+    "relationship_fa": "دومینیون خودگردان در امپراتوری بریتانیا (استرالیا)؛ مستعمرهٔ مستقیم نبود",
+    "relationship_label": "دومینیون خودگردان"
   },
   "NZ": {
     "code": "NZ",
@@ -1283,31 +1351,42 @@
     "capital_fa": "ولینگتون",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "پیتر فریزر",
-    "leader_fa": "پیتر فریزر",
-    "leader_title": "نخست‌وزیر",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Peter_Fraser.jpg/250px-Peter_Fraser.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Peter_Fraser.jpg/250px-Peter_Fraser.jpg",
+    "leader": "جورج فوربس",
+    "leader_fa": "جورج فوربس",
+    "leader_title": "نخست‌وزیر نیوزیلند",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/George_Forbes_(New_Zealand_politician).jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/George_Forbes_(New_Zealand_politician).jpg",
     "flag_url": "static/flags/NZ.svg",
-    "desc": "کشور نیوزیلند در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده پیتر فریزر بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور جورج فوربس (George Forbes) بود. نوع حکومت: دومینیون خودگردان با پادشاهی مشروطه. جناح سناریویی: متفقین. وضعیت وابستگی: دومینیون خودگردان در امپراتوری بریتانیا (نیوزیلند)؛ مستعمرهٔ مستقیم نبود.",
+    "leader_en": "George Forbes",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "دومینیون خودگردان با پادشاهی مشروطه",
+    "scenario_date": "1934-01-01",
+    "relationship_fa": "دومینیون خودگردان در امپراتوری بریتانیا (نیوزیلند)؛ مستعمرهٔ مستقیم نبود",
+    "relationship_label": "دومینیون خودگردان"
   },
   "IN": {
     "code": "IN",
     "name_fa": "راج بریتانیا (هند)",
     "name_en": "British Raj",
     "capital_fa": "دهلی نو",
+    "faction": "allies",
+    "ideology": "",
+    "leader": "لرد ویلینگدون",
+    "leader_fa": "لرد ویلینگدون",
+    "leader_title": "نایب‌السلطنهٔ هند بریتانیا",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Freeman_Freeman-Thomas%2C_1st_Marquess_of_Willingdon.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Freeman_Freeman-Thomas%2C_1st_Marquess_of_Willingdon.jpg",
+    "flag_url": "static/flags/IN.svg",
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور لرد ویلینگدون (Lord Willingdon) بود. نوع حکومت: ادارهٔ استعماری بریتانیا. جناح سناریویی: متفقین. وضعیت: راج بریتانیا؛ تحت حاکمیت استعماری بریتانیا. نشان قلمرو وابسته: مستعمرهٔ بریتانیا.",
+    "leader_en": "Lord Willingdon",
+    "regime_type": "colonial_administration",
+    "regime_fa": "ادارهٔ استعماری بریتانیا",
+    "scenario_date": "1934-01-01",
     "colony_of": "GB",
     "colony_of_fa": "بریتانیا",
     "colony_label": "مستعمرهٔ بریتانیا",
-    "faction": "allies",
-    "ideology": "nonaligned",
-    "leader": "لرد لینلیثگو",
-    "leader_fa": "لرد لینلیثگو",
-    "leader_title": "فرماندار کل هند",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Victor_Hope%2C_2nd_Marquess_of_Linlithgow.jpg/250px-Victor_Hope%2C_2nd_Marquess_of_Linlithgow.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Victor_Hope%2C_2nd_Marquess_of_Linlithgow.jpg/250px-Victor_Hope%2C_2nd_Marquess_of_Linlithgow.jpg",
-    "flag_url": "static/flags/IN.svg",
-    "desc": "کشور راج بریتانیا (هند) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده لرد لینلیثگو بود. وضعیت استعماری: راج بریتانیا، تحت حاکمیت بریتانیا."
+    "status_fa": "راج بریتانیا؛ تحت حاکمیت استعماری بریتانیا"
   },
   "ZA": {
     "code": "ZA",
@@ -1316,13 +1395,19 @@
     "capital_fa": "پرتوریا",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "یان اسموتس",
-    "leader_fa": "یان اسموتس",
-    "leader_title": "نخست‌وزیر",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Genl_JC_Smuts.jpg/250px-Genl_JC_Smuts.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Genl_JC_Smuts.jpg/250px-Genl_JC_Smuts.jpg",
+    "leader": "جِی. بی. ام. هرتزوگ",
+    "leader_fa": "جِی. بی. ام. هرتزوگ",
+    "leader_title": "نخست‌وزیر آفریقای جنوبی",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/J._B._M._Hertzog.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/J._B._M._Hertzog.jpg",
     "flag_url": "static/flags/ZA.svg",
-    "desc": "کشور آفریقای جنوبی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده یان اسموتس بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور جِی. بی. ام. هرتزوگ (J. B. M. Hertzog) بود. نوع حکومت: دومینیون خودگردان با پادشاهی مشروطه در امپراتوری بریتانیا. جناح سناریویی: متفقین. وضعیت وابستگی: دومینیون خودگردان در امپراتوری بریتانیا (آفریقای جنوبی)؛ مستعمرهٔ مستقیم نبود.",
+    "leader_en": "J. B. M. Hertzog",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "دومینیون خودگردان با پادشاهی مشروطه",
+    "scenario_date": "1934-01-01",
+    "relationship_fa": "دومینیون خودگردان در امپراتوری بریتانیا (آفریقای جنوبی)؛ مستعمرهٔ مستقیم نبود",
+    "relationship_label": "دومینیون خودگردان"
   },
   "NL": {
     "code": "NL",
@@ -1333,11 +1418,15 @@
     "ideology": "democracy",
     "leader": "ملکه ویلهلمینا",
     "leader_fa": "ملکه ویلهلمینا",
-    "leader_title": "ملکه هلند",
+    "leader_title": "ملکهٔ هلند",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Wilhelmina_of_the_Netherlands_in_1936.jpg/250px-Wilhelmina_of_the_Netherlands_in_1936.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Wilhelmina_of_the_Netherlands_in_1936.jpg/250px-Wilhelmina_of_the_Netherlands_in_1936.jpg",
     "flag_url": "https://flagcdn.com/w320/nl.png",
-    "desc": "کشور پادشاهی هلند در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ملکه ویلهلمینا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور ملکه ویلهلمینا (Queen Wilhelmina) بود. نوع حکومت: پادشاهی مشروطه. جناح سناریویی: متفقین.",
+    "leader_en": "Queen Wilhelmina",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطه",
+    "scenario_date": "1934-01-01"
   },
   "BE": {
     "code": "BE",
@@ -1346,13 +1435,17 @@
     "capital_fa": "بروکسل",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "لئوپولد سوم",
-    "leader_fa": "لئوپولد سوم",
+    "leader": "شاه آلبرت اول",
+    "leader_fa": "شاه آلبرت اول",
     "leader_title": "پادشاه بلژیک",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Leopold_III_%281934%29.jpg/250px-Leopold_III_%281934%29.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Leopold_III_%281934%29.jpg/250px-Leopold_III_%281934%29.jpg",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Albert_I_of_Belgium.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Albert_I_of_Belgium.jpg",
     "flag_url": "https://flagcdn.com/w320/be.png",
-    "desc": "کشور پادشاهی بلژیک در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده لئوپولد سوم بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور شاه آلبرت اول (King Albert I) بود. نوع حکومت: پادشاهی مشروطه. جناح سناریویی: متفقین.",
+    "leader_en": "King Albert I",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطه",
+    "scenario_date": "1934-01-01"
   },
   "NO": {
     "code": "NO",
@@ -1361,13 +1454,17 @@
     "capital_fa": "اسلو",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "هاکون هفتم",
-    "leader_fa": "هاکون هفتم",
+    "leader": "شاه هاکون هفتم",
+    "leader_fa": "شاه هاکون هفتم",
     "leader_title": "پادشاه نروژ",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Portrett_av_Kong_Haakon_VII_-_King_Haakon_VII%2C_1946_%286817780248%29_%28cropped%29.jpg/250px-Portrett_av_Kong_Haakon_VII_-_King_Haakon_VII%2C_1946_%286817780248%29_%28cropped%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Portrett_av_Kong_Haakon_VII_-_King_Haakon_VII%2C_1946_%286817780248%29_%28cropped%29.jpg/250px-Portrett_av_Kong_Haakon_VII_-_King_Haakon_VII%2C_1946_%286817780248%29_%28cropped%29.jpg",
     "flag_url": "https://flagcdn.com/w320/no.png",
-    "desc": "کشور پادشاهی نروژ در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده هاکون هفتم بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور شاه هاکون هفتم (King Haakon VII) بود. نوع حکومت: پادشاهی مشروطه. جناح سناریویی: متفقین.",
+    "leader_en": "King Haakon VII",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطه",
+    "scenario_date": "1934-01-01"
   },
   "DK": {
     "code": "DK",
@@ -1376,13 +1473,17 @@
     "capital_fa": "کپنهاگ",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "کریستیان دهم",
-    "leader_fa": "کریستیان دهم",
+    "leader": "شاه کریستیان دهم",
+    "leader_fa": "شاه کریستیان دهم",
     "leader_title": "پادشاه دانمارک",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Christian_X_of_Denmark_circa_1915.jpg/250px-Christian_X_of_Denmark_circa_1915.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Christian_X_of_Denmark_circa_1915.jpg/250px-Christian_X_of_Denmark_circa_1915.jpg",
     "flag_url": "https://flagcdn.com/w320/dk.png",
-    "desc": "کشور پادشاهی دانمارک در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده کریستیان دهم بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور شاه کریستیان دهم (King Christian X) بود. نوع حکومت: پادشاهی مشروطه. جناح سناریویی: متفقین.",
+    "leader_en": "King Christian X",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطه",
+    "scenario_date": "1934-01-01"
   },
   "GR": {
     "code": "GR",
@@ -1390,14 +1491,18 @@
     "name_en": "Greece",
     "capital_fa": "آتن",
     "faction": "allies",
-    "ideology": "nonaligned",
-    "leader": "یوآنیس متاکساس",
-    "leader_fa": "یوآنیس متاکساس",
-    "leader_title": "نخست‌وزیر",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Ioannis_Metaxas_1937_cropped.jpg/250px-Ioannis_Metaxas_1937_cropped.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Ioannis_Metaxas_1937_cropped.jpg/250px-Ioannis_Metaxas_1937_cropped.jpg",
+    "ideology": "",
+    "leader": "الکساندروس زایمیس",
+    "leader_fa": "الکساندروس زایمیس",
+    "leader_title": "رئیس‌جمهور یونان",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Alexandros_Zaimis.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Alexandros_Zaimis.jpg",
     "flag_url": "https://flagcdn.com/w320/gr.png",
-    "desc": "کشور پادشاهی یونان در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده یوآنیس متاکساس بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور الکساندروس زایمیس (Alexandros Zaimis) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: متفقین.",
+    "leader_en": "Alexandros Zaimis",
+    "regime_type": "parliamentary_republic",
+    "regime_fa": "جمهوری پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "YU": {
     "code": "YU",
@@ -1405,14 +1510,18 @@
     "name_en": "Yugoslavia",
     "capital_fa": "بلگراد",
     "faction": "allies",
-    "ideology": "nonaligned",
-    "leader": "پیتر دوم",
-    "leader_fa": "پیتر دوم",
-    "leader_title": "نایب‌السلطنه",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kralj_Petar_II.jpg/250px-Kralj_Petar_II.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kralj_Petar_II.jpg/250px-Kralj_Petar_II.jpg",
+    "ideology": "",
+    "leader": "شاه الکساندر اول",
+    "leader_fa": "شاه الکساندر اول",
+    "leader_title": "پادشاه یوگسلاوی",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Alexander_I_of_Yugoslavia.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Alexander_I_of_Yugoslavia.jpg",
     "flag_url": "static/flags/YU.svg",
-    "desc": "کشور پادشاهی یوگسلاوی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده پیتر دوم بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور شاه الکساندر اول (King Alexander I) بود. نوع حکومت: پادشاهی اقتدارگرا. جناح سناریویی: متفقین.",
+    "leader_en": "King Alexander I",
+    "regime_type": "royal_dictatorship",
+    "regime_fa": "پادشاهی اقتدارگرا",
+    "scenario_date": "1934-01-01"
   },
   "CZ": {
     "code": "CZ",
@@ -1421,13 +1530,17 @@
     "capital_fa": "پراگ",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "ادوارد بنش",
-    "leader_fa": "ادوارد بنش",
-    "leader_title": "رئیس حکومت",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Edvard_Bene%C5%A1.jpg/250px-Edvard_Bene%C5%A1.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Edvard_Bene%C5%A1.jpg/250px-Edvard_Bene%C5%A1.jpg",
+    "leader": "توماش گاریگ ماساریک",
+    "leader_fa": "توماش گاریگ ماساریک",
+    "leader_title": "رئیس‌جمهور چکسلواکی",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Tom%C3%A1%C5%A1_Garrigue_Masaryk.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Tom%C3%A1%C5%A1_Garrigue_Masaryk.jpg",
     "flag_url": "static/flags/CZ.svg",
-    "desc": "کشور چکسلواکی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ادوارد بنش بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور توماش گاریگ ماساریک (Tomáš Garrigue Masaryk) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: متفقین.",
+    "leader_en": "Tomáš Garrigue Masaryk",
+    "regime_type": "parliamentary_republic",
+    "regime_fa": "جمهوری پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "LU": {
     "code": "LU",
@@ -1436,13 +1549,17 @@
     "capital_fa": "لوکزامبورگ",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "گراندوشس شارلوت",
-    "leader_fa": "گراندوشس شارلوت",
-    "leader_title": "دوک بزرگ",
+    "leader": "گرانددوک شارلوت",
+    "leader_fa": "گرانددوک شارلوت",
+    "leader_title": "گرانددوک لوکزامبورگ",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Charlotte%2C_Grand_Duchess_of_Luxembourg.jpg/250px-Charlotte%2C_Grand_Duchess_of_Luxembourg.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Charlotte%2C_Grand_Duchess_of_Luxembourg.jpg/250px-Charlotte%2C_Grand_Duchess_of_Luxembourg.jpg",
     "flag_url": "https://flagcdn.com/w320/lu.png",
-    "desc": "کشور لوکزامبورگ در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده گراندوشس شارلوت بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور گرانددوک شارلوت (Grand Duchess Charlotte) بود. نوع حکومت: پادشاهی مشروطه. جناح سناریویی: متفقین.",
+    "leader_en": "Grand Duchess Charlotte",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطه",
+    "scenario_date": "1934-01-01"
   },
   "BR": {
     "code": "BR",
@@ -1450,14 +1567,18 @@
     "name_en": "Brazil",
     "capital_fa": "ریو دو ژانیرو",
     "faction": "allies",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "ژتولیو وارگاس",
     "leader_fa": "ژتولیو وارگاس",
-    "leader_title": "رئیس‌جمهور",
+    "leader_title": "رئیس دولت موقت برزیل",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Getulio_Vargas_%281930%29.jpg/250px-Getulio_Vargas_%281930%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Getulio_Vargas_%281930%29.jpg/250px-Getulio_Vargas_%281930%29.jpg",
     "flag_url": "https://flagcdn.com/w320/br.png",
-    "desc": "کشور برزیل در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ژتولیو وارگاس بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور ژتولیو وارگاس (Getúlio Vargas) بود. نوع حکومت: جمهوری موقت با دولت متمرکز. جناح سناریویی: متفقین.",
+    "leader_en": "Getúlio Vargas",
+    "regime_type": "authoritarian_republic",
+    "regime_fa": "جمهوری موقت با دولت متمرکز",
+    "scenario_date": "1934-01-01"
   },
   "MX": {
     "code": "MX",
@@ -1466,13 +1587,17 @@
     "capital_fa": "مکزیکوسیتی",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "لازارو کاردناس",
-    "leader_fa": "لازارو کاردناس",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/L%C3%A1zaro.C%C3%A1rdenas.jpg/250px-L%C3%A1zaro.C%C3%A1rdenas.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/L%C3%A1zaro.C%C3%A1rdenas.jpg/250px-L%C3%A1zaro.C%C3%A1rdenas.jpg",
+    "leader": "آبلاردو ال. رودریگس",
+    "leader_fa": "آبلاردو ال. رودریگس",
+    "leader_title": "رئیس‌جمهور مکزیک",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Abelardo_L._Rodr%C3%ADguez.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Abelardo_L._Rodr%C3%ADguez.jpg",
     "flag_url": "https://flagcdn.com/w320/mx.png",
-    "desc": "کشور مکزیک در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده لازارو کاردناس بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور آبلاردو ال. رودریگس (Abelardo L. Rodríguez) بود. نوع حکومت: جمهوری تحت سلطهٔ حزب حاکم. جناح سناریویی: متفقین.",
+    "leader_en": "Abelardo L. Rodríguez",
+    "regime_type": "authoritarian_republic",
+    "regime_fa": "جمهوری تحت سلطهٔ حزب حاکم",
+    "scenario_date": "1934-01-01"
   },
   "SU": {
     "code": "SU",
@@ -1483,11 +1608,15 @@
     "ideology": "communism",
     "leader": "ژوزف استالین",
     "leader_fa": "ژوزف استالین",
-    "leader_title": "دبیرکل حزب کمونیست",
+    "leader_title": "رهبر حزب کمونیست شوروی",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/StalinCropped1943.jpg/250px-StalinCropped1943.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/StalinCropped1943.jpg/250px-StalinCropped1943.jpg",
     "flag_url": "static/flags/SU.svg",
-    "desc": "کشور اتحاد جماهیر شوروی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ژوزف استالین بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور ژوزف استالین (Joseph Stalin) بود. نوع حکومت: دولت تک‌حزبی کمونیستی. جناح سناریویی: کمینترن.",
+    "leader_en": "Joseph Stalin",
+    "regime_type": "one_party_state",
+    "regime_fa": "دولت تک‌حزبی کمونیستی",
+    "scenario_date": "1934-01-01"
   },
   "MN": {
     "code": "MN",
@@ -1496,13 +1625,17 @@
     "capital_fa": "اولان‌باتور",
     "faction": "comintern",
     "ideology": "communism",
-    "leader": "خورلوگین چویبالسان",
-    "leader_fa": "خورلوگین چویبالسان",
-    "leader_title": "مارشال مغولستان",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Horloogiyn_Choybalsan.jpg/250px-Horloogiyn_Choybalsan.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Horloogiyn_Choybalsan.jpg/250px-Horloogiyn_Choybalsan.jpg",
+    "leader": "پلژیدین گندن",
+    "leader_fa": "پلژیدین گندن",
+    "leader_title": "نخست‌وزیر مغولستان",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Peljidiin_Genden.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Peljidiin_Genden.jpg",
     "flag_url": "https://flagcdn.com/w320/mn.png",
-    "desc": "کشور جمهوری خلق مغولستان در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده خورلوگین چویبالسان بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور پلژیدین گندن (Peljidiin Genden) بود. نوع حکومت: جمهوری خلق تک‌حزبی. جناح سناریویی: کمینترن.",
+    "leader_en": "Peljidiin Genden",
+    "regime_type": "one_party_state",
+    "regime_fa": "جمهوری خلق تک‌حزبی",
+    "scenario_date": "1934-01-01"
   },
   "IR": {
     "code": "IR",
@@ -1510,14 +1643,18 @@
     "name_en": "Iran",
     "capital_fa": "تهران",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "رضاشاه پهلوی",
     "leader_fa": "رضاشاه پهلوی",
-    "leader_title": "شاهنشاه ایران",
+    "leader_title": "شاه ایران",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Reza_shah_uniform.jpg/250px-Reza_shah_uniform.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Reza_shah_uniform.jpg/250px-Reza_shah_uniform.jpg",
     "flag_url": "static/flags/IR.svg",
-    "desc": "کشور شاهنشاهی ایران در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده رضاشاه پهلوی بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور رضاشاه پهلوی (Reza Shah Pahlavi) بود. نوع حکومت: پادشاهی متمرکز پهلوی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Reza Shah Pahlavi",
+    "regime_type": "absolute_monarchy",
+    "regime_fa": "پادشاهی متمرکز پهلوی",
+    "scenario_date": "1934-01-01"
   },
   "TR": {
     "code": "TR",
@@ -1525,14 +1662,18 @@
     "name_en": "Turkey",
     "capital_fa": "آنکارا",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "مصطفی کمال آتاتورک",
     "leader_fa": "مصطفی کمال آتاتورک",
-    "leader_title": "رئیس‌جمهور",
+    "leader_title": "رئیس‌جمهور ترکیه",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Inonu_Ismet_%28cropped%29.jpg/250px-Inonu_Ismet_%28cropped%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Inonu_Ismet_%28cropped%29.jpg/250px-Inonu_Ismet_%28cropped%29.jpg",
     "flag_url": "https://flagcdn.com/w320/tr.png",
-    "desc": "کشور جمهوری ترکیه در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده مصطفی کمال آتاتورک بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور مصطفی کمال آتاتورک (Mustafa Kemal Atatürk) بود. نوع حکومت: جمهوری تک‌حزبی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Mustafa Kemal Atatürk",
+    "regime_type": "one_party_republic",
+    "regime_fa": "جمهوری تک‌حزبی",
+    "scenario_date": "1934-01-01"
   },
   "ES": {
     "code": "ES",
@@ -1541,13 +1682,17 @@
     "capital_fa": "مادرید",
     "faction": "neutral",
     "ideology": "fascism",
-    "leader": "فرانسیسکو فرانکو",
-    "leader_fa": "فرانسیسکو فرانکو",
-    "leader_title": "کائودیلو",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Francisco_Franco_posed_portrait_photograph.jpg/250px-Francisco_Franco_posed_portrait_photograph.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Francisco_Franco_posed_portrait_photograph.jpg/250px-Francisco_Franco_posed_portrait_photograph.jpg",
+    "leader": "نیکتو آلکالا-زامورا",
+    "leader_fa": "نیکتو آلکالا-زامورا",
+    "leader_title": "رئیس‌جمهور جمهوری اسپانیا",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Niceto_Alcal%C3%A1-Zamora.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niceto_Alcal%C3%A1-Zamora.jpg",
     "flag_url": "https://flagcdn.com/w320/es.png",
-    "desc": "کشور اسپانیا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده فرانسیسکو فرانکو بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور نیکتو آلکالا-زامورا (Niceto Alcalá-Zamora) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Niceto Alcalá-Zamora",
+    "regime_type": "parliamentary_republic",
+    "regime_fa": "جمهوری پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "PT": {
     "code": "PT",
@@ -1556,13 +1701,17 @@
     "capital_fa": "لیسبون",
     "faction": "neutral",
     "ideology": "fascism",
-    "leader": "آنتونیو دی اولیویرا سالازار",
-    "leader_fa": "آنتونیو دی اولیویرا سالازار",
-    "leader_title": "نخست‌وزیر",
+    "leader": "آنتونیو سالازار",
+    "leader_fa": "آنتونیو سالازار",
+    "leader_title": "رئیس دولت پرتغال",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Ant%C3%B3nio_de_Oliveira_Salazar_portrait_%28by_Manuel_Alves_San_Payo%29_%E2%80%93_Lisboa.jpg/250px-Ant%C3%B3nio_de_Oliveira_Salazar_portrait_%28by_Manuel_Alves_San_Payo%29_%E2%80%93_Lisboa.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Ant%C3%B3nio_de_Oliveira_Salazar_portrait_%28by_Manuel_Alves_San_Payo%29_%E2%80%93_Lisboa.jpg/250px-Ant%C3%B3nio_de_Oliveira_Salazar_portrait_%28by_Manuel_Alves_San_Payo%29_%E2%80%93_Lisboa.jpg",
     "flag_url": "https://flagcdn.com/w320/pt.png",
-    "desc": "کشور پرتغال در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده آنتونیو دی اولیویرا سالازار بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور آنتونیو سالازار (António de Oliveira Salazar) بود. نوع حکومت: دیکتاتوری اقتدارگرای سالازار. جناح سناریویی: بدون جناح.",
+    "leader_en": "António de Oliveira Salazar",
+    "regime_type": "authoritarian_dictatorship",
+    "regime_fa": "دیکتاتوری اقتدارگرای سالازار",
+    "scenario_date": "1934-01-01"
   },
   "SE": {
     "code": "SE",
@@ -1571,13 +1720,17 @@
     "capital_fa": "استکهلم",
     "faction": "neutral",
     "ideology": "democracy",
-    "leader": "گوستاو پنجم",
-    "leader_fa": "گوستاو پنجم",
+    "leader": "شاه گوستاو پنجم",
+    "leader_fa": "شاه گوستاو پنجم",
     "leader_title": "پادشاه سوئد",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Gustaf_V_av_Sverige.jpg/250px-Gustaf_V_av_Sverige.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Gustaf_V_av_Sverige.jpg/250px-Gustaf_V_av_Sverige.jpg",
     "flag_url": "https://flagcdn.com/w320/se.png",
-    "desc": "کشور پادشاهی سوئد در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده گوستاو پنجم بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور شاه گوستاو پنجم (King Gustaf V) بود. نوع حکومت: پادشاهی مشروطهٔ پارلمانی. جناح سناریویی: بدون جناح.",
+    "leader_en": "King Gustaf V",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطهٔ پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "CH": {
     "code": "CH",
@@ -1586,13 +1739,17 @@
     "capital_fa": "برن",
     "faction": "neutral",
     "ideology": "democracy",
-    "leader": "فیلیپ اتر",
-    "leader_fa": "فیلیپ اتر",
-    "leader_title": "رئیس‌جمهور کنفدراسیون",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Philipp_Etter_-_Portrait_dans_l%27annuaire_des_Autorit%C3%A9s_f%C3%A9d%C3%A9rales_-_1943.jpg/250px-Philipp_Etter_-_Portrait_dans_l%27annuaire_des_Autorit%C3%A9s_f%C3%A9d%C3%A9rales_-_1943.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Philipp_Etter_-_Portrait_dans_l%27annuaire_des_Autorit%C3%A9s_f%C3%A9d%C3%A9rales_-_1943.jpg/250px-Philipp_Etter_-_Portrait_dans_l%27annuaire_des_Autorit%C3%A9s_f%C3%A9d%C3%A9rales_-_1943.jpg",
+    "leader": "مارسل پیله-گولا",
+    "leader_fa": "مارسل پیله-گولا",
+    "leader_title": "رئیس کنفدراسیون سوئیس در ۱۹۳۴",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Marcel_Pilet-Golaz.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Marcel_Pilet-Golaz.jpg",
     "flag_url": "https://flagcdn.com/w320/ch.png",
-    "desc": "کشور کنفدراسیون سوئیس در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده فیلیپ اتر بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور مارسل پیله-گولا (Marcel Pilet-Golaz) بود. نوع حکومت: جمهوری فدرال شورایی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Marcel Pilet-Golaz",
+    "regime_type": "federal_republic",
+    "regime_fa": "جمهوری فدرال شورایی",
+    "scenario_date": "1934-01-01"
   },
   "IE": {
     "code": "IE",
@@ -1603,11 +1760,15 @@
     "ideology": "democracy",
     "leader": "ایمون دو والرا",
     "leader_fa": "ایمون دو والرا",
-    "leader_title": "نخست‌وزیر",
+    "leader_title": "رئیس شورای اجرایی ایرلند",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/De_Valera_LCCN2016822004_%28headshot%29.jpg/250px-De_Valera_LCCN2016822004_%28headshot%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/De_Valera_LCCN2016822004_%28headshot%29.jpg/250px-De_Valera_LCCN2016822004_%28headshot%29.jpg",
     "flag_url": "https://flagcdn.com/w320/ie.png",
-    "desc": "کشور جمهوری ایرلند در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ایمون دو والرا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور ایمون دو والرا (Éamon de Valera) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Éamon de Valera",
+    "regime_type": "parliamentary_republic",
+    "regime_fa": "جمهوری پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "AF": {
     "code": "AF",
@@ -1615,14 +1776,18 @@
     "name_en": "Afghanistan",
     "capital_fa": "کابل",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "محمد ظاهرشاه",
     "leader_fa": "محمد ظاهرشاه",
     "leader_title": "پادشاه افغانستان",
     "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Zahir_Shah_of_Afghanistan_in_1930s.jpg",
     "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Zahir_Shah_of_Afghanistan_in_1930s.jpg",
     "flag_url": "static/flags/AF.svg",
-    "desc": "کشور پادشاهی افغانستان در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده محمد ظاهرشاه بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور محمد ظاهرشاه (Mohammed Zahir Shah) بود. نوع حکومت: پادشاهی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Mohammed Zahir Shah",
+    "regime_type": "absolute_monarchy",
+    "regime_fa": "پادشاهی",
+    "scenario_date": "1934-01-01"
   },
   "SA": {
     "code": "SA",
@@ -1630,14 +1795,18 @@
     "name_en": "Saudi Arabia",
     "capital_fa": "ریاض",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "ملک عبدالعزیز آل سعود",
     "leader_fa": "ملک عبدالعزیز آل سعود",
-    "leader_title": "پادشاه",
+    "leader_title": "پادشاه عربستان سعودی",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Official_Portrait_of_King_Abdulaziz.jpg/250px-Official_Portrait_of_King_Abdulaziz.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Official_Portrait_of_King_Abdulaziz.jpg/250px-Official_Portrait_of_King_Abdulaziz.jpg",
     "flag_url": "https://flagcdn.com/w320/sa.png",
-    "desc": "کشور پادشاهی عربستان سعودی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ملک عبدالعزیز آل سعود بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور ملک عبدالعزیز آل سعود (Ibn Saud) بود. نوع حکومت: پادشاهی مطلقه. جناح سناریویی: بدون جناح.",
+    "leader_en": "Ibn Saud",
+    "regime_type": "absolute_monarchy",
+    "regime_fa": "پادشاهی مطلقه",
+    "scenario_date": "1934-01-01"
   },
   "IQ": {
     "code": "IQ",
@@ -1645,14 +1814,18 @@
     "name_en": "Iraq",
     "capital_fa": "بغداد",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "ملک غازی اول",
-    "leader_fa": "ملک غازی اول",
+    "ideology": "",
+    "leader": "شاه غازی اول",
+    "leader_fa": "شاه غازی اول",
     "leader_title": "پادشاه عراق",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Ghazi3.jpg/250px-Ghazi3.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Ghazi3.jpg/250px-Ghazi3.jpg",
     "flag_url": "static/flags/IQ.svg",
-    "desc": "کشور پادشاهی عراق در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ملک غازی اول بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور شاه غازی اول (King Ghazi I) بود. نوع حکومت: پادشاهی مشروطه. جناح سناریویی: بدون جناح.",
+    "leader_en": "King Ghazi I",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی مشروطه",
+    "scenario_date": "1934-01-01"
   },
   "EG": {
     "code": "EG",
@@ -1660,14 +1833,18 @@
     "name_en": "Egypt",
     "capital_fa": "قاهره",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "ملک فاروق اول",
-    "leader_fa": "ملک فاروق اول",
-    "leader_title": "پادشاه مصر و سودان",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Farouk-King-.jpg/250px-Farouk-King-.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Farouk-King-.jpg/250px-Farouk-King-.jpg",
+    "ideology": "",
+    "leader": "شاه فؤاد اول",
+    "leader_fa": "شاه فؤاد اول",
+    "leader_title": "پادشاه مصر",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Fuad_I_of_Egypt.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Fuad_I_of_Egypt.jpg",
     "flag_url": "static/flags/EG.svg",
-    "desc": "کشور پادشاهی مصر در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ملک فاروق اول بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور شاه فؤاد اول (King Fuad I) بود. نوع حکومت: پادشاهی تحت نفوذ بریتانیا. جناح سناریویی: بدون جناح.",
+    "leader_en": "King Fuad I",
+    "regime_type": "constitutional_monarchy",
+    "regime_fa": "پادشاهی تحت نفوذ بریتانیا",
+    "scenario_date": "1934-01-01"
   },
   "ET": {
     "code": "ET",
@@ -1675,14 +1852,18 @@
     "name_en": "Ethiopia",
     "capital_fa": "آدیس آبابا",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "هایله سلاسی",
     "leader_fa": "هایله سلاسی",
     "leader_title": "امپراتور اتیوپی",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Haile_Selassie_in_full_dress_%283x4_cropped%29.jpg/250px-Haile_Selassie_in_full_dress_%283x4_cropped%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Haile_Selassie_in_full_dress_%283x4_cropped%29.jpg/250px-Haile_Selassie_in_full_dress_%283x4_cropped%29.jpg",
     "flag_url": "static/flags/ET.svg",
-    "desc": "کشور امپراتوری اتیوپی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده هایله سلاسی بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور هایله سلاسی (Haile Selassie) بود. نوع حکومت: امپراتوری. جناح سناریویی: بدون جناح.",
+    "leader_en": "Haile Selassie",
+    "regime_type": "imperial_monarchy",
+    "regime_fa": "امپراتوری",
+    "scenario_date": "1934-01-01"
   },
   "AR": {
     "code": "AR",
@@ -1690,14 +1871,18 @@
     "name_en": "Argentina",
     "capital_fa": "بوئنوس آیرس",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "روبرتو ماریا اورتیز",
-    "leader_fa": "روبرتو ماریا اورتیز",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Robertomortiz.jpg/250px-Robertomortiz.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Robertomortiz.jpg/250px-Robertomortiz.jpg",
+    "ideology": "",
+    "leader": "آگوستین پدرو خوستو",
+    "leader_fa": "آگوستین پدرو خوستو",
+    "leader_title": "رئیس‌جمهور آرژانتین",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Agust%C3%ADn_P._Justo.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Agust%C3%ADn_P._Justo.jpg",
     "flag_url": "https://flagcdn.com/w320/ar.png",
-    "desc": "کشور آرژانتین در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده روبرتو ماریا اورتیز بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور آگوستین پدرو خوستو (Agustín P. Justo) بود. نوع حکومت: جمهوری محافظه‌کار. جناح سناریویی: بدون جناح.",
+    "leader_en": "Agustín P. Justo",
+    "regime_type": "constitutional_republic",
+    "regime_fa": "جمهوری محافظه‌کار",
+    "scenario_date": "1934-01-01"
   },
   "CL": {
     "code": "CL",
@@ -1706,13 +1891,17 @@
     "capital_fa": "سانتیاگو",
     "faction": "neutral",
     "ideology": "democracy",
-    "leader": "پدرو آگوئیره سردار",
-    "leader_fa": "پدرو آگوئیره سردار",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Pedro_Aguirre_Cerda.jpg/250px-Pedro_Aguirre_Cerda.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Pedro_Aguirre_Cerda.jpg/250px-Pedro_Aguirre_Cerda.jpg",
+    "leader": "آرتورو آلساندری",
+    "leader_fa": "آرتورو آلساندری",
+    "leader_title": "رئیس‌جمهور شیلی",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Arturo_Alessandri.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Arturo_Alessandri.jpg",
     "flag_url": "https://flagcdn.com/w320/cl.png",
-    "desc": "کشور جمهوری شیلی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده پدرو آگوئیره سردار بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور آرتورو آلساندری (Arturo Alessandri) بود. نوع حکومت: جمهوری ریاستی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Arturo Alessandri",
+    "regime_type": "presidential_republic",
+    "regime_fa": "جمهوری ریاستی",
+    "scenario_date": "1934-01-01"
   },
   "CO": {
     "code": "CO",
@@ -1721,13 +1910,17 @@
     "capital_fa": "بوگوتا",
     "faction": "neutral",
     "ideology": "democracy",
-    "leader": "ادواردو سانتوس",
-    "leader_fa": "ادواردو سانتوس",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Eduardo-santos-montejo.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Eduardo-santos-montejo.jpg",
+    "leader": "انریکه اولایا هررا",
+    "leader_fa": "انریکه اولایا هررا",
+    "leader_title": "رئیس‌جمهور کلمبیا",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Enrique_Olaya_Herrera.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Enrique_Olaya_Herrera.jpg",
     "flag_url": "https://flagcdn.com/w320/co.png",
-    "desc": "کشور جمهوری کلمبیا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ادواردو سانتوس بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور انریکه اولایا هررا (Enrique Olaya Herrera) بود. نوع حکومت: جمهوری ریاستی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Enrique Olaya Herrera",
+    "regime_type": "presidential_republic",
+    "regime_fa": "جمهوری ریاستی",
+    "scenario_date": "1934-01-01"
   },
   "PE": {
     "code": "PE",
@@ -1735,14 +1928,18 @@
     "name_en": "Peru",
     "capital_fa": "لیما",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "اسکار بناویدس",
-    "leader_fa": "اسکار بناویدس",
-    "leader_title": "رئیس‌جمهور",
+    "ideology": "",
+    "leader": "اسکار آر. بناویدس",
+    "leader_fa": "اسکار آر. بناویدس",
+    "leader_title": "رئیس‌جمهور پرو",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Manuel_Prado_Ugarteche_1961.jpg/250px-Manuel_Prado_Ugarteche_1961.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Manuel_Prado_Ugarteche_1961.jpg/250px-Manuel_Prado_Ugarteche_1961.jpg",
     "flag_url": "https://flagcdn.com/w320/pe.png",
-    "desc": "کشور پرو در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده اسکار بناویدس بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور اسکار آر. بناویدس (Óscar R. Benavides) بود. نوع حکومت: حکومت نظامی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Óscar R. Benavides",
+    "regime_type": "military_government",
+    "regime_fa": "حکومت نظامی",
+    "scenario_date": "1934-01-01"
   },
   "VE": {
     "code": "VE",
@@ -1750,14 +1947,18 @@
     "name_en": "Venezuela",
     "capital_fa": "کاراکاس",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "الازار لوپز کنتراس",
-    "leader_fa": "الازار لوپز کنتراس",
-    "leader_title": "رئیس‌جمهور",
+    "ideology": "",
+    "leader": "خوان ویسنته گومس",
+    "leader_fa": "خوان ویسنته گومس",
+    "leader_title": "حاکم دوفاکتوی ونزوئلا",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Eleazar_L%C3%B3pez_Contreras.jpg/250px-Eleazar_L%C3%B3pez_Contreras.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Eleazar_L%C3%B3pez_Contreras.jpg/250px-Eleazar_L%C3%B3pez_Contreras.jpg",
     "flag_url": "https://flagcdn.com/w320/ve.png",
-    "desc": "کشور ونزوئلا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده الازار لوپز کنتراس بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور خوان ویسنته گومس (Juan Vicente Gómez) بود. نوع حکومت: دیکتاتوری شخصی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Juan Vicente Gómez",
+    "regime_type": "personalist_dictatorship",
+    "regime_fa": "دیکتاتوری شخصی",
+    "scenario_date": "1934-01-01"
   },
   "CU": {
     "code": "CU",
@@ -1765,14 +1966,18 @@
     "name_en": "Cuba",
     "capital_fa": "هاوانا",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "فولخنسیو باتیستا",
-    "leader_fa": "فولخنسیو باتیستا",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Fulg%C3%AAncio_Batista_e_esposa%2C_1955_%28cropped%29.tif/lossy-page1-250px-Fulg%C3%AAncio_Batista_e_esposa%2C_1955_%28cropped%29.tif.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Fulg%C3%AAncio_Batista_e_esposa%2C_1955_%28cropped%29.tif/lossy-page1-250px-Fulg%C3%AAncio_Batista_e_esposa%2C_1955_%28cropped%29.tif.jpg",
+    "ideology": "",
+    "leader": "رامون گرائو سان مارتین",
+    "leader_fa": "رامون گرائو سان مارتین",
+    "leader_title": "رئیس‌جمهور کوبا در آغاز ۱۹۳۴",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Ram%C3%B3n_Grau_San_Mart%C3%ADn.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Ram%C3%B3n_Grau_San_Mart%C3%ADn.jpg",
     "flag_url": "https://flagcdn.com/w320/cu.png",
-    "desc": "کشور کوبا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده فولخنسیو باتیستا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور رامون گرائو سان مارتین (Ramón Grau San Martín) بود. نوع حکومت: جمهوری موقت. جناح سناریویی: بدون جناح.",
+    "leader_en": "Ramón Grau San Martín",
+    "regime_type": "provisional_republic",
+    "regime_fa": "جمهوری موقت",
+    "scenario_date": "1934-01-01"
   },
   "EE": {
     "code": "EE",
@@ -1780,14 +1985,18 @@
     "name_en": "Estonia",
     "capital_fa": "تالین",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "کنستانتین پاتس",
     "leader_fa": "کنستانتین پاتس",
-    "leader_title": "رئیس‌جمهور",
+    "leader_title": "رئیس دولت استونی",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Konstantin_P%C3%A4ts.jpg/250px-Konstantin_P%C3%A4ts.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Konstantin_P%C3%A4ts.jpg/250px-Konstantin_P%C3%A4ts.jpg",
     "flag_url": "https://flagcdn.com/w320/ee.png",
-    "desc": "کشور استونی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده کنستانتین پاتس بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور کنستانتین پاتس (Konstantin Päts) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Konstantin Päts",
+    "regime_type": "parliamentary_republic",
+    "regime_fa": "جمهوری پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "LV": {
     "code": "LV",
@@ -1795,14 +2004,18 @@
     "name_en": "Latvia",
     "capital_fa": "ریگا",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "کارلیس اولمانیس",
     "leader_fa": "کارلیس اولمانیس",
-    "leader_title": "رئیس‌جمهور",
+    "leader_title": "نخست‌وزیر لتونی",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/K._Ulmakis_LCCN2014712518_%28cropped%29.jpg/250px-K._Ulmakis_LCCN2014712518_%28cropped%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/K._Ulmakis_LCCN2014712518_%28cropped%29.jpg/250px-K._Ulmakis_LCCN2014712518_%28cropped%29.jpg",
     "flag_url": "https://flagcdn.com/w320/lv.png",
-    "desc": "کشور لتونی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده کارلیس اولمانیس بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور کارلیس اولمانیس (Kārlis Ulmanis) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Kārlis Ulmanis",
+    "regime_type": "parliamentary_republic",
+    "regime_fa": "جمهوری پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "LT": {
     "code": "LT",
@@ -1810,14 +2023,18 @@
     "name_en": "Lithuania",
     "capital_fa": "کائوناس",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "آنتاناس اسمتونا",
-    "leader_fa": "آنتاناس اسمتونا",
-    "leader_title": "رئیس‌جمهور",
+    "ideology": "",
+    "leader": "آنتاناس اسمِتونا",
+    "leader_fa": "آنتاناس اسمِتونا",
+    "leader_title": "رئیس‌جمهور لیتوانی",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Antanas_Smetona_2.jpg/250px-Antanas_Smetona_2.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Antanas_Smetona_2.jpg/250px-Antanas_Smetona_2.jpg",
     "flag_url": "https://flagcdn.com/w320/lt.png",
-    "desc": "کشور لیتوانی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده آنتاناس اسمتونا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور آنتاناس اسمِتونا (Antanas Smetona) بود. نوع حکومت: جمهوری ریاستی اقتدارگرا. جناح سناریویی: بدون جناح.",
+    "leader_en": "Antanas Smetona",
+    "regime_type": "authoritarian_republic",
+    "regime_fa": "جمهوری ریاستی اقتدارگرا",
+    "scenario_date": "1934-01-01"
   },
   "TB": {
     "code": "TB",
@@ -1825,14 +2042,18 @@
     "name_en": "Tibet",
     "capital_fa": "لهاسا",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "دالایی لاما چهاردهم",
-    "leader_fa": "دالایی لاما چهاردهم",
-    "leader_title": "رهبر مذهبی و سیاسی",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Dalailama1939.jpg/250px-Dalailama1939.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Dalailama1939.jpg/250px-Dalailama1939.jpg",
+    "ideology": "",
+    "leader": "رِتینگ رینپوچه",
+    "leader_fa": "رِتینگ رینپوچه",
+    "leader_title": "نایب‌السلطنهٔ تبت",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Reting_Rinpoche.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Reting_Rinpoche.jpg",
     "flag_url": "static/flags/TB.svg",
-    "desc": "کشور تبت در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده دالایی لاما چهاردهم بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور رِتینگ رینپوچه (Reting Rinpoche) بود. نوع حکومت: حکومت مذهبی با نیابت سلطنت. جناح سناریویی: بدون جناح.",
+    "leader_en": "Reting Rinpoche",
+    "regime_type": "regency_theocracy",
+    "regime_fa": "حکومت مذهبی با نیابت سلطنت",
+    "scenario_date": "1934-01-01"
   },
   "NP": {
     "code": "NP",
@@ -1840,14 +2061,18 @@
     "name_en": "Nepal",
     "capital_fa": "کاتماندو",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "جودا شومشر رانا",
     "leader_fa": "جودا شومشر رانا",
-    "leader_title": "نخست‌وزیر مهاراجه",
+    "leader_title": "نخست‌وزیر موروثی نپال",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Juddha_Shumsher_Jung_Bahadur_Rana_%28cropped%29.png/250px-Juddha_Shumsher_Jung_Bahadur_Rana_%28cropped%29.png",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Juddha_Shumsher_Jung_Bahadur_Rana_%28cropped%29.png/250px-Juddha_Shumsher_Jung_Bahadur_Rana_%28cropped%29.png",
     "flag_url": "https://flagcdn.com/w320/np.png",
-    "desc": "کشور نپال در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده جودا شومشر رانا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور جودا شومشر رانا (Juddha Shumsher Rana) بود. نوع حکومت: سلطهٔ موروثی خاندان رانا زیر پادشاهی اسمی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Juddha Shumsher Rana",
+    "regime_type": "hereditary_oligarchy",
+    "regime_fa": "سلطهٔ موروثی خاندان رانا زیر پادشاهی اسمی",
+    "scenario_date": "1934-01-01"
   },
   "BT": {
     "code": "BT",
@@ -1855,14 +2080,18 @@
     "name_en": "Bhutan",
     "capital_fa": "پوناخا",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "جیگمه وانگچوک",
     "leader_fa": "جیگمه وانگچوک",
     "leader_title": "پادشاه بوتان",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Bhutan-Jigme-Wangchuck.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Bhutan-Jigme-Wangchuck.jpg",
     "flag_url": "https://flagcdn.com/w320/bt.png",
-    "desc": "کشور بوتان در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده جیگمه وانگچوک بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور جیگمه وانگچوک (Jigme Wangchuck) بود. نوع حکومت: پادشاهی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Jigme Wangchuck",
+    "regime_type": "absolute_monarchy",
+    "regime_fa": "پادشاهی",
+    "scenario_date": "1934-01-01"
   },
   "YE": {
     "code": "YE",
@@ -1870,14 +2099,18 @@
     "name_en": "Yemen",
     "capital_fa": "صنعا",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "امام یحیی حمیدالدین",
     "leader_fa": "امام یحیی حمیدالدین",
-    "leader_title": "امام و پادشاه یمن",
+    "leader_title": "امام و حاکم یمن",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Imam_yahya_cropped.png/250px-Imam_yahya_cropped.png",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Imam_yahya_cropped.png/250px-Imam_yahya_cropped.png",
     "flag_url": "https://flagcdn.com/w320/ye.png",
-    "desc": "کشور پادشاهی یمن در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده امام یحیی حمیدالدین بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور امام یحیی حمیدالدین (Imam Yahya Muhammad Hamid ed-Din) بود. نوع حکومت: امامت زیدی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Imam Yahya Muhammad Hamid ed-Din",
+    "regime_type": "theocratic_monarchy",
+    "regime_fa": "امامت زیدی",
+    "scenario_date": "1934-01-01"
   },
   "OM": {
     "code": "OM",
@@ -1885,14 +2118,18 @@
     "name_en": "Oman",
     "capital_fa": "مسقط",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "سلطان سعید بن تیمور",
-    "leader_fa": "سلطان سعید بن تیمور",
-    "leader_title": "سلطان عمان",
+    "ideology": "",
+    "leader": "سعید بن تیمور",
+    "leader_fa": "سعید بن تیمور",
+    "leader_title": "سلطان مسقط و عمان",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Said_bin_Taimur_1940s.jpg/250px-Said_bin_Taimur_1940s.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Said_bin_Taimur_1940s.jpg/250px-Said_bin_Taimur_1940s.jpg",
     "flag_url": "https://flagcdn.com/w320/om.png",
-    "desc": "کشور سلطنت عمان در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده سلطان سعید بن تیمور بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور سعید بن تیمور (Said bin Taimur) بود. نوع حکومت: سلطنت مطلقه. جناح سناریویی: بدون جناح.",
+    "leader_en": "Said bin Taimur",
+    "regime_type": "absolute_monarchy",
+    "regime_fa": "سلطنت مطلقه",
+    "scenario_date": "1934-01-01"
   },
   "IS": {
     "code": "IS",
@@ -1901,13 +2138,17 @@
     "capital_fa": "ریکیاویک",
     "faction": "neutral",
     "ideology": "democracy",
-    "leader": "هرماند یوناسون",
-    "leader_fa": "هرماند یوناسون",
-    "leader_title": "پادشاه",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Sveinn_Bj%C3%B6rnsson.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Sveinn_Bj%C3%B6rnsson.jpg",
+    "leader": "آسگیر آسگیرسون",
+    "leader_fa": "آسگیر آسگیرسون",
+    "leader_title": "نخست‌وزیر ایسلند",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/%C3%81sgeir_%C3%81sgeirsson.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/%C3%81sgeir_%C3%81sgeirsson.jpg",
     "flag_url": "https://flagcdn.com/w320/is.png",
-    "desc": "کشور ایسلند در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده هرماند یوناسون بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور آسگیر آسگیرسون (Ásgeir Ásgeirsson) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Ásgeir Ásgeirsson",
+    "regime_type": "parliamentary_republic",
+    "regime_fa": "جمهوری پارلمانی",
+    "scenario_date": "1934-01-01"
   },
   "AL": {
     "code": "AL",
@@ -1915,14 +2156,18 @@
     "name_en": "Albania",
     "capital_fa": "تیرانا",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "شاه زوگ اول",
     "leader_fa": "شاه زوگ اول",
     "leader_title": "پادشاه آلبانی",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/King_Zog_I.jpg/250px-King_Zog_I.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/King_Zog_I.jpg/250px-King_Zog_I.jpg",
     "flag_url": "static/flags/AL.svg",
-    "desc": "کشور پادشاهی آلبانی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده شاه زوگ اول بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور شاه زوگ اول (King Zog I) بود. نوع حکومت: پادشاهی. جناح سناریویی: بدون جناح.",
+    "leader_en": "King Zog I",
+    "regime_type": "monarchy",
+    "regime_fa": "پادشاهی",
+    "scenario_date": "1934-01-01"
   },
   "UY": {
     "code": "UY",
@@ -1931,13 +2176,17 @@
     "capital_fa": "مونته‌ویدئو",
     "faction": "neutral",
     "ideology": "democracy",
-    "leader": "آلفردو بالدومیر",
-    "leader_fa": "آلفردو بالدومیر",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/AlfredoBaldomir.jpg/250px-AlfredoBaldomir.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/AlfredoBaldomir.jpg/250px-AlfredoBaldomir.jpg",
+    "leader": "گابریل ترا",
+    "leader_fa": "گابریل ترا",
+    "leader_title": "رئیس‌جمهور اروگوئه",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Gabriel_Terra.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gabriel_Terra.jpg",
     "flag_url": "https://flagcdn.com/w320/uy.png",
-    "desc": "کشور اروگوئه در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده آلفردو بالدومیر بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور گابریل ترا (Gabriel Terra) بود. نوع حکومت: جمهوری ریاستی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Gabriel Terra",
+    "regime_type": "presidential_republic",
+    "regime_fa": "جمهوری ریاستی",
+    "scenario_date": "1934-01-01"
   },
   "PY": {
     "code": "PY",
@@ -1945,14 +2194,18 @@
     "name_en": "Paraguay",
     "capital_fa": "آسونسیون",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "خوزه فلیکس استیگاریبیا",
-    "leader_fa": "خوزه فلیکس استیگاریبیا",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Retrato_del_Mariscal_Estigarribia_%28cropped%29_2.jpg/250px-Retrato_del_Mariscal_Estigarribia_%28cropped%29_2.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Retrato_del_Mariscal_Estigarribia_%28cropped%29_2.jpg/250px-Retrato_del_Mariscal_Estigarribia_%28cropped%29_2.jpg",
+    "ideology": "",
+    "leader": "اوسبیو آیالا",
+    "leader_fa": "اوسبیو آیالا",
+    "leader_title": "رئیس‌جمهور پاراگوئه",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Eusebio_Ayala.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Eusebio_Ayala.jpg",
     "flag_url": "https://flagcdn.com/w320/py.png",
-    "desc": "کشور پاراگوئه در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده خوزه فلیکس استیگاریبیا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور اوسبیو آیالا (Eusebio Ayala) بود. نوع حکومت: جمهوری. جناح سناریویی: بدون جناح.",
+    "leader_en": "Eusebio Ayala",
+    "regime_type": "constitutional_republic",
+    "regime_fa": "جمهوری",
+    "scenario_date": "1934-01-01"
   },
   "BO": {
     "code": "BO",
@@ -1960,14 +2213,18 @@
     "name_en": "Bolivia",
     "capital_fa": "لاپاز",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "خرمان بوش",
-    "leader_fa": "خرمان بوش",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Penaranda.jpg/250px-Penaranda.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Penaranda.jpg/250px-Penaranda.jpg",
+    "ideology": "",
+    "leader": "دانیل سالامانکا",
+    "leader_fa": "دانیل سالامانکا",
+    "leader_title": "رئیس‌جمهور بولیوی",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Daniel_Salamanca.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Daniel_Salamanca.jpg",
     "flag_url": "https://flagcdn.com/w320/bo.png",
-    "desc": "کشور بولیوی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده خرمان بوش بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور دانیل سالامانکا (Daniel Salamanca) بود. نوع حکومت: جمهوری ریاستی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Daniel Salamanca",
+    "regime_type": "presidential_republic",
+    "regime_fa": "جمهوری ریاستی",
+    "scenario_date": "1934-01-01"
   },
   "EC": {
     "code": "EC",
@@ -1976,13 +2233,17 @@
     "capital_fa": "کیتو",
     "faction": "neutral",
     "ideology": "democracy",
-    "leader": "آئورلیو موسکئرا",
-    "leader_fa": "آئورلیو موسکئرا",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Carlos_Alberto_Arroyo_del_R%C3%ADo_%28cropped%29.jpg/250px-Carlos_Alberto_Arroyo_del_R%C3%ADo_%28cropped%29.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Carlos_Alberto_Arroyo_del_R%C3%ADo_%28cropped%29.jpg/250px-Carlos_Alberto_Arroyo_del_R%C3%ADo_%28cropped%29.jpg",
+    "leader": "خوان دِ دیوس مارتینس مِرا",
+    "leader_fa": "خوان دِ دیوس مارتینس مِرا",
+    "leader_title": "رئیس‌جمهور اکوادور",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Juan_de_Dios_Mart%C3%ADnez_Mera.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Juan_de_Dios_Mart%C3%ADnez_Mera.jpg",
     "flag_url": "https://flagcdn.com/w320/ec.png",
-    "desc": "کشور اکوادور در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده آئورلیو موسکئرا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور خوان دِ دیوس مارتینس مِرا (Juan de Dios Martínez Mera) بود. نوع حکومت: جمهوری ریاستی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Juan de Dios Martínez Mera",
+    "regime_type": "presidential_republic",
+    "regime_fa": "جمهوری ریاستی",
+    "scenario_date": "1934-01-01"
   },
   "GT": {
     "code": "GT",
@@ -1990,14 +2251,18 @@
     "name_en": "Guatemala",
     "capital_fa": "گواتمالاسیتی",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "خورخه اوبیکو",
     "leader_fa": "خورخه اوبیکو",
-    "leader_title": "رئیس‌جمهور دیکتاتور",
+    "leader_title": "رئیس‌جمهور گواتمالا",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Presidente_Jorge_Ubico_Casta%C3%B1eda.png/250px-Presidente_Jorge_Ubico_Casta%C3%B1eda.png",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Presidente_Jorge_Ubico_Casta%C3%B1eda.png/250px-Presidente_Jorge_Ubico_Casta%C3%B1eda.png",
     "flag_url": "https://flagcdn.com/w320/gt.png",
-    "desc": "کشور گواتمالا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده خورخه اوبیکو بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور خورخه اوبیکو (Jorge Ubico) بود. نوع حکومت: دیکتاتوری شخصی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Jorge Ubico",
+    "regime_type": "personalist_dictatorship",
+    "regime_fa": "دیکتاتوری شخصی",
+    "scenario_date": "1934-01-01"
   },
   "HN": {
     "code": "HN",
@@ -2005,14 +2270,18 @@
     "name_en": "Honduras",
     "capital_fa": "تگوسیگالپا",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "تیبورسیو کاریاس آندینو",
     "leader_fa": "تیبورسیو کاریاس آندینو",
-    "leader_title": "رئیس‌جمهور",
+    "leader_title": "رئیس‌جمهور هندوراس",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Pres._Andino_of_Honduras_LCCN2016878325.jpg/250px-Pres._Andino_of_Honduras_LCCN2016878325.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Pres._Andino_of_Honduras_LCCN2016878325.jpg/250px-Pres._Andino_of_Honduras_LCCN2016878325.jpg",
     "flag_url": "https://flagcdn.com/w320/hn.png",
-    "desc": "کشور هندوراس در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده تیبورسیو کاریاس آندینو بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور تیبورسیو کاریاس آندینو (Tiburcio Carías Andino) بود. نوع حکومت: جمهوری اقتدارگرا. جناح سناریویی: بدون جناح.",
+    "leader_en": "Tiburcio Carías Andino",
+    "regime_type": "authoritarian_republic",
+    "regime_fa": "جمهوری اقتدارگرا",
+    "scenario_date": "1934-01-01"
   },
   "SV": {
     "code": "SV",
@@ -2020,14 +2289,18 @@
     "name_en": "El Salvador",
     "capital_fa": "سان سالوادور",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "ماکسیمیلیانو هرناندز مارتینز",
-    "leader_fa": "ماکسیمیلیانو هرناندز مارتینز",
-    "leader_title": "رئیس‌جمهور",
+    "ideology": "",
+    "leader": "ماکسیمیلیانو هرناندس مارتینس",
+    "leader_fa": "ماکسیمیلیانو هرناندس مارتینس",
+    "leader_title": "رئیس‌جمهور و حاکم نظامی السالوادور",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/General_Maximiliano_Hern%C3%A1ndez_Mart%C3%ADnez%2C_President_of_El_Salvador.jpg/250px-General_Maximiliano_Hern%C3%A1ndez_Mart%C3%ADnez%2C_President_of_El_Salvador.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/General_Maximiliano_Hern%C3%A1ndez_Mart%C3%ADnez%2C_President_of_El_Salvador.jpg/250px-General_Maximiliano_Hern%C3%A1ndez_Mart%C3%ADnez%2C_President_of_El_Salvador.jpg",
     "flag_url": "https://flagcdn.com/w320/sv.png",
-    "desc": "کشور السالوادور در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ماکسیمیلیانو هرناندز مارتینز بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور ماکسیمیلیانو هرناندس مارتینس (Maximiliano Hernández Martínez) بود. نوع حکومت: دیکتاتوری نظامی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Maximiliano Hernández Martínez",
+    "regime_type": "military_dictatorship",
+    "regime_fa": "دیکتاتوری نظامی",
+    "scenario_date": "1934-01-01"
   },
   "NI": {
     "code": "NI",
@@ -2035,14 +2308,18 @@
     "name_en": "Nicaragua",
     "capital_fa": "ماناگوا",
     "faction": "neutral",
-    "ideology": "nonaligned",
-    "leader": "آناستاسیو سوموسا گارسیا",
-    "leader_fa": "آناستاسیو سوموسا گارسیا",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Anastasio_Somoza_Garc%C3%ADa.jpg/250px-Anastasio_Somoza_Garc%C3%ADa.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Anastasio_Somoza_Garc%C3%ADa.jpg/250px-Anastasio_Somoza_Garc%C3%ADa.jpg",
+    "ideology": "",
+    "leader": "خوان باتیستا ساکاسا",
+    "leader_fa": "خوان باتیستا ساکاسا",
+    "leader_title": "رئیس‌جمهور نیکاراگوئه",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Juan_Bautista_Sacasa.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Juan_Bautista_Sacasa.jpg",
     "flag_url": "https://flagcdn.com/w320/ni.png",
-    "desc": "کشور نیکاراگوئه در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده آناستاسیو سوموسا گارسیا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور خوان باتیستا ساکاسا (Juan Bautista Sacasa) بود. نوع حکومت: دیکتاتوری شخصی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Juan Bautista Sacasa",
+    "regime_type": "personalist_dictatorship",
+    "regime_fa": "دیکتاتوری شخصی",
+    "scenario_date": "1934-01-01"
   },
   "CR": {
     "code": "CR",
@@ -2051,13 +2328,17 @@
     "capital_fa": "سن‌خوزه",
     "faction": "neutral",
     "ideology": "democracy",
-    "leader": "لئون کورتس کاسترو",
-    "leader_fa": "لئون کورتس کاسترو",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Le%C3%B3n_Cort%C3%A9s_Castro_2.jpg/250px-Le%C3%B3n_Cort%C3%A9s_Castro_2.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Le%C3%B3n_Cort%C3%A9s_Castro_2.jpg/250px-Le%C3%B3n_Cort%C3%A9s_Castro_2.jpg",
+    "leader": "ریکاردو خیمنس اورِآمونو",
+    "leader_fa": "ریکاردو خیمنس اورِآمونو",
+    "leader_title": "رئیس‌جمهور کاستاریکا",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Ricardo_Jim%C3%A9nez_Oreamuno.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Ricardo_Jim%C3%A9nez_Oreamuno.jpg",
     "flag_url": "https://flagcdn.com/w320/cr.png",
-    "desc": "کشور کاستاریکا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده لئون کورتس کاسترو بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور ریکاردو خیمنس اورِآمونو (Ricardo Jiménez Oreamuno) بود. نوع حکومت: جمهوری ریاستی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Ricardo Jiménez Oreamuno",
+    "regime_type": "presidential_republic",
+    "regime_fa": "جمهوری ریاستی",
+    "scenario_date": "1934-01-01"
   },
   "PA": {
     "code": "PA",
@@ -2066,13 +2347,17 @@
     "capital_fa": "پاناماسیتی",
     "faction": "neutral",
     "ideology": "democracy",
-    "leader": "خوان دموستنس آروزمنا",
-    "leader_fa": "خوان دموستنس آروزمنا",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/A._Arias_President_of_Panama_%28cropped%29.jpg/250px-A._Arias_President_of_Panama_%28cropped%29.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/A._Arias_President_of_Panama_%28cropped%29.jpg/250px-A._Arias_President_of_Panama_%28cropped%29.jpg",
+    "leader": "هارمودیو آریاس مادرید",
+    "leader_fa": "هارمودیو آریاس مادرید",
+    "leader_title": "رئیس‌جمهور پاناما",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Harmodio_Arias_Madrid.jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Harmodio_Arias_Madrid.jpg",
     "flag_url": "https://flagcdn.com/w320/pa.png",
-    "desc": "کشور پاناما در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده خوان دموستنس آروزمنا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور هارمودیو آریاس مادرید (Harmodio Arias Madrid) بود. نوع حکومت: جمهوری ریاستی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Harmodio Arias Madrid",
+    "regime_type": "presidential_republic",
+    "regime_fa": "جمهوری ریاستی",
+    "scenario_date": "1934-01-01"
   },
   "DO": {
     "code": "DO",
@@ -2080,14 +2365,18 @@
     "name_en": "Dominican Republic",
     "capital_fa": "سانتو دومینگو",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "رافائل تروخیو",
     "leader_fa": "رافائل تروخیو",
-    "leader_title": "دیکتاتور",
+    "leader_title": "رئیس‌جمهور و حاکم دیکتاتور",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Rafael_L._Trujillo_en_la_silla_presidencial_%28cropped%29.jpg/250px-Rafael_L._Trujillo_en_la_silla_presidencial_%28cropped%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Rafael_L._Trujillo_en_la_silla_presidencial_%28cropped%29.jpg/250px-Rafael_L._Trujillo_en_la_silla_presidencial_%28cropped%29.jpg",
     "flag_url": "https://flagcdn.com/w320/do.png",
-    "desc": "کشور جمهوری دومینیکن در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده رافائل تروخیو بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور رافائل تروخیو (Rafael Trujillo) بود. نوع حکومت: دیکتاتوری شخصی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Rafael Trujillo",
+    "regime_type": "personalist_dictatorship",
+    "regime_fa": "دیکتاتوری شخصی",
+    "scenario_date": "1934-01-01"
   },
   "HT": {
     "code": "HT",
@@ -2095,14 +2384,18 @@
     "name_en": "Haiti",
     "capital_fa": "پورتو پرنس",
     "faction": "neutral",
-    "ideology": "nonaligned",
+    "ideology": "",
     "leader": "استنیو ونسنت",
     "leader_fa": "استنیو ونسنت",
-    "leader_title": "رئیس‌جمهور",
+    "leader_title": "رئیس‌جمهور هائیتی",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Stenio_Vincent_portrait.jpg/250px-Stenio_Vincent_portrait.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Stenio_Vincent_portrait.jpg/250px-Stenio_Vincent_portrait.jpg",
     "flag_url": "https://flagcdn.com/w320/ht.png",
-    "desc": "کشور هائیتی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده استنیو ونسنت بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور استنیو ونسنت (Sténio Vincent) بود. نوع حکومت: جمهوری اقتدارگرا. جناح سناریویی: بدون جناح.",
+    "leader_en": "Sténio Vincent",
+    "regime_type": "authoritarian_republic",
+    "regime_fa": "جمهوری اقتدارگرا",
+    "scenario_date": "1934-01-01"
   },
   "LR": {
     "code": "LR",
@@ -2113,44 +2406,58 @@
     "ideology": "democracy",
     "leader": "ادوین بارکلی",
     "leader_fa": "ادوین بارکلی",
-    "leader_title": "رئیس‌جمهور",
+    "leader_title": "رئیس‌جمهور لیبریا",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Edwin_Barclay_01.jpg/250px-Edwin_Barclay_01.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Edwin_Barclay_01.jpg/250px-Edwin_Barclay_01.jpg",
     "flag_url": "https://flagcdn.com/w320/lr.png",
-    "desc": "کشور لیبریا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده ادوین بارکلی بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور ادوین بارکلی (Edwin Barclay) بود. نوع حکومت: جمهوری ریاستی. جناح سناریویی: بدون جناح.",
+    "leader_en": "Edwin Barclay",
+    "regime_type": "presidential_republic",
+    "regime_fa": "جمهوری ریاستی",
+    "scenario_date": "1934-01-01"
   },
   "PH": {
     "code": "PH",
     "name_fa": "فیلیپین (مشترک‌المنافع)",
     "name_en": "Philippines",
     "capital_fa": "مانیلا",
-    "colony_of": "US",
-    "colony_of_fa": "ایالات متحدهٔ آمریکا",
-    "colony_label": "مستعمرهٔ ایالات متحده",
     "faction": "allies",
     "ideology": "democracy",
-    "leader": "مانوئل ال. کوئزون",
-    "leader_fa": "مانوئل ال. کوئزون",
-    "leader_title": "رئیس‌جمهور",
-    "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Manuel_L._Quezon_%28November_1942%29.jpg/250px-Manuel_L._Quezon_%28November_1942%29.jpg",
-    "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Manuel_L._Quezon_%28November_1942%29.jpg/250px-Manuel_L._Quezon_%28November_1942%29.jpg",
+    "leader": "فرانک مورفی",
+    "leader_fa": "فرانک مورفی",
+    "leader_title": "فرماندار کل فیلیپین تحت ادارهٔ آمریکا",
+    "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Frank_Murphy_(politician).jpg",
+    "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Frank_Murphy_(politician).jpg",
     "flag_url": "https://flagcdn.com/w320/ph.png",
-    "desc": "کشور فیلیپین (مشترک‌المنافع) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده مانوئل ال. کوئزون بود. وضعیت استعماری: فیلیپین در سال ۱۹۳۰ قلمرو تحت ادارهٔ ایالات متحده بود و هنوز استقلال نیافته بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور فرانک مورفی (Frank Murphy) بود. نوع حکومت: قلمرو تحت ادارهٔ ایالات متحده. جناح سناریویی: متفقین. وضعیت: قلمرو تحت ادارهٔ ایالات متحده؛ دولت مشترک‌المنافع فیلیپین هنوز تشکیل نشده بود. نشان قلمرو وابسته: قلمرو وابسته به آمریکا.",
+    "leader_en": "Frank Murphy",
+    "regime_type": "colonial_administration",
+    "regime_fa": "قلمرو تحت ادارهٔ ایالات متحده",
+    "scenario_date": "1934-01-01",
+    "colony_of": "US",
+    "colony_of_fa": "ایالات متحدهٔ آمریکا",
+    "colony_label": "قلمرو وابسته به آمریکا",
+    "status_fa": "قلمرو تحت ادارهٔ ایالات متحده؛ دولت مشترک‌المنافع فیلیپین هنوز تشکیل نشده بود"
   },
   "SK": {
     "code": "SK",
-    "name_fa": "جمهوری اسلواکی",
+    "name_fa": "اسلواکی (بخشی از چکسلواکی)",
     "name_en": "Slovakia",
     "capital_fa": "براتیسلاوا",
     "faction": "axis",
     "ideology": "fascism",
-    "leader": "یوزف تیسو",
-    "leader_fa": "یوزف تیسو",
-    "leader_title": "رئیس‌جمهور",
+    "leader": "توماش گاریگ ماساریک",
+    "leader_fa": "توماش گاریگ ماساریک",
+    "leader_title": "رئیس‌جمهور چکسلواکی؛ اسلواکی کشور مستقل نبود",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Bundesarchiv_Bild_146-2010-0049%2C_Josef_Tiso.jpg/250px-Bundesarchiv_Bild_146-2010-0049%2C_Josef_Tiso.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Bundesarchiv_Bild_146-2010-0049%2C_Josef_Tiso.jpg/250px-Bundesarchiv_Bild_146-2010-0049%2C_Josef_Tiso.jpg",
     "flag_url": "https://flagcdn.com/w320/sk.png",
-    "desc": "کشور جمهوری اسلواکی در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده یوزف تیسو بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور توماش گاریگ ماساریک (Tomáš Garrigue Masaryk) بود. نوع حکومت: بخشی از چکسلواکی؛ کشور مستقل نبود. جناح سناریویی: محور. اسلواکی در این تاریخ کشور مستقل نبود و به‌عنوان کشور قابل انتخاب غیرفعال شده است.",
+    "leader_en": "Tomáš Garrigue Masaryk",
+    "regime_type": "region_not_state",
+    "regime_fa": "بخشی از چکسلواکی؛ کشور مستقل نبود",
+    "scenario_date": "1934-01-01",
+    "selectable": "no"
   },
   "CP": {
     "code": "CP",
@@ -2161,11 +2468,15 @@
     "ideology": "communism",
     "leader": "مائو تسه‌تونگ",
     "leader_fa": "مائو تسه‌تونگ",
-    "leader_title": "رئیس حزب کمونیست",
+    "leader_title": "رهبر جمهوری شورایی چین",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Mao_Zedong_1950_Portrait_%283x4_cropped%29%282%29.jpg/250px-Mao_Zedong_1950_Portrait_%283x4_cropped%29%282%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Mao_Zedong_1950_Portrait_%283x4_cropped%29%282%29.jpg/250px-Mao_Zedong_1950_Portrait_%283x4_cropped%29%282%29.jpg",
     "flag_url": "static/flags/CP.svg",
-    "desc": "کشور جمهوری شورایی چین (یان‌آن) در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده مائو تسه‌تونگ بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور مائو تسه‌تونگ (Mao Zedong) بود. نوع حکومت: جمهوری شورایی کمونیستی. جناح سناریویی: کمینترن.",
+    "leader_en": "Mao Zedong",
+    "regime_type": "one_party_state",
+    "regime_fa": "جمهوری شورایی کمونیستی",
+    "scenario_date": "1934-01-01"
   },
   "TU": {
     "code": "TU",
@@ -2176,11 +2487,15 @@
     "ideology": "communism",
     "leader": "سالچاک توکا",
     "leader_fa": "سالچاک توکا",
-    "leader_title": "دبیرکل حزب تووا",
+    "leader_title": "رهبر جمهوری خلق تووا",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Salchak_toka.png/250px-Salchak_toka.png",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Salchak_toka.png/250px-Salchak_toka.png",
     "flag_url": "static/flags/TU.svg",
-    "desc": "کشور جمهوری خلق تووا در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده سالچاک توکا بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور سالچاک توکا (Salchak Toka) بود. نوع حکومت: جمهوری خلق تک‌حزبی. جناح سناریویی: کمینترن.",
+    "leader_en": "Salchak Toka",
+    "regime_type": "one_party_state",
+    "regime_fa": "جمهوری خلق تک‌حزبی",
+    "scenario_date": "1934-01-01"
   },
   "MZ": {
     "code": "MZ",
@@ -2191,11 +2506,19 @@
     "ideology": "fascism",
     "leader": "پویی (امپراتور کانگ‌ده)",
     "leader_fa": "پویی (امپراتور کانگ‌ده)",
-    "leader_title": "امپراتور منچوکوئو",
+    "leader_title": "امپراتور دست‌نشاندهٔ منچوکوئو",
     "leader_img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Puyi%2C_Manchukuo_period_%28cropped%29.jpg/250px-Puyi%2C_Manchukuo_period_%28cropped%29.jpg",
     "leader_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Puyi%2C_Manchukuo_period_%28cropped%29.jpg/250px-Puyi%2C_Manchukuo_period_%28cropped%29.jpg",
     "flag_url": "static/flags/MZ.svg",
-    "desc": "کشور امپراتوری منچوکوئو در دوران جنگ جهانی دوم (سال ۱۹۳۰). رهبری این کشور در این دوره بر عهده پویی (امپراتور کانگ‌ده) بود."
+    "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور پویی (امپراتور کانگ‌ده) (Puyi (Kangde Emperor)) بود. نوع حکومت: دولت دست‌نشاندهٔ ژاپن. جناح سناریویی: محور. وضعیت: دولت دست‌نشاندهٔ ژاپن؛ استقلال آن از نظر عملی محدود بود. وضعیت سیاسی: دولت دست‌نشاندهٔ ژاپن.",
+    "leader_en": "Puyi (Kangde Emperor)",
+    "regime_type": "puppet_state",
+    "regime_fa": "دولت دست‌نشاندهٔ ژاپن",
+    "scenario_date": "1934-01-01",
+    "puppet_of": "JP",
+    "puppet_of_fa": "ژاپن",
+    "puppet_label": "دولت دست‌نشاندهٔ ژاپن",
+    "status_fa": "دولت دست‌نشاندهٔ ژاپن؛ استقلال آن از نظر عملی محدود بود"
   }
 };
     const FACTIONS = {
@@ -2225,11 +2548,11 @@
   },
   "neutral": {
     "id": "neutral",
-    "fa": "غیرمتعهد / بی‌طرف",
-    "en": "Neutral",
+    "fa": "بدون جناح",
+    "en": "No Faction",
     "color": "#94a3b8",
     "bg": "rgba(148, 163, 184, 0.15)",
-    "badge_url": "static/badges/neutral.svg"
+    "badge_url": "static/badges/no-faction.svg"
   }
 };
     const IDEOLOGIES = {
@@ -2253,13 +2576,6 @@
     "en": "Democracy",
     "color": "#3b82f6",
     "badge_url": "static/badges/democracy.svg"
-  },
-  "neutral": {
-    "id": "neutral",
-    "fa": "غیرمتعهد",
-    "en": "Non-Aligned",
-    "color": "#eab308",
-    "badge_url": "static/badges/neutral.svg"
   }
 };
     const ICONS = {"swords": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.5 17.5L3 6V3h3l11.5 11.5\"/><path d=\"m13 19 6 2 2-6-2-2-6 2z\"/><path d=\"m2 22 3-3\"/><path d=\"m19 5 3-3\"/><path d=\"m5 2 4 4\"/><path d=\"m2 5 4 4\"/></svg>", "cards": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M3 9h18\"/><path d=\"M9 21V9\"/></svg>", "map": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21\"/><line x1=\"9\" x2=\"9\" y1=\"3\" y2=\"18\"/><line x1=\"15\" x2=\"15\" y1=\"6\" y2=\"21\"/></svg>", "music": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></svg>", "search": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><line x1=\"21\" x2=\"16.65\" y1=\"21\" y2=\"16.65\"/></svg>", "lock": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg>", "crown": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"currentColor\"><path d=\"M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z\"/></svg>", "radar": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"38\" height=\"38\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2a10 10 0 1 0 10 10\"/><path d=\"M12 6a6 6 0 1 0 6 6\"/><path d=\"M12 10a2 2 0 1 0 2 2\"/><line x1=\"12\" y1=\"12\" x2=\"22\" y2=\"2\"/></svg>", "close": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg>", "check": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"20 6 9 17 4 12\"/></svg>", "warning": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z\"/><line x1=\"12\" y1=\"9\" x2=\"12\" y2=\"13\"/><line x1=\"12\" y1=\"17\" x2=\"12.01\" y2=\"17\"/></svg>", "telegram": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"currentColor\"><path d=\"M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.943z\"/></svg>", "dot_free": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"10\" height=\"10\" fill=\"#10b981\"><circle cx=\"12\" cy=\"12\" r=\"8\"/></svg>", "refresh": "<svg class=\"ui-icon\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67\"/></svg>"};
@@ -2268,7 +2584,7 @@
 
     // State
     let S = {
-      season: 'pick',
+      season: 'wait',
       p: null,
       taken: [],
       owners: {},
@@ -2310,10 +2626,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ init: initData })
         });
+        const data = await res.json();
+        if (!res.ok && data.must_join) {
+          S.membership = { ok:false, missing:data.missing || [], channels:data.channels || [] };
+          handleMembershipGate(S.membership);
+          return;
+        }
         if (res.ok) {
-          const data = await res.json();
           if (data.s) {
-            S.season = data.s.season || 'pick';
+            S.season = data.s.season || 'wait';
             S.p = data.s.p || null;
             S.taken = data.s.taken || [];
             S.owners = data.s.owners || {};
@@ -2385,12 +2706,26 @@
         showWaitingRoom();
       } else {
         showSelectionView();
+        const locked = S.season !== 'pick';
+        const banner = document.getElementById('season-status-banner');
+        if (banner) {
+          banner.style.display = locked ? 'block' : 'none';
+          banner.innerHTML = S.season === 'live'
+            ? '<b>سیزن فعال است</b><br>انتخاب کشور بسته شده است.'
+            : '<b>اتاق انتظار سیزن</b><br>ادمین هنوز مرحلهٔ انتخاب کشور را فعال نکرده است. پس از دستور <code>/season pick</code> امکان انتخاب کشور باز می‌شود.';
+        }
+        const panel = document.getElementById('country-filter-panel');
+        if (panel) panel.style.display = locked ? 'none' : 'block';
+        const cards = document.getElementById('cards-view-wrap');
+        const map = document.getElementById('map-view-container');
+        if (cards) cards.style.display = locked ? 'none' : (currentViewMode === 'cards' ? 'block' : 'none');
+        if (map) map.style.display = locked ? 'none' : (currentViewMode === 'map' ? 'block' : 'none');
       }
     }
 
     function updateStats() {
       let axisCount = 0, alliesCount = 0, cominternCount = 0, neutralCount = 0;
-      Object.values(COUNTRIES).forEach(c => {
+      Object.values(COUNTRIES).filter(c => c.selectable !== 'no').forEach(c => {
         if (c.faction === 'axis') axisCount++;
         else if (c.faction === 'allies') alliesCount++;
         else if (c.faction === 'comintern') cominternCount++;
@@ -2430,22 +2765,23 @@
               <span class="dossier-value" style="color: var(--cyan);">${ICONS.crown} ${S.p.name || S.p.username || 'شما'}</span>
             </div>
             <div class="dossier-field">
-              <span class="dossier-label">ائتلاف نظامی</span>
+              <span class="dossier-label">جناح سناریو</span>
               <span class="dossier-value" style="color: ${fac.color || '#fff'};">
                 <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
-                ${fac.fa || ''}
+                ${fac.fa || 'بدون جناح'}
               </span>
             </div>
             <div class="dossier-field">
-              <span class="dossier-label">نظام ایدئولوژیک</span>
+              <span class="dossier-label">نوع حکومت</span>
               <span class="dossier-value">
-                <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                ${ideo.fa || 'غیرمتعهد'}
+                <img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت">
+                ${c.regime_fa || 'نامشخص'}
               </span>
             </div>
-            ${isMonarchy(c, S.p.c) ? '<div class="dossier-field"><span class="dossier-label">نوع حکومت</span><span class="dossier-value"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span></div>' : ''}
+            ${c.colony_label ? '<div class="dossier-field"><span class="dossier-label">وضعیت استعماری</span><span class="dossier-value">' + c.colony_label + '</span></div>' : ''}
+            ${c.puppet_label ? '<div class="dossier-field"><span class="dossier-label">وضعیت سیاسی</span><span class="dossier-value">' + c.puppet_label + '</span></div>' : ''}
             <div class="dossier-field">
-              <span class="dossier-label">رهبر تاریخی (۱۹۳۰)</span>
+              <span class="dossier-label">رهبر تاریخی (۱۹۳۴)</span>
               <span class="dossier-value">${c.leader_fa || ''}</span>
             </div>
           </div>
@@ -2487,23 +2823,7 @@
       if (geojsonLayer) updateMapStyles();
     }
 
-    // Explicit historical monarchy list. Some constitutional monarchies have democratic
-    // ideology, so regime tags must not be inferred from ideology alone.
-    const MONARCHY_CODES = new Set([
-      'IT','JP','HU','RO','BG','TH','GB','CA','AU','NZ','NL','BE','NO','DK',
-      'GR','YU','LU','IR','SE','AF','SA','IQ','EG','ET','TB','NP','BT','YE',
-      'OM','AL','ES','IS'
-    ]);
-
-    function isMonarchy(c, code) {
-      return MONARCHY_CODES.has(code) ||
-        /پادشاهی|امپراتوری|شاهنشاهی|سلطنت|سلطنتی/.test(String(c?.name_fa || '')) ||
-        /kingdom|empire|sultanate/i.test(String(c?.name_en || ''));
-    }
-
-    function getIdeology(c) {
-      return IDEOLOGIES[c?.ideology] || (c?.ideology === 'nonaligned' ? IDEOLOGIES.neutral : {});
-    }
+    function isMonarchy(c) { return /monarchy|regency_monarchy|imperial_monarchy|absolute_monarchy|royal_dictatorship|theocratic_monarchy/.test(String(c?.regime_type || '')); }
 
     function matchesFilter(c, code) {
       const taken = S.taken.includes(code);
@@ -2512,10 +2832,11 @@
       if (currentFilter === 'allies' && c.faction !== 'allies') return false;
       if (currentFilter === 'comintern' && c.faction !== 'comintern') return false;
       if (currentFilter === 'neutral_fac' && c.faction !== 'neutral') return false;
+      if (c.selectable === 'no') return false;
       if (currentFilter === 'fascism' && c.ideology !== 'fascism') return false;
       if (currentFilter === 'communism' && c.ideology !== 'communism') return false;
       if (currentFilter === 'democracy' && c.ideology !== 'democracy') return false;
-      if (currentFilter === 'monarchy' && !isMonarchy(c, code)) return false;
+      if (currentFilter === 'monarchy' && !isMonarchy(c)) return false;
 
       if (searchQuery) {
         const text = `${c.name_fa} ${c.name_en} ${c.leader_fa} ${c.leader_en} ${c.capital_fa} ${c.code} ${c.iso3}`.toLowerCase();
@@ -2527,7 +2848,7 @@
     // Card Renderer
     function renderCards() {
       const grid = document.getElementById('countries-grid');
-      const codes = Object.keys(COUNTRIES);
+      const codes = Object.keys(COUNTRIES).filter(code => COUNTRIES[code].selectable !== 'no');
       
       const filtered = codes.filter(code => matchesFilter(COUNTRIES[code], code));
       
@@ -2559,12 +2880,10 @@
                     <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
                     ${fac.fa || ''}
                   </span>
-                  <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'neutral' : c.ideology}">
-                    <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                    ${ideo.fa || 'غیرمتعهد'}
-                  </span>
-                  ${isMonarchy(c, code) ? '<span class="tactical-badge badge-monarchy"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span>' : ''}
-                  ${c.colony_of_fa ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="مستعمره"> ' + (c.colony_label || 'مستعمرهٔ ' + c.colony_of_fa) + '</span>' : ''}
+                  <span class="tactical-badge badge-regime"><img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت"> ${c.regime_fa || 'نوع حکومت نامشخص'}</span>
+                  ${c.colony_label ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="قلمرو وابسته"> ' + c.colony_label + '</span>' : ''}
+                  ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
+                  ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
                 </div>
               </div>
             </div>
@@ -2574,7 +2893,7 @@
                 <img src="${c.leader_url || FALLBACK_LEADER}" alt="${c.leader_fa}" loading="lazy" onerror="this.src='${FALLBACK_LEADER}'">
               </div>
               <div class="leader-meta">
-                <p class="leader-title">رهبر تاریخی (۱۹۳۰):</p>
+                <p class="leader-title">رهبر تاریخی (۱ ژانویهٔ ۱۹۳۴):</p>
                 <p class="leader-name">${c.leader_fa}</p>
               </div>
             </div>
@@ -2610,7 +2929,7 @@
       document.getElementById('cards-view-wrap').style.display = mode === 'cards' ? 'block' : 'none';
       document.getElementById('map-view-container').style.display = mode === 'map' ? 'block' : 'none';
 
-      if (mode === 'map') {
+      if (mode === 'map' && S.season === 'pick') {
         if (!leafletMap) {
           initMap();
         } else {
@@ -2620,115 +2939,74 @@
     }
 
     // Leaflet World Map
-    async function initMap() {
-      leafletMap = L.map('map', {
-        center: [30, 20],
-        zoom: 2.2,
-        minZoom: 1.5,
-        maxZoom: 6,
-        attributionControl: false
-      });
-
-      try {
-        let res = await fetch('/world_geo.json');
-        if (!res.ok) {
-          res = await fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json');
-        }
-        worldGeoData = await res.json();
-        renderGeoJson();
-      } catch(err) {
-        console.error('Failed to load map data:', err);
-      }
-    }
-
     const iso3ToCode = {
-      'DEU': 'DE', 'RUS': 'SO', 'GBR': 'GB', 'USA': 'US', 'JPN': 'JP',
-      'ITA': 'IT', 'FRA': 'FR', 'CHN': 'CN', 'IRN': 'IR', 'POL': 'PL',
-      'CAN': 'CA', 'AUS': 'AU', 'IND': 'IN', 'ROU': 'RO', 'HUN': 'HU',
-      'FIN': 'FIN', 'BGR': 'BG', 'SRB': 'YU', 'HRV': 'YU', 'GRC': 'GR',
-      'TUR': 'TR', 'ESP': 'ESP', 'SWE': 'SE', 'CHE': 'CH', 'PRT': 'PT',
-      'NLD': 'NL', 'BEL': 'BEL', 'NOR': 'NO', 'DNK': 'DK', 'CZE': 'CZ',
-      'BRA': 'BR', 'MEX': 'MX', 'ARG': 'AR', 'IRQ': 'IQ', 'SAU': 'SA',
-      'EGY': 'EGY', 'ZAF': 'ZA', 'NZL': 'NZ', 'MNG': 'MN', 'THA': 'TH',
-      'IRL': 'IE', 'AFG': 'AF'
+      DEU:'DE',RUS:'SU',GBR:'GB',USA:'US',JPN:'JP',ITA:'IT',FRA:'FR',CHN:'CN',IRN:'IR',POL:'PL',
+      CAN:'CA',AUS:'AU',IND:'IN',PAK:'IN',BGD:'IN',MMR:'IN',ROU:'RO',HUN:'HU',FIN:'FI',BGR:'BG',
+      SRB:'YU',HRV:'YU',SVN:'YU',BIH:'YU',MNE:'YU',MKD:'YU',XKX:'YU',GRC:'GR',TUR:'TR',ESP:'ES',
+      SWE:'SE',CHE:'CH',PRT:'PT',NLD:'NL',BEL:'BE',NOR:'NO',DNK:'DK',CZE:'CZ',SVK:'CZ',BRA:'BR',
+      MEX:'MX',ARG:'AR',IRQ:'IQ',SAU:'SA',EGY:'EG',ZAF:'ZA',NZL:'NZ',MNG:'MN',THA:'TH',IRL:'IE',
+      AFG:'AF',ALB:'AL',COL:'CO',PER:'PE',VEN:'VE',CUB:'CU',EST:'EE',LVA:'LV',LTU:'LT',NPL:'NP',
+      BTN:'BT',YEM:'YE',OMN:'OM',ISL:'IS',URY:'UY',PRY:'PY',BOL:'BO',ECU:'EC',GTM:'GT',HND:'HN',
+      SLV:'SV',NIC:'NI',CRI:'CR',PAN:'PA',DOM:'DO',HTI:'HT',LBR:'LR',PHL:'PH',
+      BLR:'SU',UKR:'SU',KAZ:'SU',KGZ:'SU',TJK:'SU',TKM:'SU',UZB:'SU',GEO:'SU',ARM:'SU',AZE:'SU',MDA:'SU'
     };
-
-    function getFactionColor(faction) {
-      if (faction === 'axis') return '#ef4444';
-      if (faction === 'allies') return '#3b82f6';
-      if (faction === 'comintern') return '#f97316';
-      return '#64748b';
+    const mapNameAliases = {'united states of america':'US','united states':'US','russian federation':'SU','russia':'SU','iran':'IR','iran (islamic republic of)':'IR','united kingdom':'GB','czech republic':'CZ','czechia':'CZ','slovakia':'CZ','republic of the philippines':'PH','myanmar':'IN','burma':'IN','bangladesh':'IN','pakistan':'IN','belarus':'SU','ukraine':'SU','kazakhstan':'SU','uzbekistan':'SU','turkmenistan':'SU','tajikistan':'SU','kyrgyzstan':'SU','georgia':'SU','armenia':'SU','azerbaijan':'SU','serbia':'YU','croatia':'YU','bosnia and herzegovina':'YU','slovenia':'YU','montenegro':'YU','north macedonia':'YU','the netherlands':'NL','republic of moldova':'SU'};
+    function getFeatureGameCode(feature) {
+      const p=feature?.properties||{};
+      for(const raw of [feature?.id,p.ISO_A3,p.ADM0_A3,p.SOV_A3,p.iso_a3,p.ISO3,p.code,p.ISO_A2,p.iso_a2]) {
+        if(raw==null) continue;
+        const k=String(raw).trim().toUpperCase();
+        if(iso3ToCode[k]) return iso3ToCode[k];
+        if(COUNTRIES[k]) return k;
+      }
+      const name=String(p.ADMIN||p.NAME||p.name||p.NAME_EN||'').trim().toLowerCase();
+      return mapNameAliases[name]||Object.values(COUNTRIES).find(c=>c.name_en?.toLowerCase()===name)?.code||null;
     }
-
+    function getFactionColor(faction) { if(faction==='axis')return '#ef4444';if(faction==='allies')return '#3b82f6';if(faction==='comintern')return '#f97316';return '#64748b'; }
+    function mapStyleForCountry(country,code) {
+      const taken=S.taken.includes(code), matches=matchesFilter(country,code);
+      return {fillColor:taken?'#334155':getFactionColor(country.faction),weight:matches?1:0.2,opacity:matches?0.8:0.08,color:matches?'#1e293b':'#0b1220',fillOpacity:matches?(taken?0.42:0.68):0.015};
+    }
+    async function initMap() {
+      leafletMap=L.map('map',{center:[30,20],zoom:2.2,minZoom:1.5,maxZoom:6,attributionControl:false,preferCanvas:true,renderer:L.canvas({padding:0.35})});
+      try {
+        const res=await fetch('/world_geo.json',{cache:'force-cache'});
+        if(!res.ok)throw new Error('Map data HTTP '+res.status);
+        worldGeoData=await res.json();renderGeoJson();
+      } catch(err) { console.error('Failed to load local map data:',err);showToast('دادهٔ نقشه بارگذاری نشد. صفحه را تازه‌سازی کنید.'); }
+    }
     function renderGeoJson() {
-      if (!worldGeoData) return;
-      if (geojsonLayer) leafletMap.removeLayer(geojsonLayer);
-
-      geojsonLayer = L.geoJSON(worldGeoData, {
-        style: feature => {
-          const iso = feature.id || feature.properties?.code;
-          const code = iso3ToCode[iso] || feature.properties?.code || feature.id;
-          const country = COUNTRIES[code];
-          const isTaken = S.taken.includes(code);
-
-          if (country) {
-            const baseColor = getFactionColor(country.faction);
-            if (!matchesFilter(country, code)) {
-              return { fillColor: '#0b1220', weight: 0.1, opacity: 0.08, color: '#0b1220', fillOpacity: 0.025 };
-            }
-            return {
-              fillColor: isTaken ? '#334155' : baseColor,
-              weight: 1.2,
-              opacity: 0.8,
-              color: '#1e293b',
-              fillOpacity: isTaken ? 0.4 : 0.7
-            };
-          }
-          return {
-            fillColor: '#1e293b',
-            weight: 0.8,
-            opacity: 0.4,
-            color: '#0f172a',
-            fillOpacity: 0.2
-          };
-        },
-        onEachFeature: (feature, layer) => {
-          const iso = feature.id || feature.properties?.code;
-          const code = iso3ToCode[iso] || feature.properties?.code || feature.id;
-          const country = COUNTRIES[code];
-
-          if (country) {
-            const isTaken = S.taken.includes(code);
-            const owner = S.owners[code] || S.owners[code?.toLowerCase()];
-            const ownerLabel = owner ? (owner.name || '@' + owner.username) : 'کاربر';
-
-            layer.bindTooltip(`
-              <div style="direction: rtl; text-align: right; font-family: Vazirmatn, sans-serif; font-size: 12px;">
-                <b>${country.name_fa}</b> (${country.name_en})<br>
-                <span>رهبر: ${country.leader_fa}</span><br>                ${country.capital_fa ? '<span>پایتخت: ' + country.capital_fa + '</span><br>' : ''}
-                ${country.colony_of_fa ? '<span style="color:#86efac;">' + (country.colony_label || 'مستعمرهٔ ' + country.colony_of_fa) + '</span><br>' : ''}
-                ${isTaken ? '<span style="color:#ef4444;">اشغال‌شده توسط: ' + ownerLabel + '</span>' : '<span style="color:#10b981;">آماده تصاحب</span>'}
-              </div>
-            `, { sticky: true });
-
-            layer.on({
-              mouseover: e => {
-                e.target.setStyle({ weight: 2.5, color: '#f59e0b', fillOpacity: 0.9 });
-              },
-              mouseout: e => {
-                geojsonLayer.resetStyle(e.target);
-              },
-              click: () => {
-                openClaimModal(code);
-              }
-            });
-          }
+      if(!worldGeoData)return;
+      if(geojsonLayer)leafletMap.removeLayer(geojsonLayer);
+      geojsonLayer=L.geoJSON(worldGeoData,{
+        renderer:L.canvas({padding:0.35}),smoothFactor:1.5,
+        style:feature=>{const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];return c?mapStyleForCountry(c,code):{fillColor:'#1e293b',weight:0.3,opacity:0.3,color:'#0f172a',fillOpacity:0.12,interactive:false};},
+        onEachFeature:(feature,layer)=>{
+          const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];
+          if(!c||c.selectable==='no'){layer.options.interactive=false;return;}
+          const owner=S.owners[code]||S.owners[code?.toLowerCase()],ownerLabel=owner?(owner.name||'@'+owner.username):'کاربر';
+          layer.bindTooltip(`<div style="direction:rtl;text-align:right;font-family:Vazirmatn,sans-serif;font-size:12px"><b>${c.name_fa}</b> (${c.name_en})<br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa||'نامشخص'}<br>جناح: ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>حکومت: ${c.regime_fa||'نامشخص'}<br>${c.colony_label?'<span style="color:#86efac">'+c.colony_label+'</span><br>':''}${c.puppet_label?'<span style="color:#fdba74">'+c.puppet_label+'</span><br>':''}${S.taken.includes(code)?'<span style="color:#ef4444">اشغال‌شده توسط: '+ownerLabel+'</span>':'<span style="color:#10b981">آماده تصاحب</span>'}</div>`,{sticky:true});
+          layer.on({mouseover:e=>{if(matchesFilter(c,code))e.target.setStyle({weight:2,color:'#f59e0b',fillOpacity:0.88});},mouseout:e=>{if(geojsonLayer)geojsonLayer.resetStyle(e.target);},click:()=>{if(matchesFilter(c,code)&&S.season==='pick')openClaimModal(code);}});
+          layer.options.interactive=matchesFilter(c,code)&&S.season==='pick';
         }
       }).addTo(leafletMap);
+      renderSpecialHistoricalPolygons();
     }
-
+    let specialHistoricalLayers=null;
+    function renderSpecialHistoricalPolygons() {
+      if(!leafletMap)return;
+      if(specialHistoricalLayers)leafletMap.removeLayer(specialHistoricalLayers);
+      specialHistoricalLayers=L.layerGroup().addTo(leafletMap);
+      const overlays=[
+        {code:'MZ',coords:[[53,121],[53,130],[49,134],[45,131],[41,126],[40,120],[43,117],[47,118],[50,120]]},
+        {code:'TB',coords:[[36,78],[36,88],[34,96],[30,100],[27,97],[26,89],[28,82],[31,78]]},
+        {code:'TU',coords:[[52.5,89],[52.5,98],[50.5,101],[49,96],[49.5,91]]}
+      ];
+      overlays.forEach(item=>{const c=COUNTRIES[item.code];if(!c)return;const active=matchesFilter(c,item.code),poly=L.polygon(item.coords,{renderer:L.canvas({padding:0.35}),smoothFactor:2,bubblingMouseEvents:false,color:active?'#f8fafc':'#0b1220',weight:active?1.2:0.2,fillColor:active?getFactionColor(c.faction):'#0b1220',fillOpacity:active?0.7:0.01,opacity:active?0.85:0.05,interactive:active&&S.season==='pick'});poly.bindTooltip(`<b>${c.name_fa}</b><br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa}<br>جناح: ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>حکومت: ${c.regime_fa}`);poly.on('click',()=>{if(active&&S.season==='pick')openClaimModal(item.code)});poly.addTo(specialHistoricalLayers);});
+    }
     function updateMapStyles() {
-      if (geojsonLayer) geojsonLayer.setStyle();
+      if(geojsonLayer)geojsonLayer.eachLayer(layer=>{const code=getFeatureGameCode(layer.feature),c=code&&COUNTRIES[code];if(c&&layer.setStyle)layer.setStyle(mapStyleForCountry(c,code));if(c)layer.options.interactive=matchesFilter(c,code)&&S.season==='pick';});
+      renderSpecialHistoricalPolygons();
     }
 
     // Claim Modal Logic
@@ -2758,11 +3036,10 @@
                 <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
                 ${fac.fa || ''}
               </span>
-              <span class="tactical-badge badge-${c.ideology === 'neutral' || c.ideology === 'nonaligned' ? 'neutral' : c.ideology}">
-                <img src="${ideo.badge_url || IDEOLOGIES.neutral.badge_url}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                ${ideo.fa || 'غیرمتعهد'}
-              </span>
-              ${isMonarchy(c, code) ? '<span class="tactical-badge badge-monarchy"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span>' : ''}
+              <span class="tactical-badge badge-regime"><img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت"> ${c.regime_fa || 'نوع حکومت نامشخص'}</span>
+              ${c.colony_label ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="قلمرو وابسته"> ' + c.colony_label + '</span>' : ''}
+              ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
+              ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
             </div>
           </div>
         </div>
@@ -2772,7 +3049,7 @@
             <img src="${c.leader_url || FALLBACK_LEADER}" style="width: 100%; height: 100%; object-fit: cover; object-position: center 22%;" onerror="this.src='${FALLBACK_LEADER}'">
           </div>
           <div>
-            <div style="font-size: 11px; color: var(--text-muted);">رهبر تاریخی (دوران ۱۹۳۰):</div>
+            <div style="font-size: 11px; color: var(--text-muted);">رهبر تاریخی (۱ ژانویهٔ ۱۹۳۴):</div>
             <div style="font-size: 14px; font-weight: 700; color: #fff;">${c.leader_fa}</div>
             <div style="font-size: 11px; color: var(--text-muted);">${c.leader_en}</div>
           </div>
@@ -2852,12 +3129,7 @@
           }
         }
       } catch(err) {
-        // Fallback simulate local claim
-        showToast('فرمانروایی بر ' + (COUNTRIES[selectedCountryCode]?.name_fa || '') + ' ثبت شد.');
-        S.p = { c: selectedCountryCode };
-        if (!S.taken.includes(selectedCountryCode)) S.taken.push(selectedCountryCode);
-        closeModal();
-        onStateUpdated();
+        showToast('ارتباط با سرور برقرار نشد؛ کشور ثبت نشده است. دوباره تلاش کنید.');
       } finally {
         btn.disabled = false;
         btn.innerHTML = ICONS.swords + ' تأیید و تصاحب کشور';
