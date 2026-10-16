@@ -78,6 +78,7 @@ python bot.py
 - `/reset <COUNTRY_CODE>`: آزادسازی یک کشور (مثال: `/reset DE`)
 
 
-### Allied Powers badge attribution
 
-The Allied Powers flag image is sourced from [Wikimedia Commons — Allied Powers Flag.svg](https://commons.wikimedia.org/wiki/File:Allied_Powers_Flag.svg), credited to RootOfAllLight and licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The Commons description identifies it as a flag combining the British Empire, United States, Free France, Republic of China, and Soviet Union. This historical flag is a commemorative representation, not a single official insignia used by every Allied force.
+### Historical faction icon sources
+- Fascism ideology icon: [National Fascist Party logo (Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:National_Fascist_Party_logo.svg), historical Italian National Fascist Party emblem; the Commons page records a public-domain dedication by the uploader.
+- Allied faction icon: [Insignia of the South East Asia Command (Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:Insignia_of_the_South_East_Asia_Command.svg). This is a real Allied command insignia, not a universal logo for all Allied countries; there was no single universal Allied logo.

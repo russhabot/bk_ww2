@@ -838,7 +838,7 @@
     html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     img, svg, video, canvas { max-width: 100%; }
     button, input, select, textarea { font: inherit; }
-    .badge-icon-img { object-fit: contain; }
+    .badge-icon-img { object-fit: contain; width: 16px; height: 16px; flex: 0 0 auto; }
 
     @media (max-width: 760px) {
       body { line-height: 1.5; }
@@ -890,15 +890,19 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
+    html, body { width: 100%; max-width: 100%; overflow-x: clip; }
+    .app-container, #section-selection, #section-waiting-room, .waiting-room-panel, .command-dossier, .modal-card, .filter-panel, .countries-grid, .country-card { min-width: 0; max-width: 100%; }
+    .header-top > *, .header-controls > *, .card-top > *, .dossier-header > *, .leader-row > *, .dossier-field, .dossier-value, .tactical-badge, .owner-tag { min-width: 0; overflow-wrap: anywhere; }
+    .card-badges, .dossier-value { flex-wrap: wrap; min-width: 0; }
+    .dossier-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .modal-card * { max-width: 100%; overflow-wrap: anywhere; }
+    @media (max-width: 480px) { .dossier-grid { grid-template-columns: minmax(0, 1fr); } .dossier-header { align-items: flex-start; gap: 9px; } .dossier-flag { flex: 0 0 64px; width: 64px; height: 46px; } .waiting-room-panel { padding: 14px 10px; gap: 14px; } .command-dossier { padding: 12px; } .country-name-fa, .country-name-en, .country-capital { overflow-wrap: anywhere; white-space: normal; } .brand-text h1 { overflow-wrap: anywhere; } }
   </style>
 </head>
 <body>
 
   <!-- Audio Element -->
-  <audio id="march-audio" preload="auto" loop autoplay>
-    <source src="https://archive.org/download/the-planets_202501/01%20-%20I.%20Mars%2C%20the%20Bringer%20of%20War.mp3" type="audio/mpeg">
-    <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Holst_The_Planets_Mars_the_Bringer_of_War_USAF_Band.ogg" type="audio/ogg">
-  </audio>
+  <audio id="march-audio" preload="none" loop></audio>
 
   <div class="app-container">
 
@@ -942,7 +946,7 @@
           <strong id="stat-axis-count">0</strong>
         </div>
         <div class="stat-pill allies">
-          <span class="pill-label"><img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Allied_Powers_Flag.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</span>
+          <span class="pill-label"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</span>
           <strong id="stat-allies-count">0</strong>
         </div>
         <div class="stat-pill comintern">
@@ -967,7 +971,7 @@
         </div>
         <div>
           <h2 style="margin: 0; font-size: 22px; color: #fff;">اتاق فرماندهی ستاد کل</h2>
-          <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 13px;">${S.season === 'wait' ? 'سیزن هنوز شروع نشده است؛ منتظر اعلام ادمین بمانید.' : S.season === 'live' ? 'سیزن آغاز شده است؛ وضعیت کشور خود را بررسی کنید.' : 'کشور شما ثبت گردید؛ در انتظار آغاز مرحلهٔ بازی باشید.'}</p>
+          <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 13px;">سیزن هنوز شروع نشده است؛ منتظر اعلام ادمین بمانید.</p>
         </div>
 
         <div class="command-dossier" id="player-command-dossier">
@@ -996,7 +1000,7 @@
         <div class="filter-chips">
           <div class="chip active" onclick="setFilter('all', this)">همه</div>
           <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> متحدین محور</div>
-          <div class="chip" onclick="setFilter('allies', this)"><img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Allied_Powers_Flag.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</div>
+          <div class="chip" onclick="setFilter('allies', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> ائتلاف متفقین</div>
           <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن">  کمینترن</div>
           <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح">  بدون جناح</div>
           <div class="chip" onclick="setFilter('fascism', this)"><img src="static/badges/fascism.svg" class="badge-icon-img" alt="فاشیسم"> فاشیست</div>
@@ -2593,7 +2597,7 @@
     "en": "Allied Powers",
     "color": "#3b82f6",
     "bg": "rgba(59, 130, 246, 0.15)",
-    "badge_url": "https://upload.wikimedia.org/wikipedia/commons/0/03/Allied_Powers_Flag.svg"
+    "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg"
   },
   "comintern": {
     "id": "comintern",
@@ -2618,7 +2622,7 @@
     "fa": "فاشیسم / نظامی‌گری",
     "en": "Fascism",
     "color": "#a855f7",
-    "badge_url": "static/badges/fascism.svg"
+    "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg"
   },
   "communism": {
     "id": "communism",
@@ -2667,11 +2671,12 @@
       } catch(e) {}
     }
 
-    function init() {
+    async function init() {
       updateStats();
       renderCards();
+      // Load the server's configured track first, then initialize the player once.
+      await fetchState();
       setupAudio();
-      fetchState();
     }
 
     // Fetch live state from backend
@@ -2758,27 +2763,25 @@
       updateStats();
       renderCards();
       if (geojsonLayer) updateMapStyles();
-
-      if (S.p && S.p.c) {
-        showWaitingRoom();
-      } else {
-        showSelectionView();
-        const locked = S.season !== 'pick';
-        const banner = document.getElementById('season-status-banner');
-        if (banner) {
-          banner.style.display = locked ? 'block' : 'none';
-          banner.innerHTML = S.season === 'live'
-            ? '<b>سیزن فعال است</b><br>انتخاب کشور بسته است؛ فهرست کشورها همچنان برای مشاهده در دسترس است.'
-            : '<b>سیزن هنوز شروع نشده است</b><br>در حال حاضر فقط می‌توانید کشورها و اطلاعات آن‌ها را مشاهده کنید. منتظر اعلام ادمین بمانید؛ با اجرای دستور <code>/season pick</code> انتخاب کشور آغاز می‌شود.';
-        }
-        // Keep the country list and map visible in every phase. Only claiming is locked.
-        const panel = document.getElementById('country-filter-panel');
-        if (panel) panel.style.display = 'block';
-        const cards = document.getElementById('cards-view-wrap');
-        const map = document.getElementById('map-view-container');
-        if (cards) cards.style.display = currentViewMode === 'cards' ? 'block' : 'none';
-        if (map) map.style.display = currentViewMode === 'map' ? 'block' : 'none';
+      const hasCountry = Boolean(S.p && S.p.c);
+      if (hasCountry) showWaitingRoom();
+      else document.getElementById('section-waiting-room').style.display = 'none';
+      const selection = document.getElementById('section-selection');
+      if (selection) selection.style.display = 'block';
+      const locked = S.season !== 'pick';
+      const banner = document.getElementById('season-status-banner');
+      if (banner) {
+        banner.style.display = locked ? 'block' : 'none';
+        banner.innerHTML = S.season === 'live'
+          ? '<b>سیزن فعال است</b><br>انتخاب کشور بسته است؛ فهرست کشورها همچنان برای مشاهده در دسترس است.'
+          : '<b>سیزن هنوز شروع نشده است</b><br>در حال حاضر فقط می‌توانید کشورها و اطلاعات آن‌ها را مشاهده کنید. منتظر اعلام ادمین بمانید؛ با اجرای دستور <code>/season pick</code> انتخاب کشور آغاز می‌شود.';
       }
+      const panel = document.getElementById('country-filter-panel');
+      if (panel) panel.style.display = 'block';
+      const cards = document.getElementById('cards-view-wrap');
+      const map = document.getElementById('map-view-container');
+      if (cards) cards.style.display = currentViewMode === 'cards' ? 'block' : 'none';
+      if (map) map.style.display = currentViewMode === 'map' ? 'block' : 'none';
     }
 
     function updateStats() {
@@ -2798,7 +2801,7 @@
 
     function showWaitingRoom() {
       document.getElementById('section-waiting-room').style.display = 'block';
-      document.getElementById('section-selection').style.display = 'none';
+      document.getElementById('section-selection').style.display = 'block';
 
       const dossier = document.getElementById('player-command-dossier');
       if (S.p && S.p.c) {
@@ -2863,7 +2866,8 @@
     }
 
     function showAllNationsView() {
-      showSelectionView();
+      const section = document.getElementById('section-selection');
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // Filter & Search
@@ -3207,75 +3211,37 @@
       }, 3200);
     }
 
-    // Background march: attempt autoplay immediately, then retry on the first
-    // user interaction if the browser/WebView blocks autoplay without a gesture.
+    // Audio starts from a user gesture (required by mobile browsers); fallback handler is registered before loading.
     const FALLBACK_MUSIC_URL = 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Holst_The_Planets_Mars_the_Bringer_of_War_USAF_Band.ogg';
-
-    async function attemptAudioPlayback() {
-      const audio = document.getElementById('march-audio');
-      if (!audio || isAudioPlaying) return;
-      try {
-        await audio.play();
-        isAudioPlaying = !audio.paused;
-        updateAudioUI();
-      } catch (err) {
-        isAudioPlaying = false;
-        updateAudioUI();
-        console.info('Autoplay needs a user gesture in this browser:', err?.message || err);
-      }
-    }
-
+    let musicSourceIndex = 0;
+    let musicSources = [];
     function setupAudio() {
       const audio = document.getElementById('march-audio');
-      audio.loop = true;
-      audio.autoplay = true;
-      audio.preload = 'auto';
-      audio.volume = 0.55;
-      audio.src = S.bg_music || FALLBACK_MUSIC_URL;
-      audio.load();
+      if (!audio) return;
+      audio.loop = true; audio.autoplay = false; audio.preload = 'none'; audio.volume = 0.5;
+      musicSources = [...new Set([S.bg_music, FALLBACK_MUSIC_URL].filter(Boolean))];
+      musicSourceIndex = 0;
       audio.addEventListener('play', () => { isAudioPlaying = true; updateAudioUI(); });
       audio.addEventListener('pause', () => { isAudioPlaying = false; updateAudioUI(); });
       audio.addEventListener('error', () => {
-        if (audio.dataset.fallbackTried === '1') return;
-        audio.dataset.fallbackTried = '1';
-        audio.src = FALLBACK_MUSIC_URL;
-        audio.load();
-        attemptAudioPlayback();
+        if (musicSourceIndex + 1 < musicSources.length) {
+          musicSourceIndex += 1; audio.src = musicSources[musicSourceIndex]; audio.load();
+          showToast('منبع موسیقی عوض شد؛ دوباره روی «موسیقی» بزنید.');
+        } else { isAudioPlaying = false; updateAudioUI(); showToast('موسیقی بارگذاری نشد؛ اتصال اینترنت یا منبع موسیقی را بررسی کنید.'); }
       });
-      attemptAudioPlayback();
-      const retryOnGesture = (event) => {
-        // Let the music control handle its own gesture to avoid immediately
-        // starting and pausing playback on the same click.
-        if (event?.target?.closest?.('#audio-toggle')) return;
-        if (!isAudioPlaying) attemptAudioPlayback();
-        if (isAudioPlaying) {
-          document.removeEventListener('pointerdown', retryOnGesture);
-          document.removeEventListener('keydown', retryOnGesture);
-        }
-      };
-      document.addEventListener('pointerdown', retryOnGesture, { passive: true });
-      document.addEventListener('keydown', retryOnGesture);
-    }
-
-    function toggleAudio() {
-      const audio = document.getElementById('march-audio');
-      if (isAudioPlaying || !audio.paused) {
-        audio.pause();
-      } else {
-        attemptAudioPlayback();
-      }
+      if (musicSources.length) { audio.src = musicSources[0]; audio.load(); }
       updateAudioUI();
     }
-
-    function updateAudioUI() {
-      const pill = document.getElementById('audio-toggle');
-      if (isAudioPlaying) {
-        pill.classList.add('playing');
-      } else {
-        pill.classList.remove('playing');
-      }
+    async function toggleAudio() {
+      const audio = document.getElementById('march-audio'); if (!audio) return;
+      if (!audio.paused) { audio.pause(); updateAudioUI(); return; }
+      try { if (!audio.src && musicSources.length) audio.src = musicSources[musicSourceIndex] || musicSources[0]; await audio.play(); isAudioPlaying = !audio.paused; updateAudioUI(); }
+      catch (err) { isAudioPlaying = false; updateAudioUI(); console.warn('Audio playback failed:', err && err.message); showToast('پخش موسیقی مسدود شد یا فایل در دسترس نیست؛ دوباره امتحان کنید.'); }
     }
-
+    function updateAudioUI() {
+      const pill = document.getElementById('audio-toggle'); if (!pill) return;
+      pill.classList.toggle('playing', isAudioPlaying); pill.setAttribute('aria-pressed', isAudioPlaying ? 'true' : 'false');
+    }
     window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
