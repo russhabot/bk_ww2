@@ -2711,15 +2711,16 @@
         if (banner) {
           banner.style.display = locked ? 'block' : 'none';
           banner.innerHTML = S.season === 'live'
-            ? '<b>سیزن فعال است</b><br>انتخاب کشور بسته شده است.'
-            : '<b>اتاق انتظار سیزن</b><br>ادمین هنوز مرحلهٔ انتخاب کشور را فعال نکرده است. پس از دستور <code>/season pick</code> امکان انتخاب کشور باز می‌شود.';
+            ? '<b>سیزن فعال است</b><br>انتخاب کشور بسته است؛ فهرست کشورها همچنان برای مشاهده در دسترس است.'
+            : '<b>اتاق انتظار سیزن</b><br>فهرست کشورها نمایش داده می‌شود، اما انتخاب تا اجرای دستور <code>/season pick</code> غیرفعال است.';
         }
+        // Keep the country list and map visible in every phase. Only claiming is locked.
         const panel = document.getElementById('country-filter-panel');
-        if (panel) panel.style.display = locked ? 'none' : 'block';
+        if (panel) panel.style.display = 'block';
         const cards = document.getElementById('cards-view-wrap');
         const map = document.getElementById('map-view-container');
-        if (cards) cards.style.display = locked ? 'none' : (currentViewMode === 'cards' ? 'block' : 'none');
-        if (map) map.style.display = locked ? 'none' : (currentViewMode === 'map' ? 'block' : 'none');
+        if (cards) cards.style.display = currentViewMode === 'cards' ? 'block' : 'none';
+        if (map) map.style.display = currentViewMode === 'map' ? 'block' : 'none';
       }
     }
 
@@ -2929,7 +2930,7 @@
       document.getElementById('cards-view-wrap').style.display = mode === 'cards' ? 'block' : 'none';
       document.getElementById('map-view-container').style.display = mode === 'map' ? 'block' : 'none';
 
-      if (mode === 'map' && S.season === 'pick') {
+      if (mode === 'map') {
         if (!leafletMap) {
           initMap();
         } else {
@@ -3011,6 +3012,10 @@
 
     // Claim Modal Logic
     function openClaimModal(code) {
+      if (S.season !== 'pick') {
+        showToast(S.season === 'live' ? 'انتخاب کشور بسته شده است.' : 'انتخاب کشور هنوز فعال نشده است.');
+        return;
+      }
       const c = COUNTRIES[code];
       if (!c) return;
       selectedCountryCode = code;
@@ -3147,7 +3152,7 @@
 
     // Background march: attempt autoplay immediately, then retry on the first
     // user interaction if the browser/WebView blocks autoplay without a gesture.
-    const FALLBACK_MUSIC_URL = 'https://archive.org/download/the-planets_202501/01%20-%20I.%20Mars%2C%20the%20Bringer%20of%20War.mp3';
+    const FALLBACK_MUSIC_URL = 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Holst_The_Planets_Mars_the_Bringer_of_War_USAF_Band.ogg';
 
     async function attemptAudioPlayback() {
       const audio = document.getElementById('march-audio');
@@ -3170,6 +3175,7 @@
       audio.preload = 'auto';
       audio.volume = 0.55;
       audio.src = S.bg_music || FALLBACK_MUSIC_URL;
+      audio.load();
       audio.addEventListener('play', () => { isAudioPlaying = true; updateAudioUI(); });
       audio.addEventListener('pause', () => { isAudioPlaying = false; updateAudioUI(); });
       audio.addEventListener('error', () => {
