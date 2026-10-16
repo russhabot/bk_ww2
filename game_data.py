@@ -16,7 +16,7 @@ FACTIONS = {
         "en": "Axis Powers",
         "color": "#ef4444",
         "bg": "rgba(239, 68, 68, 0.15)",
-        "badge_url": "static/badges/axis.svg"
+        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_PNF_%28National_Fascist_Party%29.svg"
     },
     "allies": {
         "id": "allies",
@@ -50,7 +50,7 @@ IDEOLOGIES = {
         "fa": "فاشیسم / نظامی‌گری",
         "en": "Fascism",
         "color": "#a855f7",
-        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg"
+        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_PNF_%28National_Fascist_Party%29.svg"
     },
     "communism": {
         "id": "communism",
