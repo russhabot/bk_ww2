@@ -967,7 +967,7 @@
         </div>
         <div>
           <h2 style="margin: 0; font-size: 22px; color: #fff;">اتاق فرماندهی ستاد کل</h2>
-          <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 13px;">کشور شما ثبت گردید. در انتظار شمارش معکوس آغاز سیزن و اعلام جنگ جهانی باشید.</p>
+          <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 13px;">${S.season === 'wait' ? 'سیزن هنوز شروع نشده است؛ منتظر اعلام ادمین بمانید.' : S.season === 'live' ? 'سیزن آغاز شده است؛ وضعیت کشور خود را بررسی کنید.' : 'کشور شما ثبت گردید؛ در انتظار آغاز مرحلهٔ بازی باشید.'}</p>
         </div>
 
         <div class="command-dossier" id="player-command-dossier">
