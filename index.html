@@ -2965,7 +2965,7 @@
         if (dossier) {
           dossier.innerHTML = `<div class="country-history-card">
             <div class="history-banner"><img src="${c.flag_url || FALLBACK_FLAG}" alt="پرچم کشور" onerror="this.onerror=null;this.src='${FALLBACK_FLAG}'"><div><small>پرونده تاریخی · ۱۹۳۴</small><h3>${c.name_fa || S.p.c}</h3><span>پایتخت: ${c.capital_fa || 'نامشخص'}</span></div></div>
-            <div class="history-tags"><div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/neutral.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div><div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${regime.key}"><img class="badge-icon-img" src="${regime.badge_url}" alt="">${regime.label}</span></div>${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">' + getColonyTag(c) + '</span>' : ''}</div>
+            <div class="history-tags"><div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/neutral.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div><div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${regime.key}"><img class="badge-icon-img" src="${regime.badge_url}" alt="">${regime.label}</span></div>${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="">' + getColonyTag(c) + '</span>' : ''}</div>
             <div class="leader-profile-card"><div class="leader-profile-photo"><img src="${c.leader_url || c.leader_img || FALLBACK_LEADER}" alt="${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this, '${c.flag_url || FALLBACK_FLAG}')"></div><div class="leader-profile-meta"><span>رهبر تاریخی</span><strong>${c.leader_fa || 'نامشخص'}</strong><small>${c.leader_title || c.leader_en || ''}</small></div></div>
             <div class="history-description"><strong>پیشینه کشور</strong><p>${c.desc || 'اطلاعات تاریخی این کشور هنوز ثبت نشده است.'}</p></div>
           </div>`;
@@ -3057,7 +3057,7 @@
                 ${regime.label}
               </span>
             </div>
-            ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<div class="dossier-field"><span class="dossier-label">وضعیت استعماری</span><span class="dossier-value" style="color:#86efac;">' + getColonyTag(c) + '</span></div>' : ''}
+            ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<div class="dossier-field"><span class="dossier-label">وضعیت استعماری</span><span class="dossier-value" style="color:#86efac;"><img src="static/badges/colony.svg" class="badge-icon-img" alt="">' + getColonyTag(c) + '</span></div>' : ''}
             ${c.puppet_label ? '<div class="dossier-field"><span class="dossier-label">وضعیت سیاسی</span><span class="dossier-value">' + c.puppet_label + '</span></div>' : ''}
             <div class="dossier-field">
               <span class="dossier-label">رهبر تاریخی (۱۹۳۴)</span>
@@ -3208,7 +3208,7 @@
                 <div class="card-badges">
                   <div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/neutral.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div>
                   <div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="">${getRegimeCategory(c).label}</span></div>
-                  ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">' + getColonyTag(c) + '</span>' : ''}
+                  ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="">' + getColonyTag(c) + '</span>' : ''}
                   ${c.puppet_label ? '<span class="tactical-badge badge-puppet">' + c.puppet_label + '</span>' : ''}
                   ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
                 </div>
@@ -3368,7 +3368,7 @@
             <div class="identity-tags">
               <div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div>
               <div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="">${getRegimeCategory(c).label}</span></div>
-              ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">' + getColonyTag(c) + '</span>' : ''}
+              ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="">' + getColonyTag(c) + '</span>' : ''}
               ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
               ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
             </div>
