@@ -893,6 +893,36 @@
       .country-name-fa { white-space: normal; overflow-wrap: anywhere; }
     }
 
+    .tag-pair { display:inline-flex; align-items:center; gap:5px; min-width:0; max-width:100%; white-space:nowrap; }
+    .tag-heading { color:var(--text-muted); font-size:10px; font-weight:800; white-space:nowrap; }
+    .card-badges, .identity-tags, .history-tags { display:flex; align-items:center; flex-wrap:wrap; gap:7px; min-width:0; }
+    .identity-tags { margin-top:7px; }
+    .identity-main { min-width:0; flex:1; }
+    .leader-image-placeholder { display:grid; place-items:center; width:100%; height:100%; font-size:26px; }
+    .leader-profile-card { display:flex; align-items:center; gap:12px; margin:12px 0; padding:10px; border-radius:10px; border:1px solid var(--border); background:#0f1828; min-width:0; }
+    .leader-profile-photo { width:54px; height:54px; border-radius:50%; overflow:hidden; border:2px solid var(--gold); flex:0 0 54px; background:#172238; display:grid; place-items:center; }
+    .leader-profile-photo img { width:100%; height:100%; object-fit:cover; object-position:center 22%; }
+    .leader-profile-meta { min-width:0; display:flex; flex-direction:column; gap:3px; }
+    .leader-profile-meta span, .leader-profile-meta small { color:var(--text-muted); font-size:11px; overflow-wrap:anywhere; }
+    .leader-profile-meta strong { color:#fff; font-size:14px; overflow-wrap:anywhere; }
+    .country-history-card { padding:14px; border:1px solid var(--border-bright); border-radius:12px; background:linear-gradient(145deg,rgba(17,28,48,.96),rgba(8,15,27,.96)); }
+    .history-banner { display:flex; align-items:center; gap:12px; min-width:0; padding-bottom:12px; border-bottom:1px solid var(--border); }
+    .history-banner img { width:76px; height:52px; object-fit:cover; border-radius:7px; flex:0 0 76px; }
+    .history-banner div { min-width:0; }
+    .history-banner small, .history-banner span { color:var(--text-muted); font-size:11px; }
+    .history-banner h3 { margin:2px 0; color:#fff; font-size:18px; overflow-wrap:anywhere; }
+    .history-tags { margin-top:12px; }
+    .history-description { margin-top:12px; padding:12px; border-radius:9px; background:rgba(5,12,22,.62); color:var(--text-muted); font-size:12px; line-height:1.8; }
+    .history-description strong { color:#fff; }
+    .history-description p { margin:4px 0 0; }
+    .economy-stat-label { display:flex; align-items:center; gap:6px; }
+    .economy-stat-label b { width:25px; height:25px; flex:0 0 25px; display:grid; place-items:center; border-radius:7px; background:rgba(59,130,246,.14); font-size:15px; }
+    .live-bottom-nav { position:fixed; z-index:1000; inset-inline:0; bottom:0; display:flex; justify-content:space-around; gap:8px; padding:8px max(12px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); background:rgba(7,13,24,.96); border-top:1px solid var(--border-bright); backdrop-filter:blur(18px); box-shadow:0 -8px 24px rgba(0,0,0,.22); }
+    .live-bottom-nav button { appearance:none; border:1px solid transparent; border-radius:12px; background:transparent; color:var(--text-muted); flex:1; min-width:0; min-height:48px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; }
+    .live-bottom-nav button span { font-size:19px; line-height:1.1; }
+    .live-bottom-nav button small { font-size:11px; }
+    .live-bottom-nav button.active { color:#fbbf24; background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.3); }
+    body { padding-bottom:calc(72px + env(safe-area-inset-bottom)); }
     .country-economy-panel { margin-top:16px; padding:14px; border:1px solid var(--border-bright); border-radius:12px; background:linear-gradient(145deg,rgba(17,28,48,.96),rgba(8,15,27,.96)); }
     .economy-title { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:10px; color:#f8fafc; font-weight:800; font-size:14px; }
     .economy-title span { color:var(--text-muted); font-size:10px; font-weight:500; }
@@ -1126,6 +1156,12 @@
       </div>
     </div>
   </div>
+
+  <nav id="live-bottom-nav" class="live-bottom-nav" aria-label="ناوبری ستاد فرماندهی" style="display:none">
+    <button type="button" data-live-tab="home" class="active" onclick="setLiveTab('home')"><span>🏠</span><small>خانه</small></button>
+    <button type="button" data-live-tab="country" onclick="setLiveTab('country')"><span>🏛️</span><small>کشور من</small></button>
+    <button type="button" data-live-tab="world" onclick="setLiveTab('world')"><span>🗺️</span><small>نقشه جهان</small></button>
+  </nav>
 
   <!-- Toast Element -->
   <div class="toast" id="toast"></div>
@@ -2670,6 +2706,7 @@
       bg_music: 'https://archive.org/download/the-planets_202501/01%20-%20I.%20Mars%2C%20the%20Bringer%20of%20War.mp3'
     };
 
+    let liveTab = 'home';
     let currentFilter = 'all';
     let searchQuery = '';
     let currentViewMode = 'cards';
@@ -3013,6 +3050,22 @@
     }
 
     // Card Renderer
+    function handleLeaderImageError(img, flagSrc) {
+      if (!img) return;
+      const step = Number(img.dataset.fallbackStep || 0);
+      if (step === 0) { img.dataset.fallbackStep = '1'; img.src = flagSrc || FALLBACK_FLAG; return; }
+      if (step === 1) { img.dataset.fallbackStep = '2'; img.src = FALLBACK_LEADER; return; }
+      img.onerror = null;
+      img.style.display = 'none';
+      const host = img.parentElement;
+      if (host && !host.querySelector('.leader-image-placeholder')) {
+        const placeholder = document.createElement('span');
+        placeholder.className = 'leader-image-placeholder';
+        placeholder.textContent = '👤';
+        host.appendChild(placeholder);
+      }
+    }
+
     function renderCards() {
       const grid = document.getElementById('countries-grid');
       const codes = Object.keys(COUNTRIES).filter(code => COUNTRIES[code].selectable !== 'no');
