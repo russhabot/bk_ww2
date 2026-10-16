@@ -898,7 +898,7 @@
     .dossier-title-block { min-width:0; flex:1; }
     .tag-pair { display:inline-flex; align-items:center; gap:5px; min-width:0; max-width:100%; white-space:nowrap; }
     .tag-heading { color:var(--text-muted); font-size:10px; font-weight:800; white-space:nowrap; }
-    .card-badges, .identity-tags, .history-tags { display:flex; align-items:center; flex-wrap:wrap; gap:7px; min-width:0; }
+    .card-badges, .identity-tags, .history-tags { display:flex; align-items:center; flex-wrap:nowrap; gap:7px; min-width:0; overflow-x:auto; padding-bottom:3px; scrollbar-width:thin; }
     .identity-tags { margin-top:7px; }
     .identity-main { min-width:0; flex:1; }
     .leader-image-placeholder { display:grid; place-items:center; width:100%; height:100%; font-size:26px; }
@@ -992,19 +992,19 @@
       <!-- Live Global Power Balance -->
       <div class="tension-bar" id="tension-bar">
         <div class="stat-pill axis">
-          <span class="pill-label"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> جناح: محور</span>
+          <span class="pill-label"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> محور</span>
           <strong id="stat-axis-count">0</strong>
         </div>
         <div class="stat-pill allies">
-          <span class="pill-label"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> جناح: متفقین</span>
+          <span class="pill-label"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg" class="badge-icon-img" alt="متفقین"> متفقین</span>
           <strong id="stat-allies-count">0</strong>
         </div>
         <div class="stat-pill comintern">
-          <span class="pill-label"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن"> جناح: کمینترن</span>
+          <span class="pill-label"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن"> کمینترن</span>
           <strong id="stat-comintern-count">0</strong>
         </div>
         <div class="stat-pill neutral">
-          <span class="pill-label"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح"> جناح: بدون جناح</span>
+          <span class="pill-label"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح"> بدون جناح</span>
           <strong id="stat-neutral-count">0</strong>
         </div>
       </div>
@@ -2916,7 +2916,7 @@
         if (dossier) {
           dossier.innerHTML = \`<div class="country-history-card">
             <div class="history-banner"><img src="\${c.flag_url || FALLBACK_FLAG}" alt="پرچم کشور" onerror="this.onerror=null;this.src='\${FALLBACK_FLAG}'"><div><small>پرونده تاریخی · ۱۹۳۴</small><h3>\${c.name_fa || S.p.c}</h3><span>پایتخت: \${c.capital_fa || 'نامشخص'}</span></div></div>
-            <div class="history-tags"><div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-\${c.faction}">\${fac.fa || 'بدون جناح'}</span></div><div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-\${regime.key}"><img class="badge-icon-img" src="\${regime.badge_url}" alt="">\${regime.label}</span></div>\${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">مستعمره است</span>' : ''}</div>
+            <div class="history-tags"><div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-\${c.faction}">\${fac.fa || 'بدون جناح'}</span></div><div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-\${regime.key}"><img class="badge-icon-img" src="\${regime.badge_url}" alt="">\${regime.label}</span></div>\${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">' + getColonyTag(c) + '</span>' : ''}</div>
             <div class="leader-profile-card"><div class="leader-profile-photo"><img src="\${c.leader_url || c.leader_img || FALLBACK_LEADER}" alt="\${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this, '\${c.flag_url || FALLBACK_FLAG}')"></div><div class="leader-profile-meta"><span>رهبر تاریخی</span><strong>\${c.leader_fa || 'نامشخص'}</strong><small>\${c.leader_title || c.leader_en || ''}</small></div></div>
             <div class="history-description"><strong>پیشینه کشور</strong><p>\${c.desc || 'اطلاعات تاریخی این کشور هنوز ثبت نشده است.'}</p></div>
           </div>\`;
@@ -3066,6 +3066,11 @@
       if (geojsonLayer) updateMapStyles();
     }
 
+    function getColonyTag(c) {
+      const label = String(c?.colony_of_fa || '').trim() || String(c?.colony_label || '').replace(/^مستعمره(?:ٔ|\s)?/,'').trim() || 'کشور دیگر';
+      return 'مستعمرهٔ ' + label + ' است';
+    }
+
     function isMonarchy(c) { return /monarchy|regency_monarchy|imperial_monarchy|absolute_monarchy|royal_dictatorship|theocratic_monarchy|constitutional_monarchy/.test(String(c?.regime_type || '')); }
 
     function getRegimeCategory(c) {
@@ -3153,7 +3158,7 @@
                 <div class="card-badges">
                   <div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}">${fac.fa || 'بدون جناح'}</span></div>
                   <div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="">${getRegimeCategory(c).label}</span></div>
-                  ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">مستعمره است</span>' : ''}
+                  ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">' + getColonyTag(c) + '</span>' : ''}
                   ${c.puppet_label ? '<span class="tactical-badge badge-puppet">' + c.puppet_label + '</span>' : ''}
                   ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
                 </div>
@@ -3312,7 +3317,7 @@
             <div class="identity-tags">
               <div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div>
               <div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="">${getRegimeCategory(c).label}</span></div>
-              ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">مستعمره است</span>' : ''}
+              ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony">' + getColonyTag(c) + '</span>' : ''}
               ${c.puppet_label ? '<span class="tactical-badge badge-puppet"><img src="static/badges/colony.svg" class="badge-icon-img" alt="دولت دست‌نشانده"> ' + c.puppet_label + '</span>' : ''}
               ${c.relationship_label ? '<span class="tactical-badge badge-status">' + c.relationship_label + '</span>' : ''}
             </div>
