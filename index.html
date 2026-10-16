@@ -2765,20 +2765,21 @@
               <span class="dossier-value" style="color: var(--cyan);">${ICONS.crown} ${S.p.name || S.p.username || 'شما'}</span>
             </div>
             <div class="dossier-field">
-              <span class="dossier-label">ائتلاف نظامی</span>
+              <span class="dossier-label">جناح سناریو</span>
               <span class="dossier-value" style="color: ${fac.color || '#fff'};">
                 <img src="${fac.badge_url}" class="badge-icon-img" alt="${fac.fa || ''}">
-                ${fac.fa || ''}
+                ${fac.fa || 'بدون جناح'}
               </span>
             </div>
             <div class="dossier-field">
-              <span class="dossier-label">نظام ایدئولوژیک</span>
+              <span class="dossier-label">نوع حکومت</span>
               <span class="dossier-value">
-                <img src="${ideo.badge_url || 'static/badges/regime.svg'}" class="badge-icon-img" alt="${ideo.fa || ''}">
-                ${ideo.fa || 'بدون جناح'}
+                <img src="static/badges/regime.svg" class="badge-icon-img" alt="نوع حکومت">
+                ${c.regime_fa || 'نامشخص'}
               </span>
             </div>
-            ${isMonarchy(c, S.p.c) ? '<div class="dossier-field"><span class="dossier-label">نوع حکومت</span><span class="dossier-value"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</span></div>' : ''}
+            ${c.colony_label ? '<div class="dossier-field"><span class="dossier-label">وضعیت استعماری</span><span class="dossier-value">' + c.colony_label + '</span></div>' : ''}
+            ${c.puppet_label ? '<div class="dossier-field"><span class="dossier-label">وضعیت سیاسی</span><span class="dossier-value">' + c.puppet_label + '</span></div>' : ''}
             <div class="dossier-field">
               <span class="dossier-label">رهبر تاریخی (۱۹۳۴)</span>
               <span class="dossier-value">${c.leader_fa || ''}</span>
