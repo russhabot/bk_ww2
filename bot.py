@@ -174,6 +174,10 @@ def ensure_economy(player):
         "statement_history": [],
         "statement_strikes": 0,
         "statement_suspended_until": 0,
+        "materials": {"gold": 0, "iron": 0, "coal": 0},
+        "famine_days": 0,
+        "unrest_days": 0,
+        "elimination_reason": "",
     }
     for key, value in defaults.items():
         if key not in player:
@@ -185,6 +189,17 @@ def ensure_economy(player):
     if not isinstance(player.get("statement_history"), list):
         player["statement_history"] = []
         changed = True
+    if not isinstance(player.get("materials"), dict):
+        player["materials"] = {"gold": 0, "iron": 0, "coal": 0}
+        changed = True
+    for material in ("gold", "iron", "coal"):
+        if material not in player["materials"]:
+            player["materials"][material] = 0
+            changed = True
+    for key in ("famine_days", "unrest_days"):
+        if key not in player:
+            player[key] = 0
+            changed = True
     player["satisfaction"] = max(0.0, min(100.0, safe_float(player.get("satisfaction"), base["satisfaction"])))
     return changed
 
@@ -203,6 +218,7 @@ def apply_daily_economy(player):
         cash_income = safe_int(player.get("income_base"))
         food_output = 0
         welfare = 0.0
+        materials = player.setdefault("materials", {"gold": 0, "iron": 0, "coal": 0})
         for key, count in buildings.items():
             data = ECONOMY_BUILDINGS.get(key)
             amount = max(0, safe_int(count))
@@ -211,16 +227,36 @@ def apply_daily_economy(player):
             cash_income += safe_int(data.get("income")) * amount
             food_output += safe_int(data.get("food")) * amount
             welfare += float(data.get("happy", 0)) * amount
+            resource = data.get("resource")
+            if resource == "oil":
+                player["oil"] = safe_int(player.get("oil")) + safe_int(data.get("production")) * amount
+            elif resource:
+                materials[resource] = safe_int(materials.get(resource)) + safe_int(data.get("production")) * amount
         player["money"] = safe_int(player.get("money")) + cash_income
         if safe_int(buildings.get("bank")) > 0:
             player["vault"] = safe_int(player.get("vault")) + int(safe_int(player.get("vault")) * 0.005)
-        next_food = safe_int(player.get("food")) + food_output - ECONOMY_DAILY_FOOD_USE
+        daily_food_need = 100 + max(0, safe_int(player.get("infantry"))) // 5000
+        next_food = safe_int(player.get("food")) + food_output - daily_food_need
         if next_food < 0:
             player["food"] = 0
-            player["satisfaction"] = max(0.0, safe_float(player.get("satisfaction")) - 8)
+            player["famine_days"] = safe_int(player.get("famine_days")) + 1
+            player["satisfaction"] = max(0.0, safe_float(player.get("satisfaction")) - 10)
         else:
             player["food"] = next_food
+            player["famine_days"] = 0
         player["satisfaction"] = max(0.0, min(100.0, safe_float(player.get("satisfaction")) + welfare * 0.5 - 2))
+        if safe_float(player.get("satisfaction")) < 20:
+            player["unrest_days"] = safe_int(player.get("unrest_days")) + 1
+        else:
+            player["unrest_days"] = 0
+        # A country enters an inactive crisis state after three consecutive
+        # daily settlements with famine or severe public unrest. Player data is retained.
+        if safe_int(player.get("famine_days")) >= 3:
+            player["alive"] = False
+            player["elimination_reason"] = "famine"
+        elif safe_int(player.get("unrest_days")) >= 3:
+            player["alive"] = False
+            player["elimination_reason"] = "public_unrest"
         debt = safe_int(player.get("loan"))
         if debt > 0:
             interest = max(1, int(debt * 0.005))
