@@ -730,7 +730,7 @@ async def api_handler(request):
                     amount = safe_int(body.get("amount"))
                     note = str(body.get("note", "")).strip()[:300]
                     target = pget(target_uid)
-                    relation = any(e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, target_uid} for e in dstate["embassies"])
+                    relation = any(e.get("status") == "active" and same_user_pair(e, uid, target_uid) for e in dstate["embassies"])
                     if not target or target_uid == uid or target.get("alive", True) is False or safe_int(target.get("buildings", {}).get("bank")) < 1 or safe_int(player.get("buildings", {}).get("bank")) < 1:
                         error = "برای انتقال پول، هر دو کشور باید بانک فعال داشته باشند."
                     elif not relation:
