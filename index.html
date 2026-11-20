@@ -2967,12 +2967,12 @@
         menuCard('bank','بانک ملی','تأسیس، پس‌انداز و وام',catalog.bank?.image||'')+
         menuCard('mines','معادن','طلا، آهن و زغال‌سنگ',catalog.mine_gold?.image||'')+
         menuCard('food','کشاورزی و غذا','مزارع معمولی و صنعتی',catalog.farm_s?.image||'')+
-        menuCard('tax','مالیات','دریافت مالیات روزانه',catalog.bank?.image||'')+
+        menuCard('tax','مالیات','دریافت مالیات روزانه','https://commons.wikimedia.org/wiki/Special:FilePath/Tax_Office%3F_LCCN2016862907.jpg?width=1280')+
         menuCard('welfare','رفاهیات','خدمات شهری و رضایت عمومی',catalog.park?.image||'')+
         '</div>';
       const root='<div class="management-root-grid">'+
         '<button class="management-root-card" type="button" onclick="setManagementSection(\'economy\')">'+image(catalog.mine_gold?.image||'','اقتصاد و رفاهیات')+'<span><small>مدیریت منابع کشور</small><strong>اقتصاد و رفاهیات</strong><em>بانک، معادن، مالیات، کشاورزی و خدمات عمومی</em></span><b>‹</b></button>'+
-        '<button class="management-root-card" type="button" onclick="setManagementSection(\'diplomacy\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/Bali_2007_Conference_flags.jpg?width=1280','دیپلماسی')+'<span><small>ارتباط با جهان</small><strong>دیپلماسی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\'diplomacy\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/10-9-30%2C_SDN_%C3%A0_Gen%C3%A8ve_%28salle_de_r%C3%A9unions%29_-_btv1b532355221.jpg?width=1280','دیپلماسی')+'<span><small>ارتباط با جهان</small><strong>دیپلماسی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
         '</div>';
       const makeCards=(category)=>Object.entries(catalog).filter(([key,b])=>b.category===category && !(category==='mines' && key==='mine_oil')).map(([key,b])=>{
         const owned=Number(buildings[key]||0), locked=Boolean(b.unique&&owned>0);
@@ -2995,7 +2995,7 @@
       if(managementSection==='food'){body=economyBack+sectionTitle('تأمین روزانه','کشاورزی و غذا')+'<div class="management-building-grid">'+makeCards('food')+'</div>';heading='کشاورزی و غذا';}
       if(managementSection==='tax'){
         const already=r.tax_date===new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Tehran'});
-        body=economyBack+sectionTitle('درآمد عمومی','مالیات')+'<article class="management-tax-card">'+image(catalog.bank?.image||'','ساختمان اداری')+'<div class="management-building-content"><div class="building-fact"><span>درآمد امروز</span><strong>۳۵٬۰۰۰ دلار</strong></div><div class="building-fact"><span>کاهش رضایت</span><strong>۴٪</strong></div><button class="btn btn-gold" style="width:100%" '+(already?'disabled':'')+' onclick="collectEconomyTax()">'+(already?'مالیات امروز دریافت شده':'دریافت مالیات روزانه')+'</button></div></article>';heading='مالیات';
+        body=economyBack+sectionTitle('درآمد عمومی','مالیات')+'<article class="management-tax-card">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/Tax_Office%3F_LCCN2016862907.jpg?width=1280','ساختمان اداره مالیات در دهه ۱۹۳۰')+'<div class="management-building-content"><div class="building-fact"><span>درآمد امروز</span><strong>۳۵٬۰۰۰ دلار</strong></div><div class="building-fact"><span>کاهش رضایت</span><strong>۴٪</strong></div><button class="btn btn-gold" style="width:100%" '+(already?'disabled':'')+' onclick="collectEconomyTax()">'+(already?'مالیات امروز دریافت شده':'دریافت مالیات روزانه')+'</button></div></article>';heading='مالیات';
       }
       if(managementSection==='welfare'){body=economyBack+sectionTitle('خدمات عمومی','رفاهیات')+'<div class="management-building-grid">'+makeCards('welfare')+'</div>';heading='رفاهیات';}
       if(managementSection==='diplomacy'){
