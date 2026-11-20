@@ -24,7 +24,7 @@ FACTIONS = {
         "en": "Allied Powers",
         "color": "#3b82f6",
         "bg": "rgba(59, 130, 246, 0.15)",
-        "badge_url": "https://upload.wikimedia.org/wikipedia/commons/0/03/Allied_Powers_Flag.svg"
+        "badge_url": "static/badges/allies.svg"
     },
     "comintern": {
         "id": "comintern",
