@@ -27,7 +27,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261120f" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261120g" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -161,7 +161,7 @@ def ensure_economy(player):
         "loan": 0,
         "loan_original": 0,
         "tax_date": "",
-        "economy_day": int(time.time() // 86400),
+        "economy_day": datetime.now(TEHRAN_TZ).date().toordinal(),
         "statement_history": [],
         "statement_strikes": 0,
         "statement_suspended_until": 0,
@@ -184,7 +184,7 @@ def apply_daily_economy(player):
     if not player or not player.get("c"):
         return False
     changed = ensure_economy(player)
-    today = int(time.time() // 86400)
+    today = datetime.now(TEHRAN_TZ).date().toordinal()
     last_day = safe_int(player.get("economy_day"), today)
     days = max(0, min(30, today - last_day))
     if days <= 0:
@@ -753,7 +753,7 @@ if dp:
 
 
 async def main():
-    app = web.Application()
+    app = web.Application(client_max_size=6 * 1024 * 1024)
     app.router.add_get("/health", health_handler)
     app.router.add_get("/api/catalog", catalog_handler)
     app.router.add_get("/", index_handler)
