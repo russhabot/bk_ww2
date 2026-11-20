@@ -491,7 +491,7 @@ def save_diplomacy(value):
 
 def diplomacy_state_for(uid):
     state = load_diplomacy()
-    incoming, outgoing, relations, pacts_incoming, pacts_outgoing = [], [], [], [], []
+    incoming, outgoing, relations, pacts_incoming, pacts_outgoing, money_incoming, money_outgoing = [], [], [], [], [], [], []
     now = int(time.time())
     changed = False
     for item in state.get("embassies", []):
@@ -518,10 +518,18 @@ def diplomacy_state_for(uid):
             pacts_incoming.append({**proposal, "from_country": other.get("c", "")})
         elif proposal.get("from") == uid and proposal.get("status") == "pending":
             pacts_outgoing.append({**proposal, "to_country": other.get("c", "")})
+    for transfer in state.get("money_transfers", []):
+        other_uid = transfer.get("from") if transfer.get("to") == uid else transfer.get("to")
+        other = pget(other_uid) or {}
+        if transfer.get("to") == uid and transfer.get("status") == "pending":
+            money_incoming.append({**transfer, "from_country": other.get("c", "")})
+        elif transfer.get("from") == uid and transfer.get("status") == "pending":
+            money_outgoing.append({**transfer, "to_country": other.get("c", "")})
     if changed:
         save_diplomacy(state)
     return {"incoming": incoming, "outgoing": outgoing, "relations": relations,
         "pacts_incoming": pacts_incoming, "pacts_outgoing": pacts_outgoing,
+        "money_incoming": money_incoming, "money_outgoing": money_outgoing,
         "war_open": kget("diplomacy_war_open", "0") == "1"}
 
 
@@ -654,7 +662,7 @@ async def api_handler(request):
                     pset(uid, player)
 
 
-        elif action in ("embassy_request", "embassy_respond", "diplomacy_transfer", "diplomacy_pact", "diplomacy_pact_respond"):
+        elif action in ("embassy_request", "embassy_respond", "diplomacy_transfer", "diplomacy_money_respond", "diplomacy_pact", "diplomacy_pact_respond"):
             if not player or not player.get("c"):
                 error = "ابتدا باید کشور خود را انتخاب کنید."
             elif player.get("alive", True) is False:
@@ -671,8 +679,8 @@ async def api_handler(request):
                         error = "کشور مقصد معتبر یا فعال نیست."
                     elif any(e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, target_uid} for e in dstate["embassies"]):
                         error = "سفارت متقابل با این کشور از قبل برقرار است."
-                    elif any(e.get("status") == "pending" and e.get("from") == uid and e.get("to") == target_uid for e in dstate["embassies"]):
-                        error = "درخواست سفارت قبلاً ارسال شده و منتظر پاسخ است."
+                    elif any(e.get("status") == "pending" and {e.get("from"), e.get("to")} == {uid, target_uid} for e in dstate["embassies"]):
+                        error = "درخواست سفارت با این کشور قبلاً ارسال شده یا از طرف آن کشور منتظر پاسخ شماست."
                     else:
                         dstate["embassies"].append({"from": uid, "to": target_uid, "status": "pending", "created": now})
                         save_diplomacy(dstate)
@@ -716,31 +724,72 @@ async def api_handler(request):
                 elif action == "diplomacy_transfer":
                     target_uid = safe_int(body.get("target_uid"))
                     amount = safe_int(body.get("amount"))
+                    note = str(body.get("note", "")).strip()[:300]
                     target = pget(target_uid)
                     relation = any(e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, target_uid} for e in dstate["embassies"])
-                    if not target or target_uid == uid or safe_int(target.get("buildings", {}).get("bank")) < 1 or safe_int(player.get("buildings", {}).get("bank")) < 1:
-                        error = "برای انتقال پول، هر دو کشور باید بانک تأسیس کرده باشند."
+                    if not target or target_uid == uid or target.get("alive", True) is False or safe_int(target.get("buildings", {}).get("bank")) < 1 or safe_int(player.get("buildings", {}).get("bank")) < 1:
+                        error = "برای انتقال پول، هر دو کشور باید بانک فعال داشته باشند."
                     elif not relation:
                         error = "ابتدا باید سفارت متقابل برقرار شود."
                     elif not 1000 <= amount <= 100000 or safe_int(player.get("money")) < amount:
                         error = "مبلغ انتقال باید بین ۱٬۰۰۰ تا ۱۰۰٬۰۰۰ دلار و در حد موجودی خزانه باشد."
+                    elif len(note) < 5:
+                        error = "توضیح درخواست انتقال حداقل ۵ نویسه باشد."
+                    elif any(x.get("status") == "pending" and x.get("from") == uid and x.get("to") == target_uid for x in dstate.get("money_transfers", [])):
+                        error = "برای این کشور درخواست انتقال وجه در انتظار پاسخ دارید."
                     else:
-                        player["money"] -= amount
-                        target["money"] = safe_int(target.get("money")) + amount
-                        pset(target_uid, target)
+                        dstate.setdefault("money_transfers", []).append({"from": uid, "to": target_uid, "amount": amount, "note": note, "status": "pending", "created": now})
+                        save_diplomacy(dstate)
+                        if bot:
+                            try:
+                                await bot.send_message(target_uid, f"💰 کشور {player.get('c')} درخواست انتقال {amount:,} دلار فرستاده است. برای تأیید یا رد، بخش اعلانات مینی‌اپ را باز کنید.")
+                            except Exception as exc:
+                                print(f"[money-transfer-notification-error] {exc}")
+                elif action == "diplomacy_money_respond":
+                    sender_uid = safe_int(body.get("from"))
+                    decision = str(body.get("decision", ""))
+                    transfer = next((x for x in dstate.get("money_transfers", []) if x.get("from") == sender_uid and x.get("to") == uid and x.get("status") == "pending"), None)
+                    sender = pget(sender_uid) if transfer else None
+                    amount = safe_int(transfer.get("amount")) if transfer else 0
+                    if not transfer or decision not in ("accept", "decline") or not sender:
+                        error = "درخواست انتقال وجه معتبر نیست یا قبلاً پاسخ داده شده است."
+                    elif decision == "decline":
+                        transfer["status"] = "declined"
+                        transfer["responded"] = now
+                        save_diplomacy(dstate)
+                        if bot:
+                            try:
+                                await bot.send_message(sender_uid, f"💰 درخواست انتقال وجه شما توسط کشور {player.get('c')} رد شد.")
+                            except Exception as exc:
+                                print(f"[money-transfer-decline-notification-error] {exc}")
+                    elif safe_int(sender.get("money")) < amount or safe_int(sender.get("buildings", {}).get("bank")) < 1 or safe_int(player.get("buildings", {}).get("bank")) < 1:
+                        error = "موجودی فرستنده یا بانک یکی از دو کشور برای تکمیل انتقال کافی نیست."
+                    else:
+                        sender["money"] -= amount
+                        player["money"] = safe_int(player.get("money")) + amount
+                        pset(sender_uid, sender)
+                        transfer["status"] = "accepted"
+                        transfer["responded"] = now
+                        save_diplomacy(dstate)
+                        if bot:
+                            try:
+                                await bot.send_message(sender_uid, f"💰 انتقال {amount:,} دلار به کشور {player.get('c')} تأیید و انجام شد.")
+                            except Exception as exc:
+                                print(f"[money-transfer-accept-notification-error] {exc}")
                 elif action == "diplomacy_pact":
                     target_uid = safe_int(body.get("target_uid"))
                     years = safe_int(body.get("years"))
+                    note = str(body.get("note", "")).strip()[:500]
                     relation = next((e for e in dstate["embassies"] if e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, target_uid}), None)
                     target = pget(target_uid)
-                    if not relation or not target or target_uid == uid or years not in (1, 2, 3, 5):
+                    if not relation or not target or target.get("alive", True) is False or target_uid == uid or years not in (1, 2, 3, 5) or len(note) < 5:
                         error = "ابتدا سفارت برقرار کنید و مدت معتبر انتخاب کنید."
                     elif relation.get("pact_until") and safe_int(relation.get("pact_until")) > now:
                         error = "پیمان عدم تجاوز فعالی با این کشور دارید."
                     elif any(p.get("status") == "pending" and {p.get("from"), p.get("to")} == {uid, target_uid} for p in dstate["pacts"]):
                         error = "درخواست پیمان قبلاً ارسال شده و منتظر پاسخ است."
                     else:
-                        dstate["pacts"].append({"from": uid, "to": target_uid, "years": years, "status": "pending", "created": now})
+                        dstate["pacts"].append({"from": uid, "to": target_uid, "years": years, "note": note, "status": "pending", "created": now})
                         save_diplomacy(dstate)
                         if bot:
                             try:
