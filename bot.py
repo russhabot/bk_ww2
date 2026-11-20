@@ -707,6 +707,9 @@ async def api_handler(request):
                         relation["pact_years"] = years
                         save_diplomacy(dstate)
 
+                if error is None:
+                    pset(uid, player)
+
         elif action == "statement":
             if not player or not player.get("c"):
                 error = "ابتدا باید یک کشور انتخاب کنید."
