@@ -13,17 +13,17 @@ FALLBACK_LEADER = "static/leaders/default.svg"
 # Civilian economy only: construction, daily revenue, food and public welfare.
 # The current WW2 UI consumes this catalog without changing its visual style.
 ECONOMY_BUILDINGS = {
-    "bank": {"fa": "بانک ملی", "category": "bank", "cost": 75000, "income": 0, "unique": True, "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Bank_Building.JPG/1024px-Bank_Building.JPG"},
-    "mine_gold": {"fa": "معدن طلا", "category": "mines", "cost": 260000, "income": 310000, "resource": "gold", "production": 24, "image": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia25/pia25445/PIA25445.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1508&w=2533"},
-    "mine_iron": {"fa": "معدن آهن", "category": "mines", "cost": 125000, "income": 155000, "resource": "iron", "production": 130, "image": "https://d2n41s0wa71yzf.cloudfront.net/wp-content/uploads/2024/01/24160817/takraf.-iron-ore.jpg"},
-    "mine_coal": {"fa": "معدن زغال‌سنگ", "category": "mines", "cost": 95000, "income": 118000, "resource": "coal", "production": 190, "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Coal_Mine_Field.jpg/1280px-Coal_Mine_Field.jpg"},
+    "bank": {"fa": "بانک ملی", "category": "bank", "cost": 75000, "income": 0, "unique": True, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Banks_Street_%28Atat%C3%BCrk_Boulevard%29_the_Building_of_Ziraat_Bankas%C4%B1_%28Agricultural_Bank%29%2C_1930s_%2816851305342%29.jpg?width=1280"},
+    "mine_gold": {"fa": "معدن طلا", "category": "mines", "cost": 260000, "income": 310000, "resource": "gold", "production": 24, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Gold_mine.jpg?width=1280"},
+    "mine_iron": {"fa": "معدن آهن", "category": "mines", "cost": 125000, "income": 155000, "resource": "iron", "production": 130, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Iron_Ore_Mine.jpg?width=1280"},
+    "mine_coal": {"fa": "معدن زغال‌سنگ", "category": "mines", "cost": 95000, "income": 118000, "resource": "coal", "production": 190, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Coal_Mine_Field.jpg?width=1280"},
     "mine_oil": {"fa": "میدان نفتی", "category": "mines", "cost": 410000, "income": 490000, "resource": "oil", "production": 95, "image": "https://www.dwenergygroup.com/wp-content/uploads/2022/03/How-is-Oil-Measured.jpg"},
-    "farm_s": {"fa": "مزرعه گندم", "category": "food", "cost": 28000, "food": 360, "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Wheat_Farm.jpg/1024px-Wheat_Farm.jpg"},
-    "farm_l": {"fa": "مزرعه صنعتی", "category": "food", "cost": 82000, "food": 1050, "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Wheat_Farm.jpg/1024px-Wheat_Farm.jpg"},
+    "farm_s": {"fa": "مزرعه گندم", "category": "food", "cost": 28000, "food": 360, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Wheat_Farm.jpg?width=1280"},
+    "farm_l": {"fa": "مزرعه صنعتی", "category": "food", "cost": 82000, "food": 1050, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/StateLibQld_2_204084_Making_hay_on_the_farm%2C_1930s.jpg?width=1280"},
     "park": {"fa": "پارک عمومی", "category": "welfare", "cost": 30000, "happy": 2.2, "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/City_Park%2C_Denver.jpg/1280px-City_Park%2C_Denver.jpg"},
     "fun": {"fa": "مرکز تفریحی", "category": "welfare", "cost": 72000, "happy": 4, "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Amusement_park_ride.jpg/960px-Amusement_park_ride.jpg"},
     "mall": {"fa": "مرکز خدمات شهری", "category": "welfare", "cost": 105000, "happy": 5, "image": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Shopping_mall_interior.jpg"},
-    "stadium": {"fa": "مجموعه ورزشی", "category": "welfare", "cost": 155000, "happy": 7, "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Football_Stadium_Exterior_%2843736089321%29.jpg/1024px-Football_Stadium_Exterior_%2843736089321%29.jpg"},
+    "stadium": {"fa": "مجموعه ورزشی", "category": "welfare", "cost": 155000, "happy": 7, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Football_Stadium_Exterior_%2843736089321%29.jpg?width=1280"},
 }
 
 FACTIONS = {
