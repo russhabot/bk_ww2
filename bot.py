@@ -321,7 +321,7 @@ if dp:
             [InlineKeyboardButton(text="ورود به کارزار جهانی دوم (Mini App)", web_app=WebAppInfo(url=WEBAPP_LINK))]
         ]) if URL else None
         await msg.answer(
-            "⚔️ <b>به کارزار جهانی دوم ۱۹۳۴ خوش آمدید!</b>\\n\\nبا ورود به Mini App، عضویت شما در @burnt_kingdoms و @bk_chatt بررسی می‌شود. در صورت نیاز، پنجرهٔ عضویت نمایش داده خواهد شد.\\n\\nسناریو از ۱ ژانویهٔ ۱۹۳۴ آغاز می‌شود.",
+            "⚔️ <b>به کارزار جهانی دوم ۱۹۳۴ خوش آمدید!</b>\n\nبا ورود به Mini App، عضویت شما در @burnt_kingdoms و @bk_chatt بررسی می‌شود. در صورت نیاز، پنجرهٔ عضویت نمایش داده خواهد شد.\n\nسناریو از ۱ ژانویهٔ ۱۹۳۴ آغاز می‌شود.",
             reply_markup=kb, parse_mode="HTML"
         )
 
