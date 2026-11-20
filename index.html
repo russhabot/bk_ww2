@@ -565,7 +565,7 @@
     }
 
     /* Map View Container */
-    #map-view-container {
+    #map-view-container { display:none!important;
       background: #090e18;
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -2697,9 +2697,6 @@
     let currentViewMode = 'cards';
     let selectedCountryCode = null;
     let isAudioPlaying = false;
-    let leafletMap = null;
-    let geojsonLayer = null;
-    let worldGeoData = null;
 
     const tg = window.Telegram?.WebApp;
     if (tg) {
@@ -2812,6 +2809,8 @@
             S.p = data.s.p || S.p;
             S.taken = data.s.taken || S.taken;
             S.owners = data.s.owners || S.owners;
+            S.active_countries = data.s.active_countries || S.active_countries;
+            S.economy_buildings = data.s.economy_buildings || S.economy_buildings;
           }
           document.getElementById('mandatory-join-modal').style.display = 'none';
           showToast('عضویت تأیید شد. به ستاد فرماندهی خوش آمدید.');
@@ -2879,7 +2878,7 @@
       if (cards) cards.style.display = canChoose && currentViewMode === 'cards' ? 'block' : 'none';
       if (map) map.style.display = canChoose && currentViewMode === 'map' ? 'block' : 'none';
       if (S.season === 'live') renderLiveTab(liveTab);
-      else { const liveNav = document.getElementById('live-bottom-nav'); if (liveNav) liveNav.style.display = 'none'; const a = document.getElementById('btn-view-cards'); const b = document.getElementById('btn-view-map'); if (a) a.style.display = 'inline-flex'; if (b) b.style.display = 'inline-flex'; }
+      else { const liveNav = document.getElementById('live-bottom-nav'); if (liveNav) liveNav.style.display = 'none'; const a = document.getElementById('btn-view-cards'); if (a) a.style.display = 'inline-flex'; }
     }
 
     function setLiveTab(tab) {
@@ -3114,7 +3113,6 @@
     function handleSearch(val) {
       searchQuery = String(val || '').toLowerCase().trim();
       renderCards();
-      if (geojsonLayer) updateMapStyles();
     }
 
     function setFilter(type, elem) {
@@ -3122,7 +3120,6 @@
       document.querySelectorAll('.filter-chips .chip').forEach(c => c.classList.remove('active'));
       if (elem) elem.classList.add('active');
       renderCards();
-      if (geojsonLayer) updateMapStyles();
     }
 
     function getColonyTag(c) {
@@ -3294,94 +3291,13 @@
       }).join('');
     }
 
-    // Switch View Mode
+    // Country selection now uses cards only; the world map view has been removed.
     function setViewMode(mode) {
-      currentViewMode = mode;
-      document.getElementById('btn-view-cards').classList.toggle('active', mode === 'cards');
-      document.getElementById('btn-view-map').classList.toggle('active', mode === 'map');
-
-      const worldViewAllowed = S.season === 'pick' || (S.season === 'live' && liveTab === 'world');
-      document.getElementById('cards-view-wrap').style.display = worldViewAllowed && mode === 'cards' ? 'block' : 'none';
-      document.getElementById('map-view-container').style.display = worldViewAllowed && mode === 'map' ? 'block' : 'none';
-
-      if (mode === 'map') {
-        if (!leafletMap) {
-          initMap();
-        } else {
-          setTimeout(() => leafletMap.invalidateSize(), 150);
-        }
-      }
-    }
-
-    // Leaflet World Map
-    const iso3ToCode = {
-      DEU:'DE',RUS:'SU',GBR:'GB',USA:'US',JPN:'JP',ITA:'IT',FRA:'FR',CHN:'CN',IRN:'IR',POL:'PL',
-      CAN:'CA',AUS:'AU',IND:'IN',PAK:'IN',BGD:'IN',MMR:'IN',ROU:'RO',HUN:'HU',FIN:'FI',BGR:'BG',
-      SRB:'YU',HRV:'YU',SVN:'YU',BIH:'YU',MNE:'YU',MKD:'YU',XKX:'YU',GRC:'GR',TUR:'TR',ESP:'ES',
-      SWE:'SE',CHE:'CH',PRT:'PT',NLD:'NL',BEL:'BE',NOR:'NO',DNK:'DK',CZE:'CZ',SVK:'CZ',BRA:'BR',
-      MEX:'MX',ARG:'AR',IRQ:'IQ',SAU:'SA',EGY:'EG',ZAF:'ZA',NZL:'NZ',MNG:'MN',THA:'TH',IRL:'IE',
-      AFG:'AF',ALB:'AL',COL:'CO',PER:'PE',VEN:'VE',CUB:'CU',EST:'EE',LVA:'LV',LTU:'LT',NPL:'NP',
-      BTN:'BT',YEM:'YE',OMN:'OM',ISL:'IS',URY:'UY',PRY:'PY',BOL:'BO',ECU:'EC',GTM:'GT',HND:'HN',
-      SLV:'SV',NIC:'NI',CRI:'CR',PAN:'PA',DOM:'DO',HTI:'HT',LBR:'LR',PHL:'PH',
-      BLR:'SU',UKR:'SU',KAZ:'SU',KGZ:'SU',TJK:'SU',TKM:'SU',UZB:'SU',GEO:'SU',ARM:'SU',AZE:'SU',MDA:'SU'
-    };
-    const mapNameAliases = {'united states of america':'US','united states':'US','russian federation':'SU','russia':'SU','iran':'IR','iran (islamic republic of)':'IR','united kingdom':'GB','czech republic':'CZ','czechia':'CZ','slovakia':'CZ','republic of the philippines':'PH','myanmar':'IN','burma':'IN','bangladesh':'IN','pakistan':'IN','belarus':'SU','ukraine':'SU','kazakhstan':'SU','uzbekistan':'SU','turkmenistan':'SU','tajikistan':'SU','kyrgyzstan':'SU','georgia':'SU','armenia':'SU','azerbaijan':'SU','serbia':'YU','croatia':'YU','bosnia and herzegovina':'YU','slovenia':'YU','montenegro':'YU','north macedonia':'YU','the netherlands':'NL','republic of moldova':'SU'};
-    function getFeatureGameCode(feature) {
-      const p=feature?.properties||{};
-      for(const raw of [feature?.id,p.ISO_A3,p.ADM0_A3,p.SOV_A3,p.iso_a3,p.ISO3,p.code,p.ISO_A2,p.iso_a2]) {
-        if(raw==null) continue;
-        const k=String(raw).trim().toUpperCase();
-        if(iso3ToCode[k]) return iso3ToCode[k];
-        if(COUNTRIES[k]) return k;
-      }
-      const name=String(p.ADMIN||p.NAME||p.name||p.NAME_EN||'').trim().toLowerCase();
-      return mapNameAliases[name]||Object.values(COUNTRIES).find(c=>c.name_en?.toLowerCase()===name)?.code||null;
-    }
-    function getFactionColor(faction) { if(faction==='axis')return '#ef4444';if(faction==='allies')return '#3b82f6';if(faction==='comintern')return '#f97316';return '#64748b'; }
-    function mapStyleForCountry(country,code) {
-      const taken=S.taken.includes(code), matches=matchesFilter(country,code);
-      return {fillColor:taken?'#334155':getFactionColor(country.faction),weight:matches?1:0.2,opacity:matches?0.8:0.08,color:matches?'#1e293b':'#0b1220',fillOpacity:matches?(taken?0.42:0.68):0.015};
-    }
-    async function initMap() {
-      leafletMap=L.map('map',{center:[30,20],zoom:2.2,minZoom:1.5,maxZoom:6,attributionControl:false,preferCanvas:true,renderer:L.canvas({padding:0.5}),zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false,updateWhenZooming:false,updateWhenIdle:true,wheelDebounceTime:80,wheelPxPerZoomLevel:120});
-      try {
-        const res=await fetch('/world_geo.json',{cache:'force-cache'});
-        if(!res.ok)throw new Error('Map data HTTP '+res.status);
-        worldGeoData=await res.json();renderGeoJson();
-      } catch(err) { console.error('Failed to load local map data:',err);showToast('دادهٔ نقشه بارگذاری نشد. صفحه را تازه‌سازی کنید.'); }
-    }
-    function renderGeoJson() {
-      if(!worldGeoData)return;
-      if(geojsonLayer)leafletMap.removeLayer(geojsonLayer);
-      geojsonLayer=L.geoJSON(worldGeoData,{
-        renderer:L.canvas({padding:0.5}),smoothFactor:2.5,
-        style:feature=>{const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];return c?mapStyleForCountry(c,code):{fillColor:'#1e293b',weight:0.3,opacity:0.3,color:'#0f172a',fillOpacity:0.12,interactive:false};},
-        onEachFeature:(feature,layer)=>{
-          const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];
-          if(!c||c.selectable==='no'){layer.options.interactive=false;return;}
-          const owner=S.owners[code]||S.owners[code?.toLowerCase()],ownerLabel=owner?(owner.name||'@'+owner.username):'کاربر';
-          layer.bindTooltip(`<div style="direction:rtl;text-align:right;font-family:Vazirmatn,sans-serif;font-size:12px"><b>${c.name_fa}</b> (${c.name_en})<br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa||'نامشخص'}<br>جناح: <img src="${FACTIONS[c.faction]?.badge_url||'static/badges/no-faction.svg'}" style="width:15px;height:15px;vertical-align:middle;object-fit:contain" alt=""> ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>نوع حکومت: <img src="${getRegimeCategory(c).badge_url}" style="width:15px;height:15px;vertical-align:middle;object-fit:contain" alt=""> ${getRegimeCategory(c).label}<br>${(c.colony_of) ? '<span style="color:#86efac">' + getColonyTag(c) + '</span><br>' : ''}${S.taken.includes(code)?'<span style="color:#ef4444">اشغال‌شده توسط: '+ownerLabel+'</span>':'<span style="color:#10b981">آماده تصاحب</span>'}</div>`,{sticky:true});
-          layer.on({mouseover:e=>{if(matchesFilter(c,code))e.target.setStyle({weight:2,color:'#f59e0b',fillOpacity:0.88});},mouseout:e=>{if(geojsonLayer)geojsonLayer.resetStyle(e.target);},click:()=>{if(matchesFilter(c,code)&&S.season==='pick')openClaimModal(code);}});
-          layer.options.interactive=matchesFilter(c,code)&&S.season==='pick';
-        }
-      }).addTo(leafletMap);
-      renderSpecialHistoricalPolygons();
-    }
-    let specialHistoricalLayers=null;
-    function renderSpecialHistoricalPolygons() {
-      if(!leafletMap)return;
-      if(specialHistoricalLayers)leafletMap.removeLayer(specialHistoricalLayers);
-      specialHistoricalLayers=L.layerGroup().addTo(leafletMap);
-      const overlays=[
-        {code:'MZ',coords:[[53,121],[53,130],[49,134],[45,131],[41,126],[40,120],[43,117],[47,118],[50,120]]},
-        {code:'TB',coords:[[36,78],[36,88],[34,96],[30,100],[27,97],[26,89],[28,82],[31,78]]},
-        {code:'TU',coords:[[52.5,89],[52.5,98],[50.5,101],[49,96],[49.5,91]]}
-      ];
-      overlays.forEach(item=>{const c=COUNTRIES[item.code];if(!c)return;const active=matchesFilter(c,item.code),poly=L.polygon(item.coords,{renderer:L.canvas({padding:0.35}),smoothFactor:2,bubblingMouseEvents:false,color:active?'#f8fafc':'#0b1220',weight:active?1.2:0.2,fillColor:active?getFactionColor(c.faction):'#0b1220',fillOpacity:active?0.7:0.01,opacity:active?0.85:0.05,interactive:active&&S.season==='pick'});poly.bindTooltip(`<b>${c.name_fa}</b><br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa}<br>جناح: ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>حکومت: ${c.regime_fa}`);poly.on('click',()=>{if(active&&S.season==='pick')openClaimModal(item.code)});poly.addTo(specialHistoricalLayers);});
-    }
-    function updateMapStyles() {
-      if(geojsonLayer)geojsonLayer.eachLayer(layer=>{const code=getFeatureGameCode(layer.feature),c=code&&COUNTRIES[code];if(c&&layer.setStyle)layer.setStyle(mapStyleForCountry(c,code));if(c)layer.options.interactive=matchesFilter(c,code)&&S.season==='pick';});
-      renderSpecialHistoricalPolygons();
+      currentViewMode = 'cards';
+      const button=document.getElementById('btn-view-cards');
+      const cards=document.getElementById('cards-view-wrap');
+      if(button)button.classList.add('active');
+      if(cards)cards.style.display=S.season==='pick'?'block':'none';
     }
 
     // Claim Modal Logic
