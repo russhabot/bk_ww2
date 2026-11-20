@@ -106,6 +106,15 @@ def safe_int(value, default=0):
         return default
 
 
+def safe_float(value, default=0.0):
+    try:
+        if isinstance(value, bool):
+            return default
+        return float(value)
+    except (TypeError, ValueError, OverflowError):
+        return default
+
+
 def starting_resources(code):
     profiles = {
         "DE": {"power":86,"money":85000,"income":6200,"infantry":620000,"satisfaction":72,"oil":18000,"food":42000},
@@ -176,7 +185,7 @@ def ensure_economy(player):
     if not isinstance(player.get("statement_history"), list):
         player["statement_history"] = []
         changed = True
-    player["satisfaction"] = max(0, min(100, safe_int(player.get("satisfaction"), base["satisfaction"])))
+    player["satisfaction"] = max(0.0, min(100.0, safe_float(player.get("satisfaction"), base["satisfaction"])))
     return changed
 
 
@@ -208,10 +217,10 @@ def apply_daily_economy(player):
         next_food = safe_int(player.get("food")) + food_output - ECONOMY_DAILY_FOOD_USE
         if next_food < 0:
             player["food"] = 0
-            player["satisfaction"] = max(0, safe_int(player.get("satisfaction")) - 8)
+            player["satisfaction"] = max(0.0, safe_float(player.get("satisfaction")) - 8)
         else:
             player["food"] = next_food
-        player["satisfaction"] = max(0, min(100, safe_int(player.get("satisfaction")) + welfare * 0.5 - 2))
+        player["satisfaction"] = max(0.0, min(100.0, safe_float(player.get("satisfaction")) + welfare * 0.5 - 2))
         debt = safe_int(player.get("loan"))
         if debt > 0:
             interest = max(1, int(debt * 0.005))
@@ -752,7 +761,21 @@ if dp:
         await msg.answer("کشور یا کاربری یافت نشد.")
 
 
+async def economy_scheduler():
+    """Apply one civilian-economy settlement per Tehran calendar day."""
+    while True:
+        try:
+            async with ACTION_LOCK:
+                for uid, player in all_players():
+                    if apply_daily_economy(player):
+                        pset(uid, player)
+        except Exception as exc:
+            print(f"[economy-scheduler-error] {exc}")
+        await asyncio.sleep(60)
+
+
 async def main():
+    economy_task = asyncio.create_task(economy_scheduler())
     app = web.Application(client_max_size=6 * 1024 * 1024)
     app.router.add_get("/health", health_handler)
     app.router.add_get("/api/catalog", catalog_handler)
@@ -783,6 +806,11 @@ async def main():
             print("[*] Running in standalone web server mode (No BOT_TOKEN configured)")
             await asyncio.Event().wait()
     finally:
+        economy_task.cancel()
+        try:
+            await economy_task
+        except asyncio.CancelledError:
+            pass
         await runner.cleanup()
         if bot:
             await bot.session.close()
