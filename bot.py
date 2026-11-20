@@ -774,8 +774,20 @@ async def economy_scheduler():
         await asyncio.sleep(60)
 
 
+async def safe_bot_polling():
+    try:
+        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    except asyncio.CancelledError:
+        raise
+    except Exception as exc:
+        # A second process may own getUpdates (common when testing locally).
+        # Keep the web API alive: outbound channel posts still use the Bot API.
+        print(f"[bot-polling-error] {exc}")
+
+
 async def main():
     economy_task = asyncio.create_task(economy_scheduler())
+    polling_task = None
     app = web.Application(client_max_size=6 * 1024 * 1024)
     app.router.add_get("/health", health_handler)
     app.router.add_get("/api/catalog", catalog_handler)
@@ -797,15 +809,25 @@ async def main():
         print(f"[*] WW2 Web server running on http://0.0.0.0:{PORT}")
 
         if bot and dp:
-            bot_me = await bot.get_me()
-            print(f"[*] Telegram Bot @{bot_me.username} connected successfully!")
-            # Do not swallow polling errors. TelegramConflictError means another process
-            # is polling this token; exit visibly instead of leaving a web-only half-alive app.
-            await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+            try:
+                bot_me = await bot.get_me()
+                print(f"[*] Telegram Bot @{bot_me.username} connected successfully!")
+            except Exception as exc:
+                print(f"[bot-connection-warning] {exc}")
+            polling_task = asyncio.create_task(safe_bot_polling())
         else:
             print("[*] Running in standalone web server mode (No BOT_TOKEN configured)")
-            await asyncio.Event().wait()
+
+        # Keep the web app and outbound statement publishing alive even if
+        # Telegram polling is already running in another test process.
+        await asyncio.Event().wait()
     finally:
+        if polling_task:
+            polling_task.cancel()
+            try:
+                await polling_task
+            except asyncio.CancelledError:
+                pass
         economy_task.cancel()
         try:
             await economy_task
