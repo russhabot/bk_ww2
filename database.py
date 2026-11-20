@@ -251,6 +251,8 @@ def find_player_by_country(code: str) -> tuple[int | None, dict[str, Any] | None
         return None, None
     try:
         value = json.loads(row["data"])
+        if isinstance(value, dict) and value.get("alive", True) is False:
+            return None, None
         return int(row["uid"]), value if isinstance(value, dict) else None
     except (ValueError, TypeError):
         return None, None
