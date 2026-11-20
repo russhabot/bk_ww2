@@ -1016,7 +1016,7 @@
           <strong id="stat-axis-count">0</strong>
         </div>
         <div class="stat-pill allies">
-          <span class="pill-label"><img src="static/badges/allies.svg" class="badge-icon-img" alt="متفقین"> متفقین</span>
+          <span class="pill-label"><img src="static/badges/allies-eagle.svg?v=20261120f" class="badge-icon-img" alt="متفقین"> متفقین</span>
           <strong id="stat-allies-count">0</strong>
         </div>
         <div class="stat-pill comintern">
@@ -1070,7 +1070,7 @@
         <div class="filter-chips">
           <div class="chip active" onclick="setFilter('all', this)">همه</div>
           <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> محور</div>
-          <div class="chip" onclick="setFilter('allies', this)"><img src="static/badges/allies.svg" class="badge-icon-img" alt="متفقین"> متفقین</div>
+          <div class="chip" onclick="setFilter('allies', this)"><img src="static/badges/allies-eagle.svg?v=20261120f" class="badge-icon-img" alt="متفقین"> متفقین</div>
           <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن"> کمینترن</div>
           <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح"> بدون جناح</div>
           <div class="chip" onclick="setFilter('fascism', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Reichsadler_of_Nazi_Germany_%28eagle_only%29.svg" class="badge-icon-img" alt="نشان فاشیسم"> فاشیست</div>
@@ -2659,7 +2659,7 @@
     "en": "Allied Powers",
     "color": "#3b82f6",
     "bg": "rgba(59, 130, 246, 0.15)",
-    "badge_url": "static/badges/allies.svg"
+    "badge_url": "static/badges/allies-eagle.svg?v=20261120f"
   },
   "comintern": {
     "id": "comintern",
@@ -2932,7 +2932,7 @@
       if(managementSection==='diplomacy'){const others=Object.values(COUNTRIES).filter(x=>x.code!==S.p.c&&x.selectable!=='no').slice(0,28);body=back+'<div class="management-section-title"><div><small>بخش کشور</small><h3>روابط خارجی</h3></div>'+icon('diplomacy')+'</div><div class="management-country-list">'+others.map(x=>{const fx=FACTIONS[x.faction]||FACTIONS.neutral;return '<div class="management-country-row"><img class="management-mini-flag" src="'+(x.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+(x.name_fa||x.code)+'</strong><small>'+(x.capital_fa||'')+'</small></span><span class="tactical-badge badge-'+(x.faction||'neutral')+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="">'+fx.fa+'</span></div>';}).join('')+'</div><p class="management-note">فهرست کشورها و جناح‌ها یکپارچه است؛ ارسال درخواست دیپلماتیک هنوز در API نسخهٔ WWII فعال نشده است.</p>';}
       if(managementSection==='technology')body=back+'<div class="management-section-title"><div><small>بخش کشور</small><h3>پژوهش و فناوری</h3></div>'+icon('technology')+'</div><div class="management-empty">'+icon('technology')+'<strong>سامانهٔ پژوهش در حال آماده‌سازی است</strong><span>پس از اتصال سیستم تحقیق به سرور، پیشرفت فناوری و پیش‌نیازها در همین بخش نمایش داده می‌شود.</span></div>';
       if(managementSection==='organizations')body=back+'<div class="management-section-title"><div><small>بخش کشور</small><h3>سازمان‌های بین‌المللی</h3></div>'+icon('world')+'</div><div class="management-detail-grid"><div class="management-detail-card">'+icon('world')+'<span>جایگاه کشور</span><strong>پرونده تاریخی</strong><small>بر پایهٔ کشور انتخاب‌شده</small></div><div class="management-detail-card">'+icon('country')+'<span>مجوزهای عملیاتی</span><strong>ثبت نشده</strong><small>دادهٔ اجرایی در دسترس نیست</small></div></div><p class="management-note">ثبت درخواست‌های سازمانی هنوز به سرور بازی متصل نشده است.</p>';
-      if(managementSection==='profile')body=back+'<div class="history-banner"><img src="'+(c.flag_url||FALLBACK_FLAG)+'" alt="پرچم" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><div><small>پرونده تاریخی · ۱۹۳۴</small><h3>'+(c.name_fa||S.p.c)+'</h3><span>پایتخت: '+(c.capital_fa||'نامشخص')+'</span></div></div><div class="management-profile-leader"><img src="'+leaderImageSource(c)+'" alt="" onerror="handleLeaderImageError(this,\''+(c.flag_url||FALLBACK_FLAG)+'\')"><span><small>'+(c.leader_title||'رهبر تاریخی')+'</small><strong>'+(c.leader_fa||'نامشخص')+'</strong></span></div><div class="history-description"><strong>پیشینه کشور</strong><p>'+(c.desc||'اطلاعات تاریخی ثبت نشده است.')+'</p></div><div class="management-tags">'+faction+'<span class="regime-chip regime-'+reg.key+'"><img src="'+reg.badge_url+'" class="badge-icon-img" alt="">'+reg.label+'</span></div>';
+      if(managementSection==='profile')body=back+'<div class="history-banner"><img src="'+(c.flag_url||FALLBACK_FLAG)+'" alt="پرچم" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><div><small>پرونده تاریخی · ۱۹۳۴</small><h3>'+(c.name_fa||S.p.c)+'</h3><span>پایتخت: '+(c.capital_fa||'نامشخص')+'</span></div></div><div class="management-profile-leader"><img src="'+leaderImageSource(c)+'" data-leader-name="'+(c.leader_en||c.leader||'')+'" alt="" onerror="handleLeaderImageError(this,\''+(c.flag_url||FALLBACK_FLAG)+'\')"><span><small>'+(c.leader_title||'رهبر تاریخی')+'</small><strong>'+(c.leader_fa||'نامشخص')+'</strong></span></div><div class="history-description"><strong>پیشینه کشور</strong><p>'+(c.desc||'اطلاعات تاریخی ثبت نشده است.')+'</p></div><div class="management-tags">'+faction+'<span class="regime-chip regime-'+reg.key+'"><img src="'+reg.badge_url+'" class="badge-icon-img" alt="">'+reg.label+'</span></div>';
       if(title)title.textContent=managementSection==='overview'?'مدیریت کشور':'مرکز فرماندهی کشور';
       if(message)message.textContent=managementSection==='overview'?'اقتصاد، نیروها، روابط خارجی و ساختار کشور در یک پنل یکپارچه.':'گزارش بخش انتخاب‌شده از پرونده کشور.';
       dossier.innerHTML='<div class="management-dashboard">'+header+body+'</div>';
@@ -2975,7 +2975,7 @@
           dossier.innerHTML = `<div class="country-history-card">
             <div class="history-banner"><img src="${c.flag_url || FALLBACK_FLAG}" alt="پرچم کشور" onerror="this.onerror=null;this.src='${FALLBACK_FLAG}'"><div><small>پرونده تاریخی · ۱۹۳۴</small><h3>${c.name_fa || S.p.c}</h3><span>پایتخت: ${c.capital_fa || 'نامشخص'}</span></div></div>
             <div class="history-tags"><div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/no-faction.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div><div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${regime.key}"><img class="badge-icon-img" src="${regime.badge_url}" alt="">${regime.label}</span></div>${(c.colony_of) ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="">' + getColonyTag(c) + '</span>' : ''}</div>
-            <div class="leader-profile-card"><div class="leader-profile-photo"><img src="${leaderImageSource(c)}" alt="${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this)"></div><div class="leader-profile-meta"><span>رهبر تاریخی</span><strong>${c.leader_fa || 'نامشخص'}</strong><small>${c.leader_title || c.leader_en || ''}</small></div></div>
+            <div class="leader-profile-card"><div class="leader-profile-photo"><img src="${leaderImageSource(c)}" data-leader-name="${c.leader_en || c.leader || ''}" alt="${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this)"></div><div class="leader-profile-meta"><span>رهبر تاریخی</span><strong>${c.leader_fa || 'نامشخص'}</strong><small>${c.leader_title || c.leader_en || ''}</small></div></div>
             <div class="history-description"><strong>پیشینه کشور</strong><p>${c.desc || 'اطلاعات تاریخی این کشور هنوز ثبت نشده است.'}</p></div>
           </div>`;
         }
@@ -3048,7 +3048,7 @@
               <h3 style="margin: 2px 0 0; font-size: 19px; color: #fff;">${c.name_fa || S.p.c}</h3>
               <div style="font-size: 11px; color: var(--text-muted);">${c.name_en || ''} | پایتخت: ${c.capital_fa || ''}</div>
             </div>
-            <div class="dossier-leader-avatar"><img src="${leaderImageSource(c)}" alt="${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this)"></div>
+            <div class="dossier-leader-avatar"><img src="${leaderImageSource(c)}" data-leader-name="${c.leader_en || c.leader || ''}" alt="${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this)"></div>
           </div>
           <div class="dossier-grid">
             <div class="dossier-field">
@@ -3178,13 +3178,42 @@
 
     // Card Renderer
     function leaderImageSource(c) {
-      const source = String(c?.leader_url || c?.leader_img || FALLBACK_LEADER);
+      let source = String(c?.leader_img || c?.leader_url || FALLBACK_LEADER).trim();
       if (!/^https?:\/\//i.test(source)) return source;
-      return 'https://images.weserv.nl/?url=' + encodeURIComponent(source.replace(/^https?:\/\//i, ''));
+      // Use Wikimedia's original host directly; the previous third-party proxy
+      // caused otherwise valid leader portraits to disappear.
+      source = source.replace(/^https:\/\/thumb\.wikimedia\.org\//i, 'https://upload.wikimedia.org/');
+      return source;
     }
 
-    function handleLeaderImageError(img) {
+    async function handleLeaderImageError(img) {
       if (!img) return;
+      // If the curated Commons file is unavailable, ask Wikipedia for the
+      // page thumbnail of the exact leader name before showing the placeholder.
+      if (!img.dataset.wikiFallbackTried) {
+        img.dataset.wikiFallbackTried = '1';
+        const leaderName = String(img.dataset.leaderName || img.alt || '').trim();
+        if (leaderName) {
+          try {
+            const api = 'https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch='
+              + encodeURIComponent('"' + leaderName + '"')
+              + '&gsrlimit=1&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*';
+            const response = await fetch(api);
+            if (response.ok) {
+              const payload = await response.json();
+              const page = Object.values(payload?.query?.pages || {})[0];
+              const thumbnail = page?.thumbnail?.source;
+              if (thumbnail) {
+                img.onerror = () => handleLeaderImageError(img);
+                img.src = thumbnail;
+                return;
+              }
+            }
+          } catch (error) {
+            console.warn('Leader portrait fallback failed:', leaderName, error);
+          }
+        }
+      }
       img.onerror = null;
       img.src = FALLBACK_LEADER;
       img.alt = 'تصویر رهبر در دسترس نیست';
@@ -3232,7 +3261,7 @@
 
             <div class="leader-row">
               <div class="leader-photo">
-                <img src="${leaderImageSource(c)}" alt="${c.leader_fa || c.leader_en || 'رهبر تاریخی'}" loading="lazy" onerror="handleLeaderImageError(this)">
+                <img src="${leaderImageSource(c)}" data-leader-name="${c.leader_en || c.leader || ''}" alt="${c.leader_fa || c.leader_en || 'رهبر تاریخی'}" loading="lazy" onerror="handleLeaderImageError(this)">
               </div>
               <div class="leader-meta">
                 <p class="leader-title">رهبر تاریخی (۱ ژانویهٔ ۱۹۳۴):</p>
