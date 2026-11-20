@@ -263,7 +263,11 @@ def reset_season(actor_id: int | None = None) -> tuple[int, int]:
     new_number = current + 1
     released = len(all_players())
     rows = _execute("SELECT uid, data FROM players").fetchall()
-    with db:
+    # psycopg connection context managers close the connection on exit.
+    # Use transaction() for PostgreSQL so the shared connection remains usable
+    # by subsequent bot commands and HTTP requests. SQLite keeps its normal context.
+    transaction = db.transaction() if USE_POSTGRES else db
+    with transaction:
         for row in rows:
             try:
                 data = json.loads(row["data"])
