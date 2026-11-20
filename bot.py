@@ -500,14 +500,14 @@ def diplomacy_state_for(uid):
     changed = False
     for item in state.get("embassies", []):
         if safe_int(item.get("to")) == safe_int(uid) and item.get("status") == "pending":
-            sender = pget(item.get("from")) or {}
+            sender = pget(safe_int(item.get("from"))) or {}
             incoming.append({**item, "from_country": sender.get("c", "")})
         elif safe_int(item.get("from")) == safe_int(uid) and item.get("status") == "pending":
-            receiver = pget(item.get("to")) or {}
+            receiver = pget(safe_int(item.get("to"))) or {}
             outgoing.append({**item, "to_country": receiver.get("c", "")})
         elif safe_int(uid) in (safe_int(item.get("from")), safe_int(item.get("to"))) and item.get("status") == "active":
             other_uid = safe_int(item.get("to")) if safe_int(item.get("from")) == safe_int(uid) else safe_int(item.get("from"))
-            other = pget(other_uid) or {}
+            other = pget(safe_int(other_uid)) or {}
             if item.get("pact_until") and safe_int(item.get("pact_until")) <= now:
                 item.pop("pact_until", None)
                 item.pop("pact_years", None)
@@ -683,7 +683,7 @@ async def api_handler(request):
                         error = "کشور مقصد معتبر یا فعال نیست."
                     elif any(e.get("status") == "active" and same_user_pair(e, uid, target_uid) for e in dstate["embassies"]):
                         error = "سفارت متقابل با این کشور از قبل برقرار است."
-                    elif any(e.get("status") == "pending" and {e.get("from"), e.get("to")} == {uid, target_uid} for e in dstate["embassies"]):
+                    elif any(e.get("status") == "pending" and same_user_pair(e, uid, target_uid) for e in dstate["embassies"]):
                         error = "درخواست سفارت با این کشور قبلاً ارسال شده یا از طرف آن کشور منتظر پاسخ شماست."
                     else:
                         dstate["embassies"].append({"from": uid, "to": target_uid, "status": "pending", "created": now})
@@ -696,7 +696,7 @@ async def api_handler(request):
                 elif action == "embassy_respond":
                     sender_uid = safe_int(body.get("from"))
                     decision = str(body.get("decision", ""))
-                    req = next((e for e in dstate["embassies"] if e.get("from") == sender_uid and e.get("to") == uid and e.get("status") == "pending"), None)
+                    req = next((e for e in dstate["embassies"] if safe_int(e.get("from")) == safe_int(sender_uid) and safe_int(e.get("to")) == safe_int(uid) and e.get("status") == "pending"), None)
                     sender = pget(sender_uid) if req else None
                     if not req or decision not in ("accept", "decline"):
                         error = "درخواست سفارت معتبر نیست یا قبلاً پاسخ داده شده است."
