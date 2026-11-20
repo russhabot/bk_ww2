@@ -13,7 +13,7 @@ FALLBACK_LEADER = "static/leaders/default.svg"
 # Civilian economy only: construction, daily revenue, food and public welfare.
 # The current WW2 UI consumes this catalog without changing its visual style.
 ECONOMY_BUILDINGS = {
-    "bank": {"fa": "بانک ملی", "category": "bank", "cost": 50000, "income": 65000, "unique": True, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Banks_Street_%28Atat%C3%BCrk_Boulevard%29_the_Building_of_Ziraat_Bankas%C4%B1_%28Agricultural_Bank%29%2C_1930s_%2816851305342%29.jpg?width=1280"},
+    "bank": {"fa": "بانک ملی", "category": "bank", "cost": 75000, "income": 0, "unique": True, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Banks_Street_%28Atat%C3%BCrk_Boulevard%29_the_Building_of_Ziraat_Bankas%C4%B1_%28Agricultural_Bank%29%2C_1930s_%2816851305342%29.jpg?width=1280"},
     "mine_gold": {"fa": "معدن طلا", "category": "mines", "cost": 260000, "income": 310000, "resource": "gold", "production": 24, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Gold_mine.jpg?width=1280"},
     "mine_iron": {"fa": "معدن آهن", "category": "mines", "cost": 125000, "income": 155000, "resource": "iron", "production": 130, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Iron_Ore_Mine.jpg?width=1280"},
     "mine_coal": {"fa": "معدن زغال‌سنگ", "category": "mines", "cost": 95000, "income": 118000, "resource": "coal", "production": 190, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Coal_Mine_Field.jpg?width=1280"},
