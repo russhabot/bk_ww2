@@ -784,7 +784,7 @@ async def api_handler(request):
                     target_uid = safe_int(body.get("target_uid"))
                     years = safe_int(body.get("years"))
                     note = str(body.get("note", "")).strip()[:500]
-                    relation = next((e for e in dstate["embassies"] if e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, target_uid}), None)
+                    relation = next((e for e in dstate["embassies"] if e.get("status") == "active" and same_user_pair(e, uid, target_uid)), None)
                     target = pget(target_uid)
                     if not relation or not target or target.get("alive", True) is False or target_uid == uid or years not in (1, 2, 3, 5) or len(note) < 5:
                         error = "ابتدا سفارت برقرار کنید و مدت معتبر انتخاب کنید."
