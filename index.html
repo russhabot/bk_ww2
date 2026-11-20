@@ -2750,6 +2750,7 @@
 
     let liveTab = 'home';
     let managementSection = 'overview';
+    let diplomacyTarget = null;
     let currentFilter = 'all';
     let searchQuery = '';
     let currentViewMode = 'cards';
@@ -2998,9 +2999,22 @@
         body=economyBack+sectionTitle('درآمد عمومی','مالیات')+'<article class="management-tax-card">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/Tax_Office%3F_LCCN2016862907.jpg?width=1280','ساختمان اداره مالیات در دهه ۱۹۳۰')+'<div class="management-building-content"><div class="building-fact"><span>درآمد امروز</span><strong>۳۵٬۰۰۰ دلار</strong></div><div class="building-fact"><span>کاهش رضایت</span><strong>۴٪</strong></div><button class="btn btn-gold" style="width:100%" '+(already?'disabled':'')+' onclick="collectEconomyTax()">'+(already?'مالیات امروز دریافت شده':'دریافت مالیات روزانه')+'</button></div></article>';heading='مالیات';
       }
       if(managementSection==='welfare'){body=economyBack+sectionTitle('خدمات عمومی','رفاهیات')+'<div class="management-building-grid">'+makeCards('welfare')+'</div>';heading='رفاهیات';}
+
       if(managementSection==='diplomacy'){
         const others=(S.active_countries||[]).filter(x=>x.code!==S.p.c);
-        body=back+sectionTitle('کشورهای دارای فرمانروا','دیپلماسی')+'<div class="management-country-list">'+(others.length?others.map(x=>{const fx=FACTIONS[x.faction]||FACTIONS.neutral,info=COUNTRIES[x.code]||{};return '<div class="management-country-row"><img class="management-mini-flag" src="'+(info.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+(x.name_fa||info.name_fa||x.code)+'</strong><small>'+(x.ruler||'فرمانروا')+(x.username?' · @'+x.username:'')+'</small></span><span class="tactical-badge badge-'+(x.faction||'neutral')+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="">'+(fx.fa||'بدون جناح')+'</span></div>';}).join(''):'<div class="management-empty"><strong>هنوز کشور فعال دیگری ثبت نشده است</strong><span>با انتخاب کشور توسط بازیکنان، فرمانروایان در این بخش نمایش داده می‌شوند.</span></div>')+'</div>';heading='دیپلماسی';
+        const d=S.diplomacy||{incoming:[],outgoing:[],relations:[],war_open:false};
+        const relationFor=uid=>(d.relations||[]).find(v=>Number(v.uid)===Number(uid));
+        const cards=others.map(x=>{const fx=FACTIONS[x.faction]||FACTIONS.neutral,info=COUNTRIES[x.code]||{},rel=relationFor(x.uid),pending=(d.outgoing||[]).some(v=>v.to_country===x.code);return '<button type="button" class="management-country-row" onclick="openDiplomacyCountry(\''+x.code+'\')"><img class="management-mini-flag" src="'+(info.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+(x.name_fa||info.name_fa||x.code)+'</strong><small>'+(x.ruler||'فرمانروا')+(rel?' · سفارت برقرار':pending?' · درخواست ارسال شده':' · بدون سفارت')+'</small></span><span class="tactical-badge badge-'+(x.faction||'neutral')+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="">'+(fx.fa||'بدون جناح')+'</span></button>';}).join('');
+        const inbox=(d.incoming||[]).map(v=>{const c=COUNTRIES[v.from_country]||{};return '<article class="management-building-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/League_of_Nations_1930s.jpg?width=1000" alt="نشست دیپلماتیک دهه ۱۹۳۰"><div class="management-building-content"><strong>درخواست سفارت از '+(c.name_fa||v.from_country)+'</strong><p>در صورت پذیرش، از هر دو کشور ۵٬۰۰۰ دلار و ۵ واحد قدرت سیاسی کسر می‌شود.</p><div class="management-action-grid"><button class="btn btn-gold" onclick="respondEmbassy('+v.from+',\'accept\')">پذیرش</button><button class="btn" onclick="respondEmbassy('+v.from+',\'decline\')">رد درخواست</button></div></div></article>';}).join('');
+        const selected=(S.active_countries||[]).find(x=>x.code===diplomacyTarget);
+        const rel=selected?relationFor(selected.uid):null;
+        let detail='';
+        if(selected){
+          const info=COUNTRIES[selected.code]||{}, noWar=rel&&Number(rel.pact_until||0)>Date.now()/1000;
+          detail='<div class="management-diplomacy-detail"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Diplomatic_meeting_1930s.jpg?width=1000" alt="مذاکرات دیپلماتیک دهه ۱۹۳۰"><div class="management-building-content"><strong>ارتباط با '+(selected.name_fa||info.name_fa||selected.code)+'</strong><p>فرمانروا: '+(selected.ruler||'فرمانروا')+'</p>'+(rel?'<div class="management-action-grid"><button class="btn" onclick="transferDiplomaticMoney('+selected.uid+')">انتقال پول</button><button class="btn" onclick="createNonAggressionPact('+selected.uid+')">پیمان عدم تجاوز</button></div><div class="management-feature-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Port_of_London_1930s.jpg?width=900" alt="بندر تاریخی"><span class="management-feature-copy"><strong>تجارت</strong><small>برای تجارت، هر دو کشور باید بندر یا فرودگاه داشته باشند. جزئیات زیرساخت در مرحله بعد اضافه می‌شود.</small></span></div><div class="management-feature-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/1930s_military_parade.jpg?width=900" alt="رژه تاریخی"><span class="management-feature-copy"><strong>درخواست نیروی کمکی</strong><small>سامانه درخواست و زمان تحویل بسته‌های پشتیبانی در مرحله بعد تکمیل می‌شود.</small></span></div>'+(noWar?'':'<button class="btn" '+(d.war_open?'':'disabled')+' onclick="showToast(\'جزئیات این بخش در به‌روزرسانی بعدی اضافه می‌شود.\')">جنگ '+(d.war_open?'(دستور ادمین صادر شده)':'(بسته توسط ادمین)')+'</button>')+(noWar?'<p>پیمان عدم تجاوز تا '+new Date(rel.pact_until*1000).toLocaleDateString('fa-IR')+' برقرار است؛ گزینه جنگ نمایش داده نمی‌شود.</p>':'')+'</div>':'<div class="management-building-content"><strong>سفارت متقابل هنوز برقرار نیست</strong><p>برای باز شدن پنل ارتباط، درخواست سفارت بفرستید. پس از پذیرش، از هر دو کشور ۵٬۰۰۰ دلار و ۵ واحد قدرت سیاسی کسر می‌شود.</p><button class="btn btn-gold" onclick="requestEmbassy(\''+selected.code+'\')">درخواست تأسیس سفارت متقابل</button></div>')+'</div>';
+        }
+        body=back+sectionTitle('ارتباط میان کشورها','دیپلماسی')+(inbox?'<h4>درخواست‌های دریافتی</h4><div class="management-building-grid">'+inbox+'</div>':'')+'<div class="management-country-list">'+(cards||'<div class="management-empty">کشور فعال دیگری وجود ندارد.</div>')+'</div>'+detail;
+        heading='دیپلماسی';
       }
       if(title)title.textContent=heading;
       if(message)message.textContent='مدیریت خدمات و منابع کشور.';
@@ -3011,7 +3025,7 @@
       try {
         const res=await fetch('/api/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({init:tg?.initData||'',...(payload||{})})});
         const data=await res.json();
-        if(data.s){S.p=data.s.p||S.p;S.active_countries=data.s.active_countries||S.active_countries;S.economy_buildings=data.s.economy_buildings||S.economy_buildings;}
+        if(data.s){S.p=data.s.p||S.p;S.active_countries=data.s.active_countries||S.active_countries;S.economy_buildings=data.s.economy_buildings||S.economy_buildings;S.diplomacy=data.s.diplomacy||S.diplomacy;}
         if(!res.ok||!data.ok){showToast(data.err||'عملیات انجام نشد.');return false;}
         showToast('عملیات با موفقیت ثبت شد.');
         if(liveTab==='manage')showManagementView();
@@ -3021,6 +3035,12 @@
     function buyEconomyBuilding(id){gameAction('economy_build',{id,amount:1});}
     function collectEconomyTax(){gameAction('economy_tax',{});}
     function economyBank(kind){const amount=Number(document.getElementById('economy-bank-amount')?.value||0);gameAction('economy_bank',{kind,amount});}
+
+    async function requestEmbassy(country){await gameAction('embassy_request',{country});}
+    async function respondEmbassy(from,decision){await gameAction('embassy_respond',{from,decision});}
+    function openDiplomacyCountry(code){diplomacyTarget=code;setManagementSection('diplomacy');}
+    async function transferDiplomaticMoney(target_uid){const raw=prompt('مبلغ انتقال به دلار (۱٬۰۰۰ تا ۱۰۰٬۰۰۰):');if(raw===null)return;await gameAction('diplomacy_transfer',{target_uid,amount:Number(raw)});}
+    async function createNonAggressionPact(target_uid){const raw=prompt('مدت پیمان به سال (۱، ۲، ۳ یا ۵):','1');if(raw===null)return;await gameAction('diplomacy_pact',{target_uid,years:Number(raw)});}
     async function submitStatement(){
       const text=(document.getElementById('statement-text')?.value||'').trim();
       const file=document.getElementById('statement-image')?.files?.[0]||null;
