@@ -298,6 +298,30 @@ async def api_handler(request):
         })
 
 
+async def announce_season_status(phase: str, season_number=None):
+    """Publish season transitions to the configured main announcement channel."""
+    if not bot or not ANNOUNCE_CHANNEL:
+        return
+    labels = {
+        "wait": ("اتاق انتظار", "انتخاب کشور غیرفعال است."),
+        "pick": ("مرحلهٔ انتخاب کشور", "فرماندهان می‌توانند کشور خود را انتخاب کنند."),
+        "live": ("سیزن فعال", "مرحلهٔ انتخاب کشور بسته شده و سیزن آغاز شده است.")
+    }
+    title, detail = labels.get(phase, ("وضعیت نامشخص", ""))
+    number = season_number if season_number is not None else kget("season_number", "1")
+    message = (
+        "<b>اطلاعیهٔ رسمی Burnt Kingdoms</b>\n\n"
+        f"<b>سیزن شمارهٔ {number}</b>\n"
+        f"وضعیت جدید: <b>{title}</b>\n"
+        f"{detail}"
+    )
+    try:
+        await bot.send_message(ANNOUNCE_CHANNEL, message, parse_mode="HTML")
+        print(f"[season-announcement] published phase={phase} season={number}")
+    except Exception as exc:
+        print(f"[season-announcement-error] {exc}")
+
+
 async def send_channel_announcement(name, username, country_name, faction_name):
     if not bot or not ANNOUNCE_CHANNEL:
         return
@@ -353,15 +377,20 @@ if dp:
             )
         if p[1].lower() in ("reset", "restart"):
             number, released = reset_season(msg.from_user.id)
+            await announce_season_status("wait", number)
             return await msg.answer(
-                f"✅ سیزن با موفقیت ریست شد.\nشمارهٔ سیزن جدید: {number}\n"
-                f"کشورهای آزادشده: {released}\nوضعیت جدید: اتاق انتظار (wait).\n"
+                f"سیزن ریست شد.\nشمارهٔ سیزن جدید: {number}\n"
+                f"کشورهای آزادشده: {released}\nوضعیت جدید: اتاق انتظار.\n"
                 "پروفایل بازیکنان حفظ شد؛ انتخاب کشور پس از /season pick فعال می‌شود."
             )
         phase = p[1].lower()
         if phase not in labels:
             return await msg.answer("استفاده: /season wait | /season pick | /season live | /season reset")
+        previous = kget("season", "wait")
+        if previous == phase:
+            return await msg.answer(f"وضعیت سیزن از قبل «{labels[phase]}» است؛ تغییری انجام نشد.")
         kset("season", phase)
+        await announce_season_status(phase)
         await msg.answer(f"وضعیت سیزن تغییر کرد: {labels[phase]}.")
 
     @dp.message(Command("resetseason"))
@@ -369,9 +398,10 @@ if dp:
         if msg.from_user.id not in ADMIN_IDS:
             return await msg.answer("شما دسترسی مدیریت ندارید.")
         number, released = reset_season(msg.from_user.id)
+        await announce_season_status("wait", number)
         await msg.answer(
-            f"✅ سیزن ریست شد.\nشمارهٔ جدید: {number}\nکشورهای آزادشده: {released}\n"
-            "وضعیت: اتاق انتظار (wait). پروفایل بازیکنان حفظ شد."
+            f"سیزن ریست شد.\nشمارهٔ جدید: {number}\nکشورهای آزادشده: {released}\n"
+            "وضعیت: اتاق انتظار. پروفایل بازیکنان حفظ شد."
         )
 
     @dp.message(Command("status"))
