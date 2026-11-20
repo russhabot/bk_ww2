@@ -525,7 +525,7 @@ def get_api_state(uid, player, season, membership_info=None):
         owners[c] = {"name": p_name or p_uname or "فرمانروا", "username": p_uname, "uid": p_uid}
         owners[c.lower()] = owners[c]
         if c in COUNTRIES:
-            active_countries.append({"code": c, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral")})
+            active_countries.append({"code": c, "uid": p_uid, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral")})
 
     return {
         "season": season,
