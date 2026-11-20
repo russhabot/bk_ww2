@@ -16,7 +16,7 @@ FACTIONS = {
         "en": "Axis Powers",
         "color": "#ef4444",
         "bg": "rgba(239, 68, 68, 0.15)",
-        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg"
+        "badge_url": "static/badges/axis.svg"
     },
     "allies": {
         "id": "allies",
@@ -24,7 +24,7 @@ FACTIONS = {
         "en": "Allied Powers",
         "color": "#3b82f6",
         "bg": "rgba(59, 130, 246, 0.15)",
-        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Insignia_of_the_South_East_Asia_Command.svg"
+        "badge_url": "static/badges/allies.svg"
     },
     "comintern": {
         "id": "comintern",
@@ -50,7 +50,7 @@ IDEOLOGIES = {
         "fa": "فاشیسم / نظامی‌گری",
         "en": "Fascism",
         "color": "#a855f7",
-        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Fascist_Party_logo.svg"
+        "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Reichsadler_of_Nazi_Germany_%28eagle_only%29.svg"
     },
     "communism": {
         "id": "communism",
@@ -701,7 +701,7 @@ COUNTRIES = {
         "leader_title": "رئیس‌جمهور جمهوری اسپانیا",
         "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Niceto_Alcal%C3%A1-Zamora.jpg",
         "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niceto_Alcal%C3%A1-Zamora.jpg",
-        "flag_url": "https://flagcdn.com/w320/es.png",
+        "flag_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Second_Spanish_Republic.svg",
         "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور نیکتو آلکالا-زامورا (Niceto Alcalá-Zamora) بود. نوع حکومت: جمهوری پارلمانی. جناح سناریویی: بدون جناح.",
         "leader_en": "Niceto Alcalá-Zamora",
         "regime_type": "parliamentary_republic",
@@ -1432,8 +1432,8 @@ COUNTRIES = {
     },
     "PH": {
         "code": "PH",
-        "name_fa": "فیلیپین (مشترک‌المنافع)",
-        "name_en": "Philippines",
+        "name_fa": "جزایر فیلیپین (تحت ادارهٔ آمریکا)",
+        "name_en": "Philippine Islands",
         "capital_fa": "مانیلا",
         "faction": "allies",
         "ideology": "democracy",
@@ -1533,5 +1533,24 @@ COUNTRIES = {
         "puppet_of_fa": "ژاپن",
         "puppet_label": "دولت دست‌نشاندهٔ ژاپن",
         "status_fa": "دولت دست‌نشاندهٔ ژاپن؛ استقلال آن از نظر عملی محدود بود"
+    },
+    "AT": {
+        "code": "AT",
+        "name_fa": "جمهوری اتریش",
+        "name_en": "Austria",
+        "capital_fa": "وین",
+        "faction": "neutral",
+        "ideology": "fascism",
+        "leader": "اِنگِلبِرت دولفوس",
+        "leader_fa": "اِنگِلبِرت دولفوس",
+        "leader_title": "صدراعظم اتریش",
+        "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Engelbert_Dollfuss.jpg",
+        "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Engelbert_Dollfuss.jpg",
+        "flag_url": "https://flagcdn.com/w320/at.png",
+        "desc": "در ۱ ژانویهٔ ۱۹۳۴، اتریش کشوری مستقل با پایتخت وین بود. انگلبرت دولفوس صدراعظم کشور بود و حکومت به‌سوی نظام اقتدارگرای اتریشی (استروفاشیسم) حرکت کرده بود. اتریش در این تاریخ عضو محور نبود و مستقل از آلمان باقی مانده بود.",
+        "leader_en": "Engelbert Dollfuss",
+        "regime_type": "authoritarian_one_party_state",
+        "regime_fa": "حکومت اقتدارگرای اتریشی (استروفاشیسم)",
+        "scenario_date": "1934-01-01"
     }
 }
