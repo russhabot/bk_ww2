@@ -2965,16 +2965,16 @@
       const menuCard=(id,name,desc,img)=>'<button class="management-feature-card" type="button" onclick="setManagementSection(\''+id+'\')">'+image(img,name)+'<span class="management-feature-copy"><strong>'+name+'</strong><small>'+desc+'</small></span><b>‹</b></button>';
       const economyMenu='<div class="management-feature-grid">'+
         menuCard('bank','بانک ملی','تأسیس، پس‌انداز و وام',catalog.bank?.image||'')+
-        menuCard('mines','معادن','طلا، آهن، زغال‌سنگ و نفت',catalog.mine_gold?.image||'')+
+        menuCard('mines','معادن','طلا، آهن و زغال‌سنگ',catalog.mine_gold?.image||'')+
         menuCard('food','کشاورزی و غذا','مزارع معمولی و صنعتی',catalog.farm_s?.image||'')+
         menuCard('tax','مالیات','دریافت مالیات روزانه',catalog.bank?.image||'')+
         menuCard('welfare','رفاهیات','خدمات شهری و رضایت عمومی',catalog.park?.image||'')+
         '</div>';
       const root='<div class="management-root-grid">'+
         '<button class="management-root-card" type="button" onclick="setManagementSection(\'economy\')">'+image(catalog.mine_gold?.image||'','اقتصاد و رفاهیات')+'<span><small>مدیریت منابع کشور</small><strong>اقتصاد و رفاهیات</strong><em>بانک، معادن، مالیات، کشاورزی و خدمات عمومی</em></span><b>‹</b></button>'+
-        '<button class="management-root-card" type="button" onclick="setManagementSection(\'diplomacy\')">'+image('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/City_Park%2C_Denver.jpg/1280px-City_Park%2C_Denver.jpg','روابط خارجی')+'<span><small>ارتباط با جهان</small><strong>روابط خارجی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\'diplomacy\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/Bali_2007_Conference_flags.jpg?width=1280','دیپلماسی')+'<span><small>ارتباط با جهان</small><strong>دیپلماسی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
         '</div>';
-      const makeCards=(category)=>Object.entries(catalog).filter(([key,b])=>b.category===category).map(([key,b])=>{
+      const makeCards=(category)=>Object.entries(catalog).filter(([key,b])=>b.category===category && !(category==='mines' && key==='mine_oil')).map(([key,b])=>{
         const owned=Number(buildings[key]||0), locked=Boolean(b.unique&&owned>0);
         const yieldText=b.income?'<div class="building-fact"><span>درآمد روزانه</span><strong>'+num(b.income)+' دلار</strong></div>':b.food?'<div class="building-fact"><span>تولید غذا در روز</span><strong>'+num(b.food)+' واحد</strong></div>':b.resource?'<div class="building-fact"><span>تولید منبع در روز</span><strong>'+num(b.production)+' '+({gold:'طلا',iron:'آهن',coal:'زغال‌سنگ',oil:'بشکه نفت'}[b.resource]||b.resource)+'</strong></div>':'<div class="building-fact"><span>افزایش رضایت روزانه</span><strong>'+num(b.happy)+' واحد</strong></div>';
         return '<article class="management-building-card">'+image(b.image||'',b.fa)+'<div class="management-building-content"><strong>'+b.fa+'</strong><div class="building-fact"><span>هزینه ساخت</span><strong>'+num(b.cost)+' دلار</strong></div>'+yieldText+'<div class="building-fact"><span>ساخته‌شده</span><strong>'+num(owned)+'</strong></div><button class="btn btn-gold" '+(locked?'disabled':'')+' onclick="buyEconomyBuilding(\''+key+'\')">'+(locked?'بانک ساخته شده':'ساخت')+'</button></div></article>';
@@ -2989,7 +2989,7 @@
         heading='بانک ملی';
       }
       if(managementSection==='mines'){
-        const resourceStrip='<div class="management-resource-strip"><div><small>طلا</small><strong>'+num(materials.gold)+' واحد</strong></div><div><small>آهن</small><strong>'+num(materials.iron)+' واحد</strong></div><div><small>زغال‌سنگ</small><strong>'+num(materials.coal)+' واحد</strong></div><div><small>نفت</small><strong>'+num(r.oil)+' بشکه</strong></div></div>';
+        const resourceStrip='<div class="management-resource-strip"><div><small>طلا</small><strong>'+num(materials.gold)+' واحد</strong></div><div><small>آهن</small><strong>'+num(materials.iron)+' واحد</strong></div><div><small>زغال‌سنگ</small><strong>'+num(materials.coal)+' واحد</strong></div></div>';
         body=economyBack+sectionTitle('استخراج منابع','معادن')+resourceStrip+'<div class="management-building-grid">'+makeCards('mines')+'</div>';heading='معادن';
       }
       if(managementSection==='food'){body=economyBack+sectionTitle('تأمین روزانه','کشاورزی و غذا')+'<div class="management-building-grid">'+makeCards('food')+'</div>';heading='کشاورزی و غذا';}
@@ -3000,7 +3000,7 @@
       if(managementSection==='welfare'){body=economyBack+sectionTitle('خدمات عمومی','رفاهیات')+'<div class="management-building-grid">'+makeCards('welfare')+'</div>';heading='رفاهیات';}
       if(managementSection==='diplomacy'){
         const others=(S.active_countries||[]).filter(x=>x.code!==S.p.c);
-        body=back+sectionTitle('کشورهای دارای فرمانروا','روابط خارجی')+'<div class="management-country-list">'+(others.length?others.map(x=>{const fx=FACTIONS[x.faction]||FACTIONS.neutral,info=COUNTRIES[x.code]||{};return '<div class="management-country-row"><img class="management-mini-flag" src="'+(info.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+(x.name_fa||info.name_fa||x.code)+'</strong><small>'+(x.ruler||'فرمانروا')+(x.username?' · @'+x.username:'')+'</small></span><span class="tactical-badge badge-'+(x.faction||'neutral')+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="">'+(fx.fa||'بدون جناح')+'</span></div>';}).join(''):'<div class="management-empty"><strong>هنوز کشور فعال دیگری ثبت نشده است</strong><span>با انتخاب کشور توسط بازیکنان، فرمانروایان در این بخش نمایش داده می‌شوند.</span></div>')+'</div>';heading='روابط خارجی';
+        body=back+sectionTitle('کشورهای دارای فرمانروا','دیپلماسی')+'<div class="management-country-list">'+(others.length?others.map(x=>{const fx=FACTIONS[x.faction]||FACTIONS.neutral,info=COUNTRIES[x.code]||{};return '<div class="management-country-row"><img class="management-mini-flag" src="'+(info.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+(x.name_fa||info.name_fa||x.code)+'</strong><small>'+(x.ruler||'فرمانروا')+(x.username?' · @'+x.username:'')+'</small></span><span class="tactical-badge badge-'+(x.faction||'neutral')+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="">'+(fx.fa||'بدون جناح')+'</span></div>';}).join(''):'<div class="management-empty"><strong>هنوز کشور فعال دیگری ثبت نشده است</strong><span>با انتخاب کشور توسط بازیکنان، فرمانروایان در این بخش نمایش داده می‌شوند.</span></div>')+'</div>';heading='دیپلماسی';
       }
       if(title)title.textContent=heading;
       if(message)message.textContent='مدیریت خدمات و منابع کشور.';
