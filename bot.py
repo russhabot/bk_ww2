@@ -24,7 +24,28 @@ TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
 WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261120f" if URL else ""
-ADMIN_IDS = [int(x.strip()) for x in os.environ.get("ADMINS", "").split(",") if x.strip().isdigit()]
+def parse_admin_ids():
+    raw = (
+        os.environ.get("ADMINS")
+        or os.environ.get("ADMIN_IDS")
+        or os.environ.get("ADMIN_ID")
+        or ""
+    )
+    normalized = raw.replace(";", ",").replace("\\n", ",").replace("\\r", ",")
+    values = []
+    for part in normalized.split(","):
+        values.extend(part.split())
+    return {int(value) for value in values if value.isdigit()}
+
+
+ADMIN_IDS = parse_admin_ids()
+
+
+def is_admin(user_id):
+    try:
+        return int(user_id) in ADMIN_IDS
+    except (TypeError, ValueError):
+        return False
 ANNOUNCE_CHANNEL = os.environ.get("ANNOUNCE_CHANNEL", "").strip()
 PORT = int(os.environ.get("PORT", 8080))
 
@@ -119,7 +140,7 @@ async def check_user_membership(uid: int):
     # Local tokenless development is allowed; production fails closed.
     if not bot:
         return (not TOKEN), ([] if not TOKEN else REQUIRED_CHANNELS)
-    if uid in ADMIN_IDS:
+    if is_admin(uid):
         return True, []
     missing = []
     for ch in REQUIRED_CHANNELS:
@@ -364,7 +385,7 @@ if dp:
 
     @dp.message(Command("season"))
     async def cmd_season(msg: Message):
-        if msg.from_user.id not in ADMIN_IDS:
+        if not is_admin(msg.from_user.id):
             return await msg.answer("شما دسترسی مدیریت ندارید.")
         p = (msg.text or "").split()
         labels = {"wait": "اتاق انتظار؛ انتخاب کشور بسته", "pick": "انتخاب کشور باز", "live": "سیزن فعال؛ انتخاب کشور بسته"}
