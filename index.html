@@ -3036,7 +3036,7 @@
     }
     function buyEconomyBuilding(id){gameAction('economy_build',{id,amount:1});}
     function collectEconomyTax(){gameAction('economy_tax',{});}
-    function economyBank(kind){const amount=Number(document.getElementById('economy-bank-amount')?.value||0);gameAction('economy_bank',{kind,amount});}
+    function economyBank(kind){const amount=Number(document.getElementById('economy-bank-amount')?.value||0);if(!Number.isInteger(amount)||amount<1000){showToast('مبلغ باید حداقل ۱٬۰۰۰ دلار و عدد صحیح باشد.');return;}if(kind==='loan'&&amount>150000){showToast('سقف هر وام ۱۵۰٬۰۰۰ دلار است.');return;}if(['deposit','withdraw'].includes(kind)&&amount>250000){showToast('سقف هر عملیات بانکی ۲۵۰٬۰۰۰ دلار است.');return;}gameAction('economy_bank',{kind,amount});}
 
     async function requestEmbassy(country){await gameAction('embassy_request',{country});}
     async function respondEmbassy(from,decision){await gameAction('embassy_respond',{from,decision});}
