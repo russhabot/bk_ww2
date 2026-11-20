@@ -482,14 +482,14 @@ def get_api_state(uid, player, season, membership_info=None):
 
     for p_uid, p in players:
         c = str(p.get("c", "")).strip().upper()
-        if not c:
+        if not c or p.get("alive", True) is False:
             continue
         taken_codes.append(c)
         p_name = str(p.get("name", "")).strip()
         p_uname = str(p.get("username", "")).strip().lstrip("@")
         owners[c] = {"name": p_name or p_uname or "فرمانروا", "username": p_uname, "uid": p_uid}
         owners[c.lower()] = owners[c]
-        if p.get("alive", True) and c in COUNTRIES:
+        if c in COUNTRIES:
             active_countries.append({"code": c, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral")})
 
     return {
@@ -593,6 +593,8 @@ async def api_handler(request):
         elif action in ("economy_build", "economy_tax", "economy_bank"):
             if not player or not player.get("c"):
                 error = "ابتدا باید یک کشور انتخاب کنید."
+            elif player.get("alive", True) is False:
+                error = "کشور شما به‌دلیل بحران اقتصادی یا اجتماعی از بازی خارج شده است."
             else:
                 changed = apply_daily_economy(player)
                 error = economy_action(player, action, body)
@@ -602,6 +604,8 @@ async def api_handler(request):
         elif action == "statement":
             if not player or not player.get("c"):
                 error = "ابتدا باید یک کشور انتخاب کنید."
+            elif player.get("alive", True) is False:
+                error = "کشور شما از بازی خارج شده و امکان صدور بیانیه ندارد."
             else:
                 error = await publish_statement(uid, user, player, body)
 
@@ -624,7 +628,7 @@ async def api_handler(request):
             code = str(body.get("c", "") or body.get("country", "")).strip().upper()
             if not code or code not in COUNTRIES or COUNTRIES[code].get("selectable") == "no":
                 error = "کد کشور نامعتبر است."
-            elif player and player.get("c"):
+            elif player and player.get("c") and player.get("alive", True) is not False:
                 error = "شما قبلاً کشور خود را انتخاب کرده‌اید."
             else:
                 existing_uid, _ = find_player_by_country(code)
