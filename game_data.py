@@ -28,7 +28,7 @@ FACTIONS = {
     },
     "comintern": {
         "id": "comintern",
-        "fa": "کمیترن",
+        "fa": "کمینترن",
         "en": "Comintern",
         "color": "#f97316",
         "bg": "rgba(249, 115, 22, 0.15)",
