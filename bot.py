@@ -692,6 +692,11 @@ async def api_handler(request):
                         req["status"] = "declined"
                         req["responded"] = now
                         save_diplomacy(dstate)
+                        if bot:
+                            try:
+                                await bot.send_message(sender_uid, f"🏛 درخواست سفارت متقابل شما توسط کشور {player.get('c')} رد شد.")
+                            except Exception as exc:
+                                print(f"[embassy-decline-notification-error] {exc}")
                     elif not sender or safe_int(sender.get("money")) < EMBASSY_MONEY_COST or safe_int(player.get("money")) < EMBASSY_MONEY_COST or safe_int(sender.get("power")) < EMBASSY_POWER_COST or safe_int(player.get("power")) < EMBASSY_POWER_COST:
                         error = "برای تأسیس سفارت، هر دو کشور باید ۵٬۰۰۰ دلار و ۵ واحد قدرت سیاسی داشته باشند."
                     else:
