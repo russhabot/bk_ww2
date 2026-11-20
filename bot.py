@@ -23,7 +23,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261016b" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261120a" if URL else ""
 ADMIN_IDS = [int(x.strip()) for x in os.environ.get("ADMINS", "").split(",") if x.strip().isdigit()]
 ANNOUNCE_CHANNEL = os.environ.get("ANNOUNCE_CHANNEL", "").strip()
 PORT = int(os.environ.get("PORT", 8080))
@@ -191,6 +191,16 @@ async def geojson_handler(request):
     return web.json_response({"error": "world_geo.json not found"}, status=404)
 
 
+async def catalog_handler(request):
+    # Public, read-only game catalog. All UI surfaces use this single source of truth.
+    return web.json_response({
+        "countries": COUNTRIES,
+        "factions": FACTIONS,
+        "ideologies": IDEOLOGIES,
+        "default_music": BACKGROUND_MUSIC_URL
+    })
+
+
 async def api_handler(request):
     try:
         body = await request.json()
@@ -306,20 +316,12 @@ dp = Dispatcher() if TOKEN else None
 if dp:
     @dp.message(Command("start"))
     async def cmd_start(msg: Message):
-        is_member, missing = await check_user_membership(msg.from_user.id)
-        if not is_member:
-            rows = [[InlineKeyboardButton(text=f"عضویت در {ch['name']}", url=ch["link"])] for ch in REQUIRED_CHANNELS]
-            rows.append([InlineKeyboardButton(text="بررسی عضویت", callback_data="verify_membership")])
-            await msg.answer(
-                "⛔ <b>ورود به بازی قفل است.</b>\nبرای ورود باید در هر دو مورد زیر عضو باشید:\n• @burnt_kingdoms\n• @bk_chatt\n\nپس از عضویت، روی «بررسی عضویت» بزنید.",
-                reply_markup=InlineKeyboardMarkup(inline_keyboard=rows), parse_mode="HTML"
-            )
-            return
+        # Membership is checked immediately after the Mini App opens via /api/state.
         kb = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="ورود به کارزار جهانی دوم (Mini App)", web_app=WebAppInfo(url=WEBAPP_LINK))]
         ]) if URL else None
         await msg.answer(
-            "⚔️ <b>به کارزار جهانی دوم ۱۹۳۴ خوش آمدید!</b>\n\nسناریو از ۱ ژانویهٔ ۱۹۳۴ آغاز می‌شود. رهبران و ساختار حکومت‌ها بر اساس همین تاریخ ثبت شده‌اند.\n\nمرحلهٔ سیزن توسط ادمین تعیین می‌شود: wait، pick یا live.",
+            "⚔️ <b>به کارزار جهانی دوم ۱۹۳۴ خوش آمدید!</b>\\n\\nبا ورود به Mini App، عضویت شما در @burnt_kingdoms و @bk_chatt بررسی می‌شود. در صورت نیاز، پنجرهٔ عضویت نمایش داده خواهد شد.\\n\\nسناریو از ۱ ژانویهٔ ۱۹۳۴ آغاز می‌شود.",
             reply_markup=kb, parse_mode="HTML"
         )
 
@@ -404,6 +406,7 @@ if dp:
 async def main():
     app = web.Application()
     app.router.add_get("/health", health_handler)
+    app.router.add_get("/api/catalog", catalog_handler)
     app.router.add_get("/", index_handler)
     static_dir = os.path.join(BASE_DIR, "static")
     if os.path.isdir(static_dir):
