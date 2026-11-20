@@ -94,7 +94,9 @@ TEHRAN_TZ = ZoneInfo("Asia/Tehran")
 ECONOMY_DAILY_FOOD_USE = 100
 ECONOMY_TAX_AMOUNT = 35_000
 ECONOMY_BANK_LIMIT = 250_000
-ECONOMY_LOAN_LIMIT = 250_000
+ECONOMY_LOAN_LIMIT = 150_000
+EMBASSY_MONEY_COST = 5000
+EMBASSY_POWER_COST = 5
 
 
 def safe_int(value, default=0):
@@ -234,7 +236,7 @@ def apply_daily_economy(player):
                 materials[resource] = safe_int(materials.get(resource)) + safe_int(data.get("production")) * amount
         player["money"] = safe_int(player.get("money")) + cash_income
         if safe_int(buildings.get("bank")) > 0:
-            player["vault"] = safe_int(player.get("vault")) + int(safe_int(player.get("vault")) * 0.005)
+            player["vault"] = safe_int(player.get("vault")) + int(safe_int(player.get("vault")) * 0.001)
         daily_food_need = 100 + max(0, safe_int(player.get("infantry"))) // 5000
         next_food = safe_int(player.get("food")) + food_output - daily_food_need
         if next_food < 0:
@@ -259,7 +261,7 @@ def apply_daily_economy(player):
             player["elimination_reason"] = "public_unrest"
         debt = safe_int(player.get("loan"))
         if debt > 0:
-            interest = max(1, int(debt * 0.005))
+            interest = max(1, int(debt * 0.025))
             payment = min(safe_int(player.get("money")), interest + max(1000, int(debt * 0.1)))
             player["money"] = max(0, safe_int(player.get("money")) - payment)
             player["loan"] = max(0, debt + interest - payment)
@@ -474,6 +476,39 @@ async def check_user_membership(uid: int):
     return len(missing) == 0, missing
 
 
+
+def load_diplomacy():
+    try:
+        value = json.loads(kget("diplomacy_state", "{}") or "{}")
+        return value if isinstance(value, dict) else {}
+    except (ValueError, TypeError):
+        return {}
+
+
+def save_diplomacy(value):
+    kset("diplomacy_state", json.dumps(value, ensure_ascii=False))
+
+
+def diplomacy_state_for(uid):
+    state = load_diplomacy()
+    incoming, outgoing, relations = [], [], []
+    for item in state.get("embassies", []):
+        if item.get("to") == uid and item.get("status") == "pending":
+            sender = pget(item.get("from")) or {}
+            incoming.append({**item, "from_country": sender.get("c", "")})
+        elif item.get("from") == uid and item.get("status") == "pending":
+            receiver = pget(item.get("to")) or {}
+            outgoing.append({**item, "to_country": receiver.get("c", "")})
+        elif uid in (item.get("from"), item.get("to")) and item.get("status") == "active":
+            other_uid = item.get("to") if item.get("from") == uid else item.get("from")
+            other = pget(other_uid) or {}
+            relations.append({"uid": other_uid, "country": other.get("c", ""),
+                "name": other.get("name") or other.get("username") or "فرمانروا",
+                "pact_until": item.get("pact_until", 0), "pact_years": item.get("pact_years", 0)})
+    return {"incoming": incoming, "outgoing": outgoing, "relations": relations,
+        "war_open": kget("diplomacy_war_open", "0") == "1"}
+
+
 def get_api_state(uid, player, season, membership_info=None):
     players = all_players()
     active_countries = []
@@ -498,6 +533,7 @@ def get_api_state(uid, player, season, membership_info=None):
         "taken": taken_codes,
         "owners": owners,
         "active_countries": active_countries,
+        "diplomacy": diplomacy_state_for(uid),
         "economy_buildings": ECONOMY_BUILDINGS,
         "bg_music": BACKGROUND_MUSIC_URL,
         "membership": membership_info or {"ok": True, "missing": [], "channels": REQUIRED_CHANNELS},
@@ -600,6 +636,76 @@ async def api_handler(request):
                 error = economy_action(player, action, body)
                 if error is None or changed:
                     pset(uid, player)
+
+
+        elif action in ("embassy_request", "embassy_respond", "diplomacy_transfer", "diplomacy_pact"):
+            if not player or not player.get("c"):
+                error = "ابتدا باید کشور خود را انتخاب کنید."
+            elif player.get("alive", True) is False:
+                error = "کشور شما از بازی خارج شده است."
+            else:
+                dstate = load_diplomacy()
+                dstate.setdefault("embassies", [])
+                now = int(time.time())
+                if action == "embassy_request":
+                    target_code = str(body.get("country", "")).upper()
+                    target_uid, target = find_player_by_country(target_code)
+                    if not target_uid or target_uid == uid or not target or target.get("alive", True) is False:
+                        error = "کشور مقصد معتبر یا فعال نیست."
+                    elif any(e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, target_uid} for e in dstate["embassies"]):
+                        error = "سفارت متقابل با این کشور از قبل برقرار است."
+                    elif any(e.get("status") == "pending" and e.get("from") == uid and e.get("to") == target_uid for e in dstate["embassies"]):
+                        error = "درخواست سفارت قبلاً ارسال شده و منتظر پاسخ است."
+                    else:
+                        dstate["embassies"].append({"from": uid, "to": target_uid, "status": "pending", "created": now})
+                        save_diplomacy(dstate)
+                elif action == "embassy_respond":
+                    sender_uid = safe_int(body.get("from"))
+                    decision = str(body.get("decision", ""))
+                    req = next((e for e in dstate["embassies"] if e.get("from") == sender_uid and e.get("to") == uid and e.get("status") == "pending"), None)
+                    sender = pget(sender_uid) if req else None
+                    if not req or decision not in ("accept", "decline"):
+                        error = "درخواست سفارت معتبر نیست یا قبلاً پاسخ داده شده است."
+                    elif decision == "decline":
+                        req["status"] = "declined"
+                        req["responded"] = now
+                        save_diplomacy(dstate)
+                    elif not sender or safe_int(sender.get("money")) < EMBASSY_MONEY_COST or safe_int(player.get("money")) < EMBASSY_MONEY_COST or safe_int(sender.get("power")) < EMBASSY_POWER_COST or safe_int(player.get("power")) < EMBASSY_POWER_COST:
+                        error = "برای تأسیس سفارت، هر دو کشور باید ۵٬۰۰۰ دلار و ۵ واحد قدرت سیاسی داشته باشند."
+                    else:
+                        sender["money"] -= EMBASSY_MONEY_COST
+                        player["money"] -= EMBASSY_MONEY_COST
+                        sender["power"] -= EMBASSY_POWER_COST
+                        player["power"] -= EMBASSY_POWER_COST
+                        pset(sender_uid, sender)
+                        req["status"] = "active"
+                        req["responded"] = now
+                        save_diplomacy(dstate)
+                elif action == "diplomacy_transfer":
+                    target_uid = safe_int(body.get("target_uid"))
+                    amount = safe_int(body.get("amount"))
+                    target = pget(target_uid)
+                    relation = any(e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, target_uid} for e in dstate["embassies"])
+                    if not target or target_uid == uid or safe_int(target.get("buildings", {}).get("bank")) < 1 or safe_int(player.get("buildings", {}).get("bank")) < 1:
+                        error = "برای انتقال پول، هر دو کشور باید بانک تأسیس کرده باشند."
+                    elif not relation:
+                        error = "ابتدا باید سفارت متقابل برقرار شود."
+                    elif not 1000 <= amount <= 100000 or safe_int(player.get("money")) < amount:
+                        error = "مبلغ انتقال باید بین ۱٬۰۰۰ تا ۱۰۰٬۰۰۰ دلار و در حد موجودی خزانه باشد."
+                    else:
+                        player["money"] -= amount
+                        target["money"] = safe_int(target.get("money")) + amount
+                        pset(target_uid, target)
+                elif action == "diplomacy_pact":
+                    target_uid = safe_int(body.get("target_uid"))
+                    years = safe_int(body.get("years"))
+                    relation = next((e for e in dstate["embassies"] if e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, target_uid}), None)
+                    if not relation or years not in (1, 2, 3, 5):
+                        error = "ابتدا سفارت برقرار کنید و مدت معتبر انتخاب کنید."
+                    else:
+                        relation["pact_until"] = now + years * 365 * 86400
+                        relation["pact_years"] = years
+                        save_diplomacy(dstate)
 
         elif action == "statement":
             if not player or not player.get("c"):
@@ -771,6 +877,18 @@ if dp:
             f"سیزن ریست شد.\nشمارهٔ جدید: {number}\nکشورهای آزادشده: {released}\n"
             "وضعیت: اتاق انتظار. پروفایل بازیکنان حفظ شد."
         )
+
+
+    @dp.message(Command("war"))
+    async def cmd_war(msg: Message):
+        if not is_admin(msg.from_user.id):
+            return await msg.answer("شما دسترسی مدیریت ندارید.")
+        parts = (msg.text or "").split()
+        if len(parts) != 2 or parts[1].lower() not in ("open", "close"):
+            return await msg.answer("استفاده: /war open یا /war close")
+        opened = parts[1].lower() == "open"
+        kset("diplomacy_war_open", "1" if opened else "0")
+        await msg.answer("گزینه جنگ در پنل دیپلماسی فعال شد." if opened else "گزینه جنگ در پنل دیپلماسی غیرفعال شد.")
 
     @dp.message(Command("status"))
     async def cmd_status(msg: Message):
