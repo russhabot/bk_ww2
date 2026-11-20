@@ -13,13 +13,13 @@ FALLBACK_LEADER = "static/leaders/default.svg"
 # Civilian economy only: construction, daily revenue, food and public welfare.
 # The current WW2 UI consumes this catalog without changing its visual style.
 ECONOMY_BUILDINGS = {
-    "bank": {"fa": "بانک ملی", "category": "bank", "cost": 50000, "income": 65000, "unique": True, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Bank_Building.JPG?width=1280"},
+    "bank": {"fa": "بانک ملی", "category": "bank", "cost": 50000, "income": 65000, "unique": True, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/BNP_1928.png?width=1280"},
     "mine_gold": {"fa": "معدن طلا", "category": "mines", "cost": 260000, "income": 310000, "resource": "gold", "production": 24, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Gold_mine.jpg?width=1280"},
     "mine_iron": {"fa": "معدن آهن", "category": "mines", "cost": 125000, "income": 155000, "resource": "iron", "production": 130, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Iron_Ore_Mine.jpg?width=1280"},
     "mine_coal": {"fa": "معدن زغال‌سنگ", "category": "mines", "cost": 95000, "income": 118000, "resource": "coal", "production": 190, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Coal_Mine_Field.jpg?width=1280"},
     "mine_oil": {"fa": "میدان نفتی", "category": "mines", "cost": 410000, "income": 490000, "resource": "oil", "production": 95, "image": "https://www.dwenergygroup.com/wp-content/uploads/2022/03/How-is-Oil-Measured.jpg"},
     "farm_s": {"fa": "مزرعه گندم", "category": "food", "cost": 28000, "food": 360, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Wheat_Farm.jpg?width=1280"},
-    "farm_l": {"fa": "مزرعه صنعتی", "category": "food", "cost": 82000, "food": 1050, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Wheat_Farm.jpg?width=1280"},
+    "farm_l": {"fa": "مزرعه صنعتی", "category": "food", "cost": 82000, "food": 1050, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Sugar_beet_field_freshly_plowed_by_tractor_with_plowshare_attached_and_showing_Mexican_operator._California.jpg?width=1280"},
     "park": {"fa": "پارک عمومی", "category": "welfare", "cost": 30000, "happy": 2.2, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/City_Park%2C_Denver.jpg?width=1280"},
     "fun": {"fa": "مرکز تفریحی", "category": "welfare", "cost": 72000, "happy": 4, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Amusement_park_ride.jpg?width=1280"},
     "mall": {"fa": "مرکز خدمات شهری", "category": "welfare", "cost": 105000, "happy": 5, "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Shopping_mall_interior.jpg?width=1280"},
