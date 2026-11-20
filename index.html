@@ -898,7 +898,10 @@
     .dossier-title-block { min-width:0; flex:1; }
     .tag-pair { display:inline-flex; align-items:center; gap:5px; min-width:0; max-width:100%; white-space:nowrap; }
     .tag-heading { color:var(--text-muted); font-size:10px; font-weight:800; white-space:nowrap; }
-    .card-badges, .identity-tags, .history-tags { display:flex; align-items:center; flex-wrap:nowrap; gap:7px; min-width:0; overflow-x:auto; padding-bottom:3px; scrollbar-width:thin; }
+    .card-badges { display:flex; align-items:center; flex-wrap:wrap; gap:7px; min-width:0; padding-bottom:3px; }
+    .identity-tags, .history-tags { display:flex; align-items:flex-start; flex-wrap:wrap; gap:7px; min-width:0; overflow:visible; padding-bottom:3px; }
+    .identity-tags .tag-pair, .history-tags .tag-pair { min-width:0; max-width:100%; flex-wrap:wrap; }
+    .identity-tags .tactical-badge, .identity-tags .regime-chip, .history-tags .tactical-badge, .history-tags .regime-chip { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
     .identity-tags { margin-top:7px; }
     .identity-main { min-width:0; flex:1; }
     .leader-image-placeholder { display:block; width:100%; height:100%; object-fit:cover; }
@@ -951,8 +954,8 @@
     .management-menu-card{display:flex;align-items:center;gap:10px;text-align:right;min-width:0;padding:12px;border-radius:12px;border:1px solid var(--border);background:linear-gradient(145deg,#111e33,#0b1322);color:var(--text);font-family:inherit;cursor:pointer;transition:border-color .18s,transform .18s,background .18s}.management-menu-card:hover{border-color:var(--cyan);background:#14233b;transform:translateY(-1px)}
     .management-menu-card>.management-icon{width:34px;height:34px;flex:0 0 34px;padding:7px}.management-menu-card>span{display:flex;flex-direction:column;min-width:0;flex:1;gap:3px}.management-menu-card strong{font-size:12px;color:#fff}.management-menu-card small{color:var(--text-muted);font-size:10px;line-height:1.5}.management-arrow{font-size:22px;color:var(--gold);font-weight:400}
     .management-note{padding:11px 12px;margin-top:13px;border:1px solid rgba(148,163,184,.2);border-radius:10px;background:rgba(4,10,19,.55);color:var(--text-muted);font-size:11px;line-height:1.8}.management-back{border:1px solid var(--border-bright);border-radius:9px;background:#111e33;color:#cbd5e1;padding:8px 12px;font-family:inherit;font-size:12px;cursor:pointer}
-    .management-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.management-detail-card small{color:var(--text-muted);font-size:10px}.management-country-list{display:flex;flex-direction:column;gap:7px;margin-top:12px}.management-country-row{display:flex;align-items:center;gap:9px;min-width:0;padding:9px;border:1px solid var(--border);border-radius:10px;background:rgba(8,15,27,.7)}
-    .management-mini-flag{width:43px;height:30px;flex:0 0 43px;object-fit:cover;border-radius:5px;background:#000}.management-country-row>span:nth-child(2){display:flex;flex-direction:column;min-width:0;flex:1}.management-country-row strong{color:#fff;font-size:12px}.management-country-row small{color:var(--text-muted);font-size:10px}.management-country-row .tactical-badge{font-size:10px;padding:3px 6px}
+    .management-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.management-detail-card small{color:var(--text-muted);font-size:10px}.management-country-list{display:flex;flex-direction:column;gap:7px;margin-top:12px}.management-country-row{display:flex;align-items:center;flex-wrap:wrap;gap:9px;min-width:0;padding:9px;border:1px solid var(--border);border-radius:10px;background:rgba(8,15,27,.7)}
+    .management-mini-flag{width:43px;height:30px;flex:0 0 43px;object-fit:cover;border-radius:5px;background:#000}.management-country-row>span:nth-child(2){display:flex;flex-direction:column;min-width:0;flex:1}.management-country-row strong{color:#fff;font-size:12px}.management-country-row small{color:var(--text-muted);font-size:10px}.management-country-row .tactical-badge{font-size:10px;padding:3px 6px;max-width:100%;white-space:normal;overflow-wrap:anywhere}
     .management-profile-leader{display:flex;align-items:center;gap:12px;padding:12px;margin:12px 0;border:1px solid var(--border);border-radius:11px;background:#0c1524}.management-profile-leader img{width:58px;height:58px;flex:0 0 58px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}.management-profile-leader span{display:flex;flex-direction:column;gap:3px;min-width:0}.management-profile-leader small{color:var(--text-muted);font-size:11px}.management-profile-leader strong{color:#fff;font-size:14px}
     .management-empty{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:28px 15px;border:1px dashed var(--border-bright);border-radius:13px;background:rgba(6,12,22,.55)}.management-empty img{width:46px;height:46px;object-fit:contain}.management-empty strong{color:#fff;font-size:14px}.management-empty span{color:var(--text-muted);font-size:12px;line-height:1.8}
     @media(max-width:520px){.management-hero{align-items:flex-start;gap:10px;padding:11px}.management-flag{width:64px;height:46px;flex-basis:64px}.management-identity h3{font-size:16px}.management-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.management-metric{padding:9px}.management-menu{grid-template-columns:minmax(0,1fr)}.management-menu-card{padding:10px}.management-detail-grid{gap:7px}.management-country-row .tactical-badge{max-width:45%}}
@@ -3141,7 +3144,12 @@
       const owner = String(c?.colony_of_fa || '').trim();
       return owner ? ('مستعمرهٔ ' + owner + ' است') : 'قلمرو وابسته';
     }
-    function isMonarchy(c) { return /monarchy|regency_monarchy|imperial_monarchy|absolute_monarchy|royal_dictatorship|theocratic_monarchy|constitutional_monarchy/.test(String(c?.regime_type || '')); }
+    function isMonarchy(c) {
+      const type = String(c?.regime_type || '').toLowerCase();
+      const label = String(c?.regime_fa || '').toLowerCase();
+      return /monarchy|regency_monarchy|imperial_monarchy|absolute_monarchy|royal_dictatorship|theocratic_monarchy|constitutional_monarchy/.test(type)
+        || /پادشاهی|امپراتوری|سلطنت|نیابت سلطنت/.test(label);
+    }
 
     function getRegimeCategory(c) {
       const ideology = String(c?.ideology || '').toLowerCase();
@@ -3154,7 +3162,8 @@
       if (ideology === 'communism' || /communis|کمونی/.test(regimeType + ' ' + regimeFa)) {
         return { key:'communism', label:'کمونیستی', color:'#f87171', badge_url:IDEOLOGIES.communism?.badge_url || 'static/badges/communism.svg' };
       }
-      return { key:'democracy', label:'دموکراتیک', color:'#38bdf8', badge_url:IDEOLOGIES.democracy?.badge_url || 'static/badges/democracy.svg' };
+      if (ideology === 'democracy') return { key:'democracy', label:'دموکراتیک', color:'#38bdf8', badge_url:IDEOLOGIES.democracy?.badge_url || 'static/badges/democracy.svg' };
+      return { key:'other', label:'سایر نظام‌ها', color:'#94a3b8', badge_url:'static/badges/no-faction.svg' };
     }
 
     function matchesFilter(c, code) {
@@ -3165,10 +3174,10 @@
       if (currentFilter === 'comintern' && c.faction !== 'comintern') return false;
       if (currentFilter === 'neutral_fac' && c.faction !== 'neutral') return false;
       if (c.selectable === 'no') return false;
-      if (currentFilter === 'fascism' && c.ideology !== 'fascism') return false;
-      if (currentFilter === 'communism' && c.ideology !== 'communism') return false;
-      if (currentFilter === 'democracy' && c.ideology !== 'democracy') return false;
-      if (currentFilter === 'monarchy' && !isMonarchy(c)) return false;
+      if (currentFilter === 'fascism' && getRegimeCategory(c).key !== 'fascism') return false;
+      if (currentFilter === 'communism' && getRegimeCategory(c).key !== 'communism') return false;
+      if (currentFilter === 'democracy' && getRegimeCategory(c).key !== 'democracy') return false;
+      if (currentFilter === 'monarchy' && getRegimeCategory(c).key !== 'monarchy') return false;
 
       if (searchQuery) {
         const text = `${c.name_fa} ${c.name_en} ${c.leader_fa} ${c.leader_en} ${c.capital_fa} ${c.code} ${c.iso3}`.toLowerCase();
@@ -3184,21 +3193,12 @@
     }
 
     // Card Renderer
-    function handleLeaderImageError(img, flagSrc) {
+    function handleLeaderImageError(img) {
       if (!img) return;
-      const step = Number(img.dataset.fallbackStep || 0);
-      if (step === 0) { img.dataset.fallbackStep = '1'; img.src = flagSrc || FALLBACK_FLAG; return; }
-      if (step === 1) { img.dataset.fallbackStep = '2'; img.src = FALLBACK_LEADER; return; }
       img.onerror = null;
-      img.style.display = 'none';
-      const host = img.parentElement;
-      if (host && !host.querySelector('.leader-image-placeholder')) {
-        const placeholder = document.createElement('img');
-        placeholder.className = 'leader-image-placeholder';
-        placeholder.src = 'static/leaders/default.svg';
-        placeholder.alt = 'تصویر پیش‌فرض رهبر';
-        host.appendChild(placeholder);
-      }
+      img.src = FALLBACK_LEADER;
+      img.alt = 'تصویر رهبر در دسترس نیست';
+      img.classList.add('leader-image-placeholder');
     }
 
     function renderCards() {
