@@ -24,7 +24,7 @@ FACTIONS = {
         "en": "Allied Powers",
         "color": "#3b82f6",
         "bg": "rgba(59, 130, 246, 0.15)",
-        "badge_url": "static/badges/allies.svg"
+        "badge_url": "https://upload.wikimedia.org/wikipedia/commons/0/03/Allied_Powers_Flag.svg"
     },
     "comintern": {
         "id": "comintern",
@@ -334,8 +334,6 @@ COUNTRIES = {
         "regime_type": "constitutional_monarchy",
         "regime_fa": "دومینیون خودگردان با پادشاهی مشروطه",
         "scenario_date": "1934-01-01",
-        "relationship_fa": "دومینیون خودگردان در امپراتوری بریتانیا (کانادا)؛ مستعمرهٔ مستقیم نبود",
-        "relationship_label": "دومینیون خودگردان"
     },
     "AU": {
         "code": "AU",
@@ -355,8 +353,6 @@ COUNTRIES = {
         "regime_type": "constitutional_monarchy",
         "regime_fa": "دومینیون خودگردان با پادشاهی مشروطه",
         "scenario_date": "1934-01-01",
-        "relationship_fa": "دومینیون خودگردان در امپراتوری بریتانیا (استرالیا)؛ مستعمرهٔ مستقیم نبود",
-        "relationship_label": "دومینیون خودگردان"
     },
     "NZ": {
         "code": "NZ",
@@ -376,8 +372,6 @@ COUNTRIES = {
         "regime_type": "constitutional_monarchy",
         "regime_fa": "دومینیون خودگردان با پادشاهی مشروطه",
         "scenario_date": "1934-01-01",
-        "relationship_fa": "دومینیون خودگردان در امپراتوری بریتانیا (نیوزیلند)؛ مستعمرهٔ مستقیم نبود",
-        "relationship_label": "دومینیون خودگردان"
     },
     "IN": {
         "code": "IN",
@@ -399,8 +393,6 @@ COUNTRIES = {
         "scenario_date": "1934-01-01",
         "colony_of": "GB",
         "colony_of_fa": "بریتانیا",
-        "colony_label": "مستعمرهٔ بریتانیا",
-        "status_fa": "راج بریتانیا؛ تحت حاکمیت استعماری بریتانیا"
     },
     "ZA": {
         "code": "ZA",
@@ -420,8 +412,6 @@ COUNTRIES = {
         "regime_type": "constitutional_monarchy",
         "regime_fa": "دومینیون خودگردان با پادشاهی مشروطه",
         "scenario_date": "1934-01-01",
-        "relationship_fa": "دومینیون خودگردان در امپراتوری بریتانیا (آفریقای جنوبی)؛ مستعمرهٔ مستقیم نبود",
-        "relationship_label": "دومینیون خودگردان"
     },
     "NL": {
         "code": "NL",
@@ -1450,8 +1440,6 @@ COUNTRIES = {
         "scenario_date": "1934-01-01",
         "colony_of": "US",
         "colony_of_fa": "ایالات متحدهٔ آمریکا",
-        "colony_label": "قلمرو وابسته به آمریکا",
-        "status_fa": "قلمرو تحت ادارهٔ ایالات متحده؛ دولت مشترک‌المنافع فیلیپین هنوز تشکیل نشده بود"
     },
     "SK": {
         "code": "SK",
@@ -1531,8 +1519,6 @@ COUNTRIES = {
         "scenario_date": "1934-01-01",
         "puppet_of": "JP",
         "puppet_of_fa": "ژاپن",
-        "puppet_label": "دولت دست‌نشاندهٔ ژاپن",
-        "status_fa": "دولت دست‌نشاندهٔ ژاپن؛ استقلال آن از نظر عملی محدود بود"
     },
     "AT": {
         "code": "AT",
