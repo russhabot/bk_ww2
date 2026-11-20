@@ -1109,7 +1109,7 @@
           <strong id="stat-axis-count">0</strong>
         </div>
         <div class="stat-pill allies">
-          <span class="pill-label"><img src="static/badges/allies-eagle.svg?v=20261120f" class="badge-icon-img" alt="متفقین"> متفقین</span>
+          <span class="pill-label"><img src="static/badges/allies-eagle.svg?v=20261120p" class="badge-icon-img" alt="متفقین"> متفقین</span>
           <strong id="stat-allies-count">0</strong>
         </div>
         <div class="stat-pill comintern">
@@ -3005,9 +3005,9 @@
       const image=(url,alt)=>'<div class="management-photo"><img src="'+(url||'/static/diplomacy/economy.svg')+'" alt="'+alt+'" loading="lazy" onerror="this.onerror=null;this.src=\'/static/diplomacy/economy.svg\'"></div>';
       const menuCard=(id,name,desc,img)=>'<button class="management-feature-card" type="button" onclick="setManagementSection(\''+id+'\')">'+image(img,name)+'<span class="management-feature-copy"><strong>'+name+'</strong><small>'+desc+'</small></span><b>‹</b></button>';
       const economyMenu='<div class="management-feature-grid">'+
-        menuCard('bank','بانک ملی','تأسیس، پس‌انداز و وام',catalog.bank?.image||'')+
-        menuCard('mines','معادن','طلا، آهن و زغال‌سنگ',catalog.mine_gold?.image||'')+
-        menuCard('food','کشاورزی و غذا','مزارع معمولی و صنعتی',catalog.farm_s?.image||'')+
+        menuCard('bank','بانک ملی','تأسیس، پس‌انداز و وام','/static/diplomacy/bank.svg')+
+        menuCard('mines','معادن','طلا، آهن و زغال‌سنگ','/static/diplomacy/mine.svg')+
+        menuCard('food','کشاورزی و غذا','مزارع معمولی و صنعتی','/static/diplomacy/farm.svg')+
         menuCard('tax','مالیات','دریافت مالیات روزانه','/static/diplomacy/tax.svg')+
         menuCard('welfare','رفاهیات','خدمات شهری و رضایت عمومی','/static/diplomacy/welfare.svg')+
         '</div>';
