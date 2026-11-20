@@ -3002,18 +3002,18 @@
       const back='<button type="button" class="management-back" onclick="setManagementSection(\'overview\')">بازگشت به مدیریت کشور</button>';
       const economyBack='<button type="button" class="management-back" onclick="setManagementSection(\'economy\')">بازگشت به اقتصاد و رفاهیات</button>';
       const sectionTitle=(eyebrow,heading)=>'<div class="management-section-title"><div><small>'+eyebrow+'</small><h3>'+heading+'</h3></div></div>';
-      const image=(url,alt)=>'<div class="management-photo"><img src="'+(url||'/static/diplomacy/economy.svg')+'" alt="'+alt+'" loading="lazy" onerror="this.onerror=null;this.src=\'/static/diplomacy/economy.svg\'"></div>';
+      const image=(url,alt)=>'<div class="management-photo"><img src="'+url+'" alt="'+alt+'" loading="lazy" onerror="this.parentElement.classList.add(\'image-missing\')"></div>';
       const menuCard=(id,name,desc,img)=>'<button class="management-feature-card" type="button" onclick="setManagementSection(\''+id+'\')">'+image(img,name)+'<span class="management-feature-copy"><strong>'+name+'</strong><small>'+desc+'</small></span><b>‹</b></button>';
       const economyMenu='<div class="management-feature-grid">'+
         menuCard('bank','بانک ملی','تأسیس، پس‌انداز و وام',catalog.bank?.image||'')+
         menuCard('mines','معادن','طلا، آهن و زغال‌سنگ',catalog.mine_gold?.image||'')+
         menuCard('food','کشاورزی و غذا','مزارع معمولی و صنعتی',catalog.farm_s?.image||'')+
-        menuCard('tax','مالیات','دریافت مالیات روزانه','/static/diplomacy/tax.svg')+
-        menuCard('welfare','رفاهیات','خدمات شهری و رضایت عمومی','/static/diplomacy/welfare.svg')+
+        menuCard('tax','مالیات','دریافت مالیات روزانه',catalog.bank?.image||'')+
+        menuCard('welfare','رفاهیات','خدمات شهری و رضایت عمومی',catalog.park?.image||'')+
         '</div>';
       const root='<div class="management-root-grid">'+
-        '<button class="management-root-card" type="button" onclick="setManagementSection(\'economy\')">'+image('/static/diplomacy/economy.svg','اقتصاد و رفاهیات')+'<span><small>مدیریت منابع کشور</small><strong>اقتصاد و رفاهیات</strong><em>بانک، معادن، مالیات، کشاورزی و خدمات عمومی</em></span><b>‹</b></button>'+
-        '<button class="management-root-card" type="button" onclick="setManagementSection(\'diplomacy\')">'+image('/static/diplomacy/embassy.svg','دیپلماسی')+'<span><small>ارتباط با جهان</small><strong>دیپلماسی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\'economy\')">'+image(catalog.mine_gold?.image||'','اقتصاد و رفاهیات')+'<span><small>مدیریت منابع کشور</small><strong>اقتصاد و رفاهیات</strong><em>بانک، معادن، مالیات، کشاورزی و خدمات عمومی</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\'diplomacy\')">'+image('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/City_Park%2C_Denver.jpg/1280px-City_Park%2C_Denver.jpg','روابط خارجی')+'<span><small>ارتباط با جهان</small><strong>روابط خارجی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
         '</div>';
       const makeCards=(category)=>Object.entries(catalog).filter(([key,b])=>b.category===category && !(category==='mines' && key==='mine_oil')).map(([key,b])=>{
         const owned=Number(buildings[key]||0), locked=Boolean(b.unique&&owned>0);
