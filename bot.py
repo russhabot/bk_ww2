@@ -1,21 +1,25 @@
 # Burnt Kingdoms WW2 (1934) Bot & Server
 import asyncio
+import base64
 import hashlib
 import hmac
 import json
 import os
+import re
 import time
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from urllib.parse import parse_qsl
 
 from aiohttp import web
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
-from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message, WebAppInfo
+from aiogram.types import BufferedInputFile, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message, WebAppInfo
 from dotenv import load_dotenv
 
 # COUNTRY_CODES was removed from game_data.py and is not used by this bot.
 # Import only symbols that the current game_data module actually exports.
-from game_data import COUNTRIES, DEFAULT_MUSIC_URL, FACTIONS, IDEOLOGIES
+from game_data import COUNTRIES, DEFAULT_MUSIC_URL, ECONOMY_BUILDINGS, FACTIONS, IDEOLOGIES
 
 
 load_dotenv()
@@ -84,6 +88,275 @@ elif kget("season") is None:
     kset("season", "wait")
 
 ACTION_LOCK = asyncio.Lock()
+
+
+TEHRAN_TZ = ZoneInfo("Asia/Tehran")
+ECONOMY_DAILY_FOOD_USE = 100
+ECONOMY_TAX_AMOUNT = 35_000
+ECONOMY_BANK_LIMIT = 250_000
+ECONOMY_LOAN_LIMIT = 250_000
+
+
+def safe_int(value, default=0):
+    try:
+        if isinstance(value, bool):
+            return default
+        return int(value)
+    except (TypeError, ValueError, OverflowError):
+        return default
+
+
+def starting_resources(code):
+    profiles = {
+        "DE": {"power":86,"money":85000,"income":6200,"infantry":620000,"satisfaction":72,"oil":18000,"food":42000},
+        "IT": {"power":68,"money":59000,"income":4100,"infantry":390000,"satisfaction":69,"oil":8500,"food":31000},
+        "JP": {"power":79,"money":71000,"income":5000,"infantry":500000,"satisfaction":73,"oil":8000,"food":36000},
+        "GB": {"power":88,"money":101000,"income":6900,"infantry":450000,"satisfaction":76,"oil":32000,"food":56000},
+        "US": {"power":100,"money":125000,"income":9500,"infantry":700000,"satisfaction":82,"oil":90000,"food":90000},
+        "FR": {"power":82,"money":78000,"income":5200,"infantry":500000,"satisfaction":74,"oil":12000,"food":48000},
+        "SU": {"power":96,"money":92000,"income":7000,"infantry":900000,"satisfaction":68,"oil":24000,"food":70000},
+        "RU": {"power":96,"money":92000,"income":7000,"infantry":900000,"satisfaction":68,"oil":24000,"food":70000},
+        "CN": {"power":60,"money":35000,"income":2200,"infantry":350000,"satisfaction":58,"oil":2000,"food":50000},
+        "PL": {"power":64,"money":42000,"income":2600,"infantry":300000,"satisfaction":70,"oil":1000,"food":28000},
+        "IR": {"power":50,"money":25000,"income":1700,"infantry":120000,"satisfaction":75,"oil":5000,"food":30000},
+        "IN": {"power":57,"money":30000,"income":2100,"infantry":280000,"satisfaction":63,"oil":3500,"food":45000},
+        "CA": {"power":58,"money":48000,"income":3300,"infantry":160000,"satisfaction":80,"oil":18000,"food":36000},
+        "AU": {"power":48,"money":37000,"income":2400,"infantry":110000,"satisfaction":79,"oil":7000,"food":28000},
+        "BR": {"power":45,"money":33000,"income":2100,"infantry":140000,"satisfaction":73,"oil":4000,"food":38000},
+        "TR": {"power":52,"money":31000,"income":2000,"infantry":220000,"satisfaction":67,"oil":2500,"food":30000},
+        "ES": {"power":49,"money":32000,"income":1900,"infantry":180000,"satisfaction":61,"oil":1500,"food":26000},
+    }
+    if code in profiles:
+        return dict(profiles[code])
+    seed = sum(ord(ch) for ch in str(code or "XX"))
+    tier = 0.78 if seed % 5 == 0 else 0.64 if seed % 3 == 0 else 0.48
+    faction = COUNTRIES.get(code, {}).get("faction")
+    faction_boost = 1.04 if faction == "allies" else 1.02 if faction == "comintern" else 1 if faction == "axis" else 0.88
+    return {
+        "power": round((30 + seed % 38) * faction_boost),
+        "money": round((16000 + (seed % 15) * 1800) * tier),
+        "income": round((900 + (seed % 11) * 170) * tier),
+        "infantry": round((45000 + (seed % 16) * 18000) * tier),
+        "satisfaction": 55 + seed % 31,
+        "oil": round((500 + (seed % 13) * 900) * tier),
+        "food": round((8000 + (seed % 17) * 2100) * tier),
+    }
+
+
+def ensure_economy(player):
+    if not player or not player.get("c"):
+        return False
+    base = starting_resources(str(player.get("c")).upper())
+    changed = False
+    defaults = {
+        "money": base["money"],
+        "income_base": base["income"],
+        "power": base["power"],
+        "infantry": base["infantry"],
+        "oil": base["oil"],
+        "food": base["food"],
+        "satisfaction": safe_int(player.get("happy"), base["satisfaction"]),
+        "buildings": {},
+        "vault": 0,
+        "loan": 0,
+        "loan_original": 0,
+        "tax_date": "",
+        "economy_day": int(time.time() // 86400),
+        "statement_history": [],
+        "statement_strikes": 0,
+        "statement_suspended_until": 0,
+    }
+    for key, value in defaults.items():
+        if key not in player:
+            player[key] = value
+            changed = True
+    if not isinstance(player.get("buildings"), dict):
+        player["buildings"] = {}
+        changed = True
+    if not isinstance(player.get("statement_history"), list):
+        player["statement_history"] = []
+        changed = True
+    player["satisfaction"] = max(0, min(100, safe_int(player.get("satisfaction"), base["satisfaction"])))
+    return changed
+
+
+def apply_daily_economy(player):
+    if not player or not player.get("c"):
+        return False
+    changed = ensure_economy(player)
+    today = int(time.time() // 86400)
+    last_day = safe_int(player.get("economy_day"), today)
+    days = max(0, min(30, today - last_day))
+    if days <= 0:
+        return changed
+    buildings = player.get("buildings", {})
+    for _ in range(days):
+        cash_income = safe_int(player.get("income_base"))
+        food_output = 0
+        welfare = 0.0
+        for key, count in buildings.items():
+            data = ECONOMY_BUILDINGS.get(key)
+            amount = max(0, safe_int(count))
+            if not data or amount <= 0:
+                continue
+            cash_income += safe_int(data.get("income")) * amount
+            food_output += safe_int(data.get("food")) * amount
+            welfare += float(data.get("happy", 0)) * amount
+        player["money"] = safe_int(player.get("money")) + cash_income
+        if safe_int(buildings.get("bank")) > 0:
+            player["vault"] = safe_int(player.get("vault")) + int(safe_int(player.get("vault")) * 0.005)
+        next_food = safe_int(player.get("food")) + food_output - ECONOMY_DAILY_FOOD_USE
+        if next_food < 0:
+            player["food"] = 0
+            player["satisfaction"] = max(0, safe_int(player.get("satisfaction")) - 8)
+        else:
+            player["food"] = next_food
+        player["satisfaction"] = max(0, min(100, safe_int(player.get("satisfaction")) + welfare * 0.5 - 2))
+        debt = safe_int(player.get("loan"))
+        if debt > 0:
+            interest = max(1, int(debt * 0.005))
+            payment = min(safe_int(player.get("money")), interest + max(1000, int(debt * 0.1)))
+            player["money"] = max(0, safe_int(player.get("money")) - payment)
+            player["loan"] = max(0, debt + interest - payment)
+            if player["loan"] == 0:
+                player["loan_original"] = 0
+    player["economy_day"] = today
+    changed = True
+    return changed
+
+
+def economy_action(player, action, body):
+    ensure_economy(player)
+    if action == "economy_build":
+        key = str(body.get("id", ""))
+        amount = safe_int(body.get("amount", 1))
+        data = ECONOMY_BUILDINGS.get(key)
+        if not data or not 1 <= amount <= 10:
+            return "ساختمان یا تعداد انتخاب‌شده معتبر نیست."
+        owned = safe_int(player["buildings"].get(key))
+        if data.get("unique") and owned:
+            return "هر کشور فقط یک بانک ملی می‌تواند داشته باشد."
+        cost = safe_int(data.get("cost")) * amount
+        if safe_int(player.get("money")) < cost:
+            return "موجودی خزانه برای این ساخت‌وساز کافی نیست."
+        player["money"] -= cost
+        player["buildings"][key] = owned + amount
+    elif action == "economy_tax":
+        today = datetime.now(TEHRAN_TZ).date().isoformat()
+        if player.get("tax_date") == today:
+            return "مالیات امروز قبلاً دریافت شده است."
+        player["tax_date"] = today
+        player["money"] = safe_int(player.get("money")) + ECONOMY_TAX_AMOUNT
+        player["satisfaction"] = max(0, safe_int(player.get("satisfaction")) - 4)
+    elif action == "economy_bank":
+        if safe_int(player.get("buildings", {}).get("bank")) < 1:
+            return "برای استفاده از خدمات بانکی ابتدا بانک ملی بسازید."
+        kind = str(body.get("kind", ""))
+        amount = safe_int(body.get("amount"))
+        if not 1000 <= amount <= ECONOMY_BANK_LIMIT:
+            return "مبلغ باید بین ۱٬۰۰۰ تا ۲۵۰٬۰۰۰ دلار باشد."
+        if kind == "deposit":
+            if safe_int(player.get("money")) < amount:
+                return "پول نقد کافی نیست."
+            player["money"] -= amount
+            player["vault"] = safe_int(player.get("vault")) + amount
+        elif kind == "withdraw":
+            if safe_int(player.get("vault")) < amount:
+                return "موجودی سپرده کافی نیست."
+            player["vault"] -= amount
+            player["money"] = safe_int(player.get("money")) + amount
+        elif kind == "loan":
+            if safe_int(player.get("loan")) > 0:
+                return "ابتدا وام فعلی را تسویه کنید."
+            if amount > ECONOMY_LOAN_LIMIT:
+                return f"حداکثر وام قابل دریافت {ECONOMY_LOAN_LIMIT:,}$ است."
+            player["loan"] = amount
+            player["loan_original"] = amount
+            player["money"] = safe_int(player.get("money")) + amount
+        elif kind == "repay":
+            debt = safe_int(player.get("loan"))
+            if debt <= 0:
+                return "وام فعالی ندارید."
+            payment = min(amount, debt)
+            if safe_int(player.get("money")) < payment:
+                return "پول نقد کافی نیست."
+            player["money"] -= payment
+            player["loan"] = debt - payment
+            if player["loan"] == 0:
+                player["loan_original"] = 0
+        else:
+            return "عملیات بانکی نامعتبر است."
+    else:
+        return "عملیات اقتصادی نامعتبر است."
+    return None
+
+
+def statement_violation(uid, player, reason, severe=False):
+    player["statement_strikes"] = safe_int(player.get("statement_strikes")) + (2 if severe else 1)
+    if player["statement_strikes"] >= 3:
+        player["statement_suspended_until"] = int(time.time()) + 86400
+        pset(uid, player)
+        return "به‌دلیل تکرار تخلف، صدور بیانیه برای ۲۴ ساعت غیرفعال شد."
+    pset(uid, player)
+    return reason + " در صورت تکرار، امکان صدور بیانیه موقتاً محدود می‌شود."
+
+
+async def publish_statement(uid, user, player, body):
+    ensure_economy(player)
+    now = int(time.time())
+    suspended = safe_int(player.get("statement_suspended_until"))
+    if suspended > now:
+        hours = max(1, (suspended - now + 3599) // 3600)
+        return f"صدور بیانیه موقتاً غیرفعال است؛ حدود {hours} ساعت دیگر دوباره تلاش کنید."
+    text = str(body.get("text", "")).strip()
+    if not 5 <= len(text) <= 850:
+        return "متن بیانیه باید بین ۵ تا ۸۵۰ نویسه باشد."
+    image_data = str(body.get("image", "")).strip()
+    image_file = None
+    if image_data:
+        match = re.fullmatch(r"data:(image/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)", image_data)
+        if not match:
+            return "تصویر باید از نوع JPG، PNG یا WEBP باشد."
+        try:
+            raw = base64.b64decode(match.group(2), validate=True)
+        except Exception:
+            return "فایل تصویر قابل خواندن نیست."
+        if not raw or len(raw) > 4 * 1024 * 1024:
+            return "حجم تصویر باید کمتر از ۴ مگابایت باشد."
+        extension = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}[match.group(1)]
+        image_file = BufferedInputFile(raw, filename=f"statement.{extension}")
+
+    history = [
+        item for item in player.get("statement_history", [])
+        if safe_int(item.get("time")) > now - 86400
+    ]
+    digest = hashlib.sha256(text.casefold().encode("utf-8")).hexdigest()
+    if any(item.get("hash") == digest for item in history):
+        return statement_violation(uid, player, "این متن قبلاً ارسال شده است.", severe=True)
+    last_time = max((safe_int(item.get("time")) for item in history), default=0)
+    if last_time and now - last_time < 900:
+        return statement_violation(uid, player, "بین دو بیانیه باید حداقل ۱۵ دقیقه فاصله باشد.")
+    if len(history) >= 5:
+        return statement_violation(uid, player, "سقف مجاز بیانیه روزانه ۵ مورد است.")
+    if not bot or not ANNOUNCE_CHANNEL:
+        return "ربات یا کانال اعلامی برای انتشار بیانیه تنظیم نشده است."
+
+    country_name = COUNTRIES.get(player.get("c"), {}).get("name_fa", player.get("c"))
+    caption = f"📢 بیانیه رسمی {country_name}\n\n{text}"
+    try:
+        if image_file:
+            await bot.send_photo(ANNOUNCE_CHANNEL, photo=image_file, caption=caption)
+        else:
+            await bot.send_message(ANNOUNCE_CHANNEL, caption)
+    except Exception as exc:
+        print(f"[statement-delivery-error] {exc}")
+        return "ارسال بیانیه انجام نشد؛ دسترسی ربات به کانال را بررسی کنید."
+    history.append({"time": now, "hash": digest})
+    player["statement_history"] = history
+    player["statement_strikes"] = max(0, safe_int(player.get("statement_strikes")) - 1)
+    pset(uid, player)
+    return None
+
 
 
 def auth(init_data):
@@ -158,6 +431,7 @@ async def check_user_membership(uid: int):
 
 def get_api_state(uid, player, season, membership_info=None):
     players = all_players()
+    active_countries = []
     taken_codes = []
     owners = {}
 
@@ -170,12 +444,16 @@ def get_api_state(uid, player, season, membership_info=None):
         p_uname = str(p.get("username", "")).strip().lstrip("@")
         owners[c] = {"name": p_name or p_uname or "فرمانروا", "username": p_uname, "uid": p_uid}
         owners[c.lower()] = owners[c]
+        if p.get("alive", True) and c in COUNTRIES:
+            active_countries.append({"code": c, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral")})
 
     return {
         "season": season,
         "p": player,
         "taken": taken_codes,
         "owners": owners,
+        "active_countries": active_countries,
+        "economy_buildings": ECONOMY_BUILDINGS,
         "bg_music": BACKGROUND_MUSIC_URL,
         "membership": membership_info or {"ok": True, "missing": [], "channels": REQUIRED_CHANNELS},
         "required_channels": REQUIRED_CHANNELS,
@@ -261,7 +539,26 @@ async def api_handler(request):
         error = None
 
         if action == "state":
-            pass
+            if player and player.get("c"):
+                changed = ensure_economy(player)
+                changed = apply_daily_economy(player) or changed
+                if changed:
+                    pset(uid, player)
+
+        elif action in ("economy_build", "economy_tax", "economy_bank"):
+            if not player or not player.get("c"):
+                error = "ابتدا باید یک کشور انتخاب کنید."
+            else:
+                changed = apply_daily_economy(player)
+                error = economy_action(player, action, body)
+                if error is None or changed:
+                    pset(uid, player)
+
+        elif action == "statement":
+            if not player or not player.get("c"):
+                error = "ابتدا باید یک کشور انتخاب کنید."
+            else:
+                error = await publish_statement(uid, user, player, body)
 
         elif action in ("pick", "claim"):
             if season != "pick":
@@ -301,6 +598,7 @@ async def api_handler(request):
                         "alive": True,
                         "created_at": int(time.time())
                     }
+                    ensure_economy(new_player)
                     pset(uid, new_player)
                     player = new_player
 
