@@ -7,7 +7,24 @@ verified 1930 leaders with Wikipedia portraits, and background military march.
 
 DEFAULT_MUSIC_URL = "https://commons.wikimedia.org/wiki/Special:FilePath/Holst-_mars.ogg"
 FALLBACK_FLAG = "static/flags/default.svg"
+
 FALLBACK_LEADER = "static/leaders/default.svg"
+
+# Civilian economy only: construction, daily revenue, food and public welfare.
+# The current WW2 UI consumes this catalog without changing its visual style.
+ECONOMY_BUILDINGS = {
+    "f_light": {"fa": "کارخانه مصنوعات", "category": "industry", "cost": 60000, "income": 85000},
+    "f_steel": {"fa": "فولاد و ذوب‌آهن", "category": "industry", "cost": 180000, "income": 230000},
+    "f_oil": {"fa": "پالایشگاه نفت", "category": "industry", "cost": 450000, "income": 540000},
+    "f_chip": {"fa": "کارخانه الکترونیک", "category": "industry", "cost": 750000, "income": 900000},
+    "bank": {"fa": "بانک ملی", "category": "bank", "cost": 25000, "income": 36000, "unique": True},
+    "farm_s": {"fa": "مزرعه گندم", "category": "food", "cost": 25000, "food": 300},
+    "farm_l": {"fa": "مزرعه صنعتی", "category": "food", "cost": 75000, "food": 900},
+    "park": {"fa": "پارک ملی", "category": "welfare", "cost": 25000, "happy": 1.5},
+    "fun": {"fa": "شهربازی", "category": "welfare", "cost": 65000, "happy": 3},
+    "mall": {"fa": "مرکز خرید", "category": "welfare", "cost": 95000, "happy": 3.5},
+    "stadium": {"fa": "ورزشگاه", "category": "welfare", "cost": 140000, "happy": 5},
+}
 
 FACTIONS = {
     "axis": {
