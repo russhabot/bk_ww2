@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="نشان عقاب آبی متفقین">
+  <defs>
+    <linearGradient id="alliesBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d4ed8"/><stop offset="1" stop-color="#071b3d"/></linearGradient>
+    <linearGradient id="eagleBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eaf5ff"/><stop offset="1" stop-color="#60a5fa"/></linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="61" fill="url(#alliesBg)" stroke="#93c5fd" stroke-width="3"/>
+  <circle cx="64" cy="64" r="54" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+  <path d="M62 51 C48 39 31 29 12 27 C20 43 32 56 47 64 C32 62 20 59 9 54 C19 73 37 83 55 81 L43 99 L62 88 L64 104 L66 88 L85 99 L73 81 C91 83 109 73 119 54 C108 59 96 62 81 64 C96 56 108 43 116 27 C97 29 80 39 66 51 L64 34 Z" fill="url(#eagleBlue)" stroke="#dbeafe" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M64 48 L70 61 L65 75 L64 91 L59 75 L58 61 Z" fill="#1e40af"/>
+  <path d="M64 55 C57 49 51 47 45 48 C49 56 55 62 64 66 C73 62 79 56 83 48 C77 47 71 49 64 55Z" fill="#f8fbff"/>
+  <path d="M58 104 L64 111 L70 104" fill="none" stroke="#bfdbfe" stroke-width="2" stroke-linecap="round"/>
+</svg>
