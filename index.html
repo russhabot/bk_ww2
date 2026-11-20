@@ -2921,6 +2921,11 @@
       if(!dossier||!S||!S.p||!S.p.c)return;
       const r=S.p, catalog=S.economy_buildings||{}, buildings=r.buildings||{}, materials=r.materials||{};
       const num=v=>new Intl.NumberFormat('fa-IR').format(Number(v)||0), icon=name=>'<img class="management-icon" src="static/ui/'+name+'.svg" alt="">';
+      if(r.alive===false){
+        const reason=r.elimination_reason==='famine'?'قحطی و کمبود پایدار غذا':'ناآرامی و افت شدید رضایت عمومی';
+        dossier.innerHTML='<div class="management-empty"><strong>کشور از چرخه بازی خارج شده است</strong><span>علت: '+reason+'<br>در فصل بعد می‌توانید دوباره کشور انتخاب کنید.</span></div>';
+        if(title)title.textContent='پایان فرمانروایی';if(message)message.textContent='کشور شما دیگر در فهرست کشورهای فعال قرار ندارد.';return;
+      }
       const dailyIncome=Number(r.income_base||0)+Object.entries(buildings).reduce((sum,[key,count])=>sum+(Number(catalog[key]?.income)||0)*(Number(count)||0),0);
       const metrics=[['treasury','خزانه',num(r.money)+' دلار'],['income','درآمد روزانه',num(dailyIncome)+' دلار'],['food','ذخیره غذا',num(r.food)+' واحد'],['satisfaction','رضایت عمومی',num(r.satisfaction)+'٪'],['oil','نفت',num(r.oil)+' بشکه']];
       const stats='<div class="management-metrics">'+metrics.map(([ic,label,value])=>'<div class="management-metric">'+icon(ic)+'<span>'+label+'</span><strong>'+value+'</strong></div>').join('')+'</div>';
