@@ -2761,7 +2761,14 @@
 
     async function init() {
       if (tg) { try { tg.ready(); tg.expand(); } catch (e) {} }
-      try {\n        try { await fetchCatalog(); } catch (catalogErr) { console.warn('Using embedded game catalog:', catalogErr); }\n        updateStats(); renderCards(); await fetchState();\n      }
+      try {
+        // Start the membership check immediately; do not wait for the catalog request.
+        const statePromise = fetchState();
+        try { await fetchCatalog(); } catch (catalogErr) { console.warn('Using embedded game catalog:', catalogErr); }
+        updateStats();
+        renderCards();
+        await statePromise;
+      }
       catch (err) {
         console.error('Mini App initialization failed:', err);
         const grid = document.getElementById('countries-grid');
@@ -3141,9 +3148,13 @@
       const regimeType = String(c?.regime_type || '').toLowerCase();
       const regimeFa = String(c?.regime_fa || '').toLowerCase();
       if (isMonarchy(c)) return { key:'monarchy', label:'پادشاهی', color:'#fbbf24', badge_url:'static/badges/monarchy.svg' };
-      if (ideology === 'fascism' || /fascis|فاشی/.test(regimeType + ' ' + regimeFa)) return { key:'fascism', label:'فاشیست', color:'#c084fc', badge_url:'https://commons.wikimedia.org/wiki/Special:FilePath/Reichsadler_of_Nazi_Germany_%28eagle_only%29.svg' };
-      if (ideology === 'communism' || /communis|کمونی/.test(regimeType + ' ' + regimeFa)) return { key:'communism', label:'کمونیستی', color:'#f87171', badge_url:'static/badges/communism.svg' };
-      return { key:'democracy', label:'دموکراتیک', color:'#38bdf8', badge_url:'static/badges/democracy.svg' };
+      if (ideology === 'fascism' || /fascis|فاشی/.test(regimeType + ' ' + regimeFa)) {
+        return { key:'fascism', label:'فاشیست', color:'#c084fc', badge_url:IDEOLOGIES.fascism?.badge_url || 'https://commons.wikimedia.org/wiki/Special:FilePath/Reichsadler_of_Nazi_Germany_%28eagle_only%29.svg' };
+      }
+      if (ideology === 'communism' || /communis|کمونی/.test(regimeType + ' ' + regimeFa)) {
+        return { key:'communism', label:'کمونیستی', color:'#f87171', badge_url:IDEOLOGIES.communism?.badge_url || 'static/badges/communism.svg' };
+      }
+      return { key:'democracy', label:'دموکراتیک', color:'#38bdf8', badge_url:IDEOLOGIES.democracy?.badge_url || 'static/badges/democracy.svg' };
     }
 
     function matchesFilter(c, code) {
