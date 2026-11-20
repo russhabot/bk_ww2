@@ -27,7 +27,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261120j" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261120m" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -491,7 +491,9 @@ def save_diplomacy(value):
 
 def diplomacy_state_for(uid):
     state = load_diplomacy()
-    incoming, outgoing, relations = [], [], []
+    incoming, outgoing, relations, pacts_incoming, pacts_outgoing = [], [], [], [], []
+    now = int(time.time())
+    changed = False
     for item in state.get("embassies", []):
         if item.get("to") == uid and item.get("status") == "pending":
             sender = pget(item.get("from")) or {}
@@ -502,10 +504,24 @@ def diplomacy_state_for(uid):
         elif uid in (item.get("from"), item.get("to")) and item.get("status") == "active":
             other_uid = item.get("to") if item.get("from") == uid else item.get("from")
             other = pget(other_uid) or {}
+            if item.get("pact_until") and safe_int(item.get("pact_until")) <= now:
+                item.pop("pact_until", None)
+                item.pop("pact_years", None)
+                changed = True
             relations.append({"uid": other_uid, "country": other.get("c", ""),
                 "name": other.get("name") or other.get("username") or "فرمانروا",
                 "pact_until": item.get("pact_until", 0), "pact_years": item.get("pact_years", 0)})
+    for proposal in state.get("pacts", []):
+        other_uid = proposal.get("from") if proposal.get("to") == uid else proposal.get("to")
+        other = pget(other_uid) or {}
+        if proposal.get("to") == uid and proposal.get("status") == "pending":
+            pacts_incoming.append({**proposal, "from_country": other.get("c", "")})
+        elif proposal.get("from") == uid and proposal.get("status") == "pending":
+            pacts_outgoing.append({**proposal, "to_country": other.get("c", "")})
+    if changed:
+        save_diplomacy(state)
     return {"incoming": incoming, "outgoing": outgoing, "relations": relations,
+        "pacts_incoming": pacts_incoming, "pacts_outgoing": pacts_outgoing,
         "war_open": kget("diplomacy_war_open", "0") == "1"}
 
 
@@ -638,7 +654,7 @@ async def api_handler(request):
                     pset(uid, player)
 
 
-        elif action in ("embassy_request", "embassy_respond", "diplomacy_transfer", "diplomacy_pact"):
+        elif action in ("embassy_request", "embassy_respond", "diplomacy_transfer", "diplomacy_pact", "diplomacy_pact_respond"):
             if not player or not player.get("c"):
                 error = "ابتدا باید کشور خود را انتخاب کنید."
             elif player.get("alive", True) is False:
@@ -646,6 +662,7 @@ async def api_handler(request):
             else:
                 dstate = load_diplomacy()
                 dstate.setdefault("embassies", [])
+                dstate.setdefault("pacts", [])
                 now = int(time.time())
                 if action == "embassy_request":
                     target_code = str(body.get("country", "")).upper()
@@ -659,6 +676,11 @@ async def api_handler(request):
                     else:
                         dstate["embassies"].append({"from": uid, "to": target_uid, "status": "pending", "created": now})
                         save_diplomacy(dstate)
+                        if bot:
+                            try:
+                                await bot.send_message(target_uid, f"🏛 کشور {player.get('c')} درخواست تأسیس سفارت متقابل فرستاده است. برای پذیرش یا رد، وارد بخش دیپلماسی شوید.")
+                            except Exception as exc:
+                                print(f"[embassy-notification-error] {exc}")
                 elif action == "embassy_respond":
                     sender_uid = safe_int(body.get("from"))
                     decision = str(body.get("decision", ""))
@@ -681,6 +703,11 @@ async def api_handler(request):
                         req["status"] = "active"
                         req["responded"] = now
                         save_diplomacy(dstate)
+                        if bot:
+                            try:
+                                await bot.send_message(sender_uid, f"🏛 درخواست سفارت متقابل شما توسط کشور {player.get('c')} پذیرفته شد.")
+                            except Exception as exc:
+                                print(f"[embassy-response-notification-error] {exc}")
                 elif action == "diplomacy_transfer":
                     target_uid = safe_int(body.get("target_uid"))
                     amount = safe_int(body.get("amount"))
@@ -700,12 +727,41 @@ async def api_handler(request):
                     target_uid = safe_int(body.get("target_uid"))
                     years = safe_int(body.get("years"))
                     relation = next((e for e in dstate["embassies"] if e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, target_uid}), None)
-                    if not relation or years not in (1, 2, 3, 5):
+                    target = pget(target_uid)
+                    if not relation or not target or target_uid == uid or years not in (1, 2, 3, 5):
                         error = "ابتدا سفارت برقرار کنید و مدت معتبر انتخاب کنید."
+                    elif relation.get("pact_until") and safe_int(relation.get("pact_until")) > now:
+                        error = "پیمان عدم تجاوز فعالی با این کشور دارید."
+                    elif any(p.get("status") == "pending" and {p.get("from"), p.get("to")} == {uid, target_uid} for p in dstate["pacts"]):
+                        error = "درخواست پیمان قبلاً ارسال شده و منتظر پاسخ است."
                     else:
-                        relation["pact_until"] = now + years * 365 * 86400
-                        relation["pact_years"] = years
+                        dstate["pacts"].append({"from": uid, "to": target_uid, "years": years, "status": "pending", "created": now})
                         save_diplomacy(dstate)
+                        if bot:
+                            try:
+                                await bot.send_message(target_uid, f"📜 کشور {player.get('c')} پیشنهاد پیمان عدم تجاوز برای {years} سال فرستاده است. برای پذیرش یا رد، وارد بخش دیپلماسی شوید.")
+                            except Exception as exc:
+                                print(f"[pact-notification-error] {exc}")
+                elif action == "diplomacy_pact_respond":
+                    sender_uid = safe_int(body.get("from"))
+                    decision = str(body.get("decision", ""))
+                    proposal = next((p for p in dstate["pacts"] if p.get("from") == sender_uid and p.get("to") == uid and p.get("status") == "pending"), None)
+                    relation = next((e for e in dstate["embassies"] if e.get("status") == "active" and {e.get("from"), e.get("to")} == {uid, sender_uid}), None)
+                    if not proposal or not relation or decision not in ("accept", "decline"):
+                        error = "درخواست پیمان معتبر نیست یا قبلاً پاسخ داده شده است."
+                    else:
+                        proposal["status"] = "accepted" if decision == "accept" else "declined"
+                        proposal["responded"] = now
+                        if decision == "accept":
+                            relation["pact_until"] = now + safe_int(proposal.get("years")) * 365 * 86400
+                            relation["pact_years"] = safe_int(proposal.get("years"))
+                        save_diplomacy(dstate)
+                        if bot:
+                            try:
+                                status_text = "پذیرفته شد" if decision == "accept" else "رد شد"
+                                await bot.send_message(sender_uid, f"📜 پیشنهاد پیمان عدم تجاوز شما توسط کشور {player.get('c')} {status_text}.")
+                            except Exception as exc:
+                                print(f"[pact-response-notification-error] {exc}")
 
                 if error is None:
                     pset(uid, player)
