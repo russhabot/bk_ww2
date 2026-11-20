@@ -205,7 +205,7 @@ def ensure_economy(player):
 
 
 def apply_daily_economy(player):
-    if not player or not player.get("c"):
+    if not player or not player.get("c") or player.get("alive") is False:
         return False
     changed = ensure_economy(player)
     today = datetime.now(TEHRAN_TZ).date().toordinal()
