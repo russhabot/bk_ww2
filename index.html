@@ -1021,7 +1021,7 @@
           <strong id="stat-comintern-count">0</strong>
         </div>
         <div class="stat-pill neutral">
-          <span class="pill-label"><img src="static/badges/neutral.svg" class="badge-icon-img" alt="بدون جناح"> بدون جناح</span>
+          <span class="pill-label"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح"> بدون جناح</span>
           <strong id="stat-neutral-count">0</strong>
         </div>
       </div>
@@ -1069,8 +1069,8 @@
           <div class="chip" onclick="setFilter('axis', this)"><img src="static/badges/axis.svg" class="badge-icon-img" alt="محور"> محور</div>
           <div class="chip" onclick="setFilter('allies', this)"><img src="static/badges/allies.svg" class="badge-icon-img" alt="متفقین"> متفقین</div>
           <div class="chip" onclick="setFilter('comintern', this)"><img src="static/badges/comintern.svg" class="badge-icon-img" alt="کمینترن"> کمینترن</div>
-          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/neutral.svg" class="badge-icon-img" alt="بدون جناح"> بدون جناح</div>
-          <div class="chip" onclick="setFilter('fascism', this)"><img src="static/badges/fascism.svg" class="badge-icon-img" alt="نشان فاشیسم"> فاشیست</div>
+          <div class="chip" onclick="setFilter('neutral_fac', this)"><img src="static/badges/no-faction.svg" class="badge-icon-img" alt="بدون جناح"> بدون جناح</div>
+          <div class="chip" onclick="setFilter('fascism', this)"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Reichsadler_of_Nazi_Germany_%28eagle_only%29.svg" class="badge-icon-img" alt="نشان فاشیسم"> فاشیست</div>
           <div class="chip" onclick="setFilter('communism', this)"><img src="static/badges/communism.svg" class="badge-icon-img" alt="کمونیسم"> کمونیستی</div>
           <div class="chip" onclick="setFilter('democracy', this)"><img src="static/badges/democracy.svg" class="badge-icon-img" alt="دموکراسی"> دموکراتیک</div>
           <div class="chip" onclick="setFilter('monarchy', this)"><img src="static/badges/monarchy.svg" class="badge-icon-img" alt="پادشاهی"> پادشاهی</div>
@@ -1188,7 +1188,7 @@
 
   <script>
     // Embedded Data
-    const COUNTRIES = {
+    let COUNTRIES = {
   "DE": {
     "code": "DE",
     "name_fa": "آلمان (رایش سوم)",
@@ -2655,7 +2655,7 @@
     "status_fa": "دولت دست‌نشاندهٔ ژاپن؛ استقلال آن از نظر عملی محدود بود"
   }
 };
-    const FACTIONS = {
+    let FACTIONS = {
   "axis": {
     "id": "axis",
     "fa": "محور",
@@ -2686,16 +2686,16 @@
     "en": "No Faction",
     "color": "#94a3b8",
     "bg": "rgba(148, 163, 184, 0.15)",
-    "badge_url": "static/badges/neutral.svg"
+    "badge_url": "static/badges/no-faction.svg"
   }
 };
-    const IDEOLOGIES = {
+    let IDEOLOGIES = {
   "fascism": {
     "id": "fascism",
     "fa": "فاشیسم / نظامی‌گری",
     "en": "Fascism",
     "color": "#a855f7",
-    "badge_url": "static/badges/fascism.svg"
+    "badge_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Reichsadler_of_Nazi_Germany_%28eagle_only%29.svg"
   },
   "communism": {
     "id": "communism",
@@ -2746,9 +2746,22 @@
       } catch(e) {}
     }
 
+    async function fetchCatalog() {
+      const res = await fetch('/api/catalog', { cache: 'no-store' });
+      if (!res.ok) throw new Error('Catalog HTTP ' + res.status);
+      const data = await res.json();
+      if (!data || !data.countries || !data.factions || !data.ideologies) {
+        throw new Error('Invalid game catalog response');
+      }
+      COUNTRIES = data.countries;
+      FACTIONS = data.factions;
+      IDEOLOGIES = data.ideologies;
+      if (data.default_music) S.bg_music = data.default_music;
+    }
+
     async function init() {
       if (tg) { try { tg.ready(); tg.expand(); } catch (e) {} }
-      try { updateStats(); renderCards(); await fetchState(); }
+      try {\n        try { await fetchCatalog(); } catch (catalogErr) { console.warn('Using embedded game catalog:', catalogErr); }\n        updateStats(); renderCards(); await fetchState();\n      }
       catch (err) {
         console.error('Mini App initialization failed:', err);
         const grid = document.getElementById('countries-grid');
@@ -2911,7 +2924,7 @@
       if(!dossier||!S||!S.p||!S.p.c)return;
       const c=COUNTRIES[S.p.c]||{}, f=FACTIONS[c.faction]||FACTIONS.neutral, reg=getRegimeCategory(c), r=getStartingResources({...c,code:S.p.c});
       const num=v=>new Intl.NumberFormat('fa-IR').format(Number(v)||0), icon=name=>'<img class="management-icon" src="static/ui/'+name+'.svg" alt="">';
-      const faction='<span class="tactical-badge badge-'+(c.faction||'neutral')+'"><img src="'+(f.badge_url||'static/badges/neutral.svg')+'" class="badge-icon-img" alt="">'+(f.fa||'بدون جناح')+'</span>';
+      const faction='<span class="tactical-badge badge-'+(c.faction||'neutral')+'"><img src="'+(f.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="">'+(f.fa||'بدون جناح')+'</span>';
       const menu=[['economy','treasury','اقتصاد و رفاه','خزانه، درآمد، غذا و رضایت'],['military','infantry','نیروهای مسلح','نیروی زمینی و ذخایر راهبردی'],['diplomacy','diplomacy','روابط خارجی','کشورها، ائتلاف‌ها و روابط'],['technology','technology','پژوهش و فناوری','پیشرفت علمی و زیرساخت'],['organizations','world','سازمان‌های بین‌المللی','جایگاه و مجوزهای کشور'],['profile','country','پرونده کشور','رهبر، پایتخت و ساختار سیاسی']];
       const header='<div class="management-hero"><div class="management-flag"><img src="'+(c.flag_url||FALLBACK_FLAG)+'" alt="پرچم" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"></div><div class="management-identity"><small>ستاد فرماندهی · ۱۹۳۴</small><h3>'+(c.name_fa||S.p.c)+'</h3><span>'+(c.capital_fa||'پایتخت ثبت نشده')+' · '+(c.name_en||'')+'</span><div class="management-tags">'+faction+'<span class="regime-chip regime-'+reg.key+'"><img src="'+reg.badge_url+'" class="badge-icon-img" alt="">'+reg.label+'</span></div></div></div>';
       const stats='<div class="management-metrics"><div class="management-metric">'+icon('power')+'<span>قدرت سیاسی</span><strong>'+num(r.power)+' / ۱۰۰</strong></div><div class="management-metric">'+icon('treasury')+'<span>خزانه آغازین</span><strong>'+num(r.money)+' میلیون</strong></div><div class="management-metric">'+icon('income')+'<span>درآمد پایه</span><strong>'+num(r.income)+' میلیون</strong></div><div class="management-metric">'+icon('infantry')+'<span>نیروی پیاده</span><strong>'+num(r.infantry)+' نفر</strong></div><div class="management-metric">'+icon('oil')+'<span>ذخیره نفت</span><strong>'+num(r.oil)+' بشکه</strong></div><div class="management-metric">'+icon('food')+'<span>ذخیره غذا</span><strong>'+num(r.food)+' واحد</strong></div></div>';
@@ -2920,7 +2933,7 @@
       let body=overview;
       if(managementSection==='economy')body=back+'<div class="management-section-title"><div><small>بخش کشور</small><h3>اقتصاد و رفاه</h3></div>'+icon('treasury')+'</div><div class="management-detail-grid"><div class="management-detail-card">'+icon('treasury')+'<span>خزانه پایه</span><strong>'+num(r.money)+' میلیون</strong><small>مقدار آغاز سناریو</small></div><div class="management-detail-card">'+icon('income')+'<span>درآمد پایه</span><strong>'+num(r.income)+' میلیون</strong><small>برآورد دوره‌ای</small></div><div class="management-detail-card">'+icon('food')+'<span>ذخیره غذا</span><strong>'+num(r.food)+' واحد</strong></div><div class="management-detail-card">'+icon('satisfaction')+'<span>رضایت عمومی</span><strong>'+num(r.satisfaction)+'٪</strong><div class="economy-meter"><i style="width:'+r.satisfaction+'%"></i></div></div></div><p class="management-note">این صفحه گزارش وضعیت پایه است؛ هیچ پرداخت یا تغییری در موجودی ثبت نمی‌کند.</p>';
       if(managementSection==='military')body=back+'<div class="management-section-title"><div><small>بخش کشور</small><h3>نیروهای مسلح</h3></div>'+icon('infantry')+'</div><div class="management-detail-grid"><div class="management-detail-card">'+icon('infantry')+'<span>پیاده‌نظام پایه</span><strong>'+num(r.infantry)+' نفر</strong></div><div class="management-detail-card">'+icon('oil')+'<span>ذخیره نفت</span><strong>'+num(r.oil)+' بشکه</strong></div></div><p class="management-note">خرید یگان، تولید کارخانه‌ای و تغییر موجودی نیروها هنوز به API نسخهٔ WWII متصل نیست؛ برای جلوگیری از عملیات صوری، دکمهٔ خرید غیرفعال است.</p>';
-      if(managementSection==='diplomacy'){const others=Object.values(COUNTRIES).filter(x=>x.code!==S.p.c&&x.selectable!=='no').slice(0,28);body=back+'<div class="management-section-title"><div><small>بخش کشور</small><h3>روابط خارجی</h3></div>'+icon('diplomacy')+'</div><div class="management-country-list">'+others.map(x=>{const fx=FACTIONS[x.faction]||FACTIONS.neutral;return '<div class="management-country-row"><img class="management-mini-flag" src="'+(x.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+(x.name_fa||x.code)+'</strong><small>'+(x.capital_fa||'')+'</small></span><span class="tactical-badge badge-'+(x.faction||'neutral')+'"><img src="'+(fx.badge_url||'static/badges/neutral.svg')+'" class="badge-icon-img" alt="">'+fx.fa+'</span></div>';}).join('')+'</div><p class="management-note">فهرست کشورها و جناح‌ها یکپارچه است؛ ارسال درخواست دیپلماتیک هنوز در API نسخهٔ WWII فعال نشده است.</p>';}
+      if(managementSection==='diplomacy'){const others=Object.values(COUNTRIES).filter(x=>x.code!==S.p.c&&x.selectable!=='no').slice(0,28);body=back+'<div class="management-section-title"><div><small>بخش کشور</small><h3>روابط خارجی</h3></div>'+icon('diplomacy')+'</div><div class="management-country-list">'+others.map(x=>{const fx=FACTIONS[x.faction]||FACTIONS.neutral;return '<div class="management-country-row"><img class="management-mini-flag" src="'+(x.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+(x.name_fa||x.code)+'</strong><small>'+(x.capital_fa||'')+'</small></span><span class="tactical-badge badge-'+(x.faction||'neutral')+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="">'+fx.fa+'</span></div>';}).join('')+'</div><p class="management-note">فهرست کشورها و جناح‌ها یکپارچه است؛ ارسال درخواست دیپلماتیک هنوز در API نسخهٔ WWII فعال نشده است.</p>';}
       if(managementSection==='technology')body=back+'<div class="management-section-title"><div><small>بخش کشور</small><h3>پژوهش و فناوری</h3></div>'+icon('technology')+'</div><div class="management-empty">'+icon('technology')+'<strong>سامانهٔ پژوهش در حال آماده‌سازی است</strong><span>پس از اتصال سیستم تحقیق به سرور، پیشرفت فناوری و پیش‌نیازها در همین بخش نمایش داده می‌شود.</span></div>';
       if(managementSection==='organizations')body=back+'<div class="management-section-title"><div><small>بخش کشور</small><h3>سازمان‌های بین‌المللی</h3></div>'+icon('world')+'</div><div class="management-detail-grid"><div class="management-detail-card">'+icon('world')+'<span>جایگاه کشور</span><strong>پرونده تاریخی</strong><small>بر پایهٔ کشور انتخاب‌شده</small></div><div class="management-detail-card">'+icon('country')+'<span>مجوزهای عملیاتی</span><strong>ثبت نشده</strong><small>دادهٔ اجرایی در دسترس نیست</small></div></div><p class="management-note">ثبت درخواست‌های سازمانی هنوز به سرور بازی متصل نشده است.</p>';
       if(managementSection==='profile')body=back+'<div class="history-banner"><img src="'+(c.flag_url||FALLBACK_FLAG)+'" alt="پرچم" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><div><small>پرونده تاریخی · ۱۹۳۴</small><h3>'+(c.name_fa||S.p.c)+'</h3><span>پایتخت: '+(c.capital_fa||'نامشخص')+'</span></div></div><div class="management-profile-leader"><img src="'+(c.leader_url||c.leader_img||FALLBACK_LEADER)+'" alt="" onerror="handleLeaderImageError(this,\''+(c.flag_url||FALLBACK_FLAG)+'\')"><span><small>'+(c.leader_title||'رهبر تاریخی')+'</small><strong>'+(c.leader_fa||'نامشخص')+'</strong></span></div><div class="history-description"><strong>پیشینه کشور</strong><p>'+(c.desc||'اطلاعات تاریخی ثبت نشده است.')+'</p></div><div class="management-tags">'+faction+'<span class="regime-chip regime-'+reg.key+'"><img src="'+reg.badge_url+'" class="badge-icon-img" alt="">'+reg.label+'</span></div>';
@@ -2965,7 +2978,7 @@
         if (dossier) {
           dossier.innerHTML = `<div class="country-history-card">
             <div class="history-banner"><img src="${c.flag_url || FALLBACK_FLAG}" alt="پرچم کشور" onerror="this.onerror=null;this.src='${FALLBACK_FLAG}'"><div><small>پرونده تاریخی · ۱۹۳۴</small><h3>${c.name_fa || S.p.c}</h3><span>پایتخت: ${c.capital_fa || 'نامشخص'}</span></div></div>
-            <div class="history-tags"><div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/neutral.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div><div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${regime.key}"><img class="badge-icon-img" src="${regime.badge_url}" alt="">${regime.label}</span></div>${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="">' + getColonyTag(c) + '</span>' : ''}</div>
+            <div class="history-tags"><div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/no-faction.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div><div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${regime.key}"><img class="badge-icon-img" src="${regime.badge_url}" alt="">${regime.label}</span></div>${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="">' + getColonyTag(c) + '</span>' : ''}</div>
             <div class="leader-profile-card"><div class="leader-profile-photo"><img src="${c.leader_url || c.leader_img || FALLBACK_LEADER}" alt="${c.leader_fa || 'رهبر تاریخی'}" onerror="handleLeaderImageError(this, '${c.flag_url || FALLBACK_FLAG}')"></div><div class="leader-profile-meta"><span>رهبر تاریخی</span><strong>${c.leader_fa || 'نامشخص'}</strong><small>${c.leader_title || c.leader_en || ''}</small></div></div>
             <div class="history-description"><strong>پیشینه کشور</strong><p>${c.desc || 'اطلاعات تاریخی این کشور هنوز ثبت نشده است.'}</p></div>
           </div>`;
@@ -3048,7 +3061,7 @@
             </div>
             <div class="dossier-field">
               <span class="dossier-label">جناح</span>
-              <span class="dossier-value"><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/neutral.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></span>
+              <span class="dossier-value"><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/no-faction.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></span>
             </div>
             <div class="dossier-field">
               <span class="dossier-label">نوع حکومت</span>
@@ -3116,10 +3129,11 @@
     }
 
     function getColonyTag(c) {
-      const label = String(c?.colony_of_fa || '').trim() || String(c?.colony_label || '').replace(/^مستعمره(?:ٔ|\s)?/,'').trim() || 'کشور دیگر';
-      return 'مستعمرهٔ ' + label + ' است';
+      const explicitLabel = String(c?.colony_label || '').trim();
+      if (explicitLabel) return explicitLabel;
+      const owner = String(c?.colony_of_fa || '').trim();
+      return owner ? ('مستعمرهٔ ' + owner + ' است') : 'قلمرو وابسته';
     }
-
     function isMonarchy(c) { return /monarchy|regency_monarchy|imperial_monarchy|absolute_monarchy|royal_dictatorship|theocratic_monarchy|constitutional_monarchy/.test(String(c?.regime_type || '')); }
 
     function getRegimeCategory(c) {
@@ -3127,7 +3141,7 @@
       const regimeType = String(c?.regime_type || '').toLowerCase();
       const regimeFa = String(c?.regime_fa || '').toLowerCase();
       if (isMonarchy(c)) return { key:'monarchy', label:'پادشاهی', color:'#fbbf24', badge_url:'static/badges/monarchy.svg' };
-      if (ideology === 'fascism' || /fascis|فاشی/.test(regimeType + ' ' + regimeFa)) return { key:'fascism', label:'فاشیست', color:'#c084fc', badge_url:'static/badges/fascism.svg' };
+      if (ideology === 'fascism' || /fascis|فاشی/.test(regimeType + ' ' + regimeFa)) return { key:'fascism', label:'فاشیست', color:'#c084fc', badge_url:'https://commons.wikimedia.org/wiki/Special:FilePath/Reichsadler_of_Nazi_Germany_%28eagle_only%29.svg' };
       if (ideology === 'communism' || /communis|کمونی/.test(regimeType + ' ' + regimeFa)) return { key:'communism', label:'کمونیستی', color:'#f87171', badge_url:'static/badges/communism.svg' };
       return { key:'democracy', label:'دموکراتیک', color:'#38bdf8', badge_url:'static/badges/democracy.svg' };
     }
@@ -3155,7 +3169,7 @@
     // Avoid a ReferenceError when card rendering requests ideology metadata.
     function getIdeology(country) {
       const key = String(country && country.ideology || '').toLowerCase();
-      return IDEOLOGIES[key] || { id: key || 'unknown', fa: 'ایدئولوژی نامشخص', en: 'Unknown ideology', color: '#94a3b8', badge_url: 'static/badges/neutral.svg' };
+      return IDEOLOGIES[key] || { id: key || 'unknown', fa: 'ایدئولوژی نامشخص', en: 'Unknown ideology', color: '#94a3b8', badge_url: 'static/badges/no-faction.svg' };
     }
 
     // Card Renderer
@@ -3206,7 +3220,7 @@
                 <p class="country-name-en">${c.name_en}</p>
                 <p class="country-capital">پایتخت: ${c.capital_fa || "نامشخص"}</p>
                 <div class="card-badges">
-                  <div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/neutral.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div>
+                  <div class="tag-pair"><span class="tag-heading">جناح</span><span class="tactical-badge badge-${c.faction}"><img src="${fac.badge_url || 'static/badges/no-faction.svg'}" class="badge-icon-img" alt="">${fac.fa || 'بدون جناح'}</span></div>
                   <div class="tag-pair"><span class="tag-heading">نوع حکومت</span><span class="regime-chip regime-${getRegimeCategory(c).key}"><img src="${getRegimeCategory(c).badge_url}" class="badge-icon-img" alt="">${getRegimeCategory(c).label}</span></div>
                   ${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span class="tactical-badge badge-colony"><img src="static/badges/colony.svg" class="badge-icon-img" alt="">' + getColonyTag(c) + '</span>' : ''}
                   ${c.puppet_label ? '<span class="tactical-badge badge-puppet">' + c.puppet_label + '</span>' : ''}
@@ -3315,7 +3329,7 @@
           const code=getFeatureGameCode(feature),c=code&&COUNTRIES[code];
           if(!c||c.selectable==='no'){layer.options.interactive=false;return;}
           const owner=S.owners[code]||S.owners[code?.toLowerCase()],ownerLabel=owner?(owner.name||'@'+owner.username):'کاربر';
-          layer.bindTooltip(`<div style="direction:rtl;text-align:right;font-family:Vazirmatn,sans-serif;font-size:12px"><b>${c.name_fa}</b> (${c.name_en})<br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa||'نامشخص'}<br>جناح: <img src="${FACTIONS[c.faction]?.badge_url||'static/badges/neutral.svg'}" style="width:15px;height:15px;vertical-align:middle;object-fit:contain" alt=""> ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>نوع حکومت: <img src="${getRegimeCategory(c).badge_url}" style="width:15px;height:15px;vertical-align:middle;object-fit:contain" alt=""> ${getRegimeCategory(c).label}<br>${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span style="color:#86efac">' + getColonyTag(c) + '</span><br>' : ''}${c.puppet_label?'<span style="color:#fdba74">'+c.puppet_label+'</span><br>':''}${S.taken.includes(code)?'<span style="color:#ef4444">اشغال‌شده توسط: '+ownerLabel+'</span>':'<span style="color:#10b981">آماده تصاحب</span>'}</div>`,{sticky:true});
+          layer.bindTooltip(`<div style="direction:rtl;text-align:right;font-family:Vazirmatn,sans-serif;font-size:12px"><b>${c.name_fa}</b> (${c.name_en})<br>رهبر: ${c.leader_fa}<br>پایتخت: ${c.capital_fa||'نامشخص'}<br>جناح: <img src="${FACTIONS[c.faction]?.badge_url||'static/badges/no-faction.svg'}" style="width:15px;height:15px;vertical-align:middle;object-fit:contain" alt=""> ${FACTIONS[c.faction]?.fa||'بدون جناح'}<br>نوع حکومت: <img src="${getRegimeCategory(c).badge_url}" style="width:15px;height:15px;vertical-align:middle;object-fit:contain" alt=""> ${getRegimeCategory(c).label}<br>${(c.colony_of || c.colony_label || c.regime_type === 'colonial_administration') ? '<span style="color:#86efac">' + getColonyTag(c) + '</span><br>' : ''}${c.puppet_label?'<span style="color:#fdba74">'+c.puppet_label+'</span><br>':''}${S.taken.includes(code)?'<span style="color:#ef4444">اشغال‌شده توسط: '+ownerLabel+'</span>':'<span style="color:#10b981">آماده تصاحب</span>'}</div>`,{sticky:true});
           layer.on({mouseover:e=>{if(matchesFilter(c,code))e.target.setStyle({weight:2,color:'#f59e0b',fillOpacity:0.88});},mouseout:e=>{if(geojsonLayer)geojsonLayer.resetStyle(e.target);},click:()=>{if(matchesFilter(c,code)&&S.season==='pick')openClaimModal(code);}});
           layer.options.interactive=matchesFilter(c,code)&&S.season==='pick';
         }
@@ -3477,7 +3491,7 @@
     }
 
     // Audio starts from a user gesture (required by mobile browsers); fallback handler is registered before loading.
-    const FALLBACK_MUSIC_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/Holst-_mars.ogg';
+    const FALLBACK_MUSIC_URL = 'https://archive.org/download/the-planets_202501/01%20-%20I.%20Mars%2C%20the%20Bringer%20of%20War.mp3';
     let musicSourceIndex = 0;
     let musicSources = [];
     function setupAudio() {
@@ -3510,6 +3524,7 @@
         audio.play().then(() => { isAudioPlaying = !audio.paused; updateAudioUI(); }).catch(() => {});
       };
       document.addEventListener('pointerdown', resumeAudio, { once: true, passive: true });
+      document.addEventListener('touchstart', resumeAudio, { once: true, passive: true });
       document.addEventListener('keydown', resumeAudio, { once: true });
     }
     async function toggleAudio() {
