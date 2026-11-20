@@ -969,6 +969,38 @@
     .management-building-card{display:flex;flex-direction:column;gap:6px;min-width:0;padding:11px;border:1px solid var(--border);border-radius:11px;background:linear-gradient(145deg,#111e33,#0b1322)}
     .management-building-card strong{color:#fff;font-size:12px}.management-building-card span,.management-building-card small{color:var(--text-muted);font-size:10px;line-height:1.6}.management-building-card .btn{font-size:11px;padding:7px}
     .management-bank-actions{margin-top:10px;display:flex;flex-direction:column;gap:8px}.management-bank-actions input{width:100%;padding:11px;border-radius:9px;border:1px solid var(--border-bright);background:#09111e;color:#fff;font:inherit}.management-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .management-root-grid,.management-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:13px}
+    .management-root-card,.management-feature-card{position:relative;display:flex;flex-direction:column;overflow:hidden;text-align:right;padding:0;border:1px solid var(--border-bright);border-radius:15px;background:linear-gradient(150deg,#14243b,#091321);color:inherit;cursor:pointer;min-width:0}
+    .management-root-card .management-photo{height:142px}.management-feature-card .management-photo{height:105px}
+    .management-photo{position:relative;overflow:hidden;background:#111d2d}.management-photo img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .35s ease}.management-root-card:hover .management-photo img,.management-feature-card:hover .management-photo img{transform:scale(1.045)}
+    .management-photo.image-missing:after{content:"تصویر در دسترس نیست";position:absolute;inset:0;display:grid;place-items:center;color:var(--text-muted);font-size:11px;background:linear-gradient(135deg,#17283e,#0a1320)}
+    .management-root-card>span{display:flex;flex-direction:column;gap:5px;padding:12px}.management-root-card small,.management-feature-copy small{font-size:10px;color:var(--text-muted);line-height:1.6}.management-root-card strong,.management-feature-copy strong{font-size:13px;color:#fff}.management-root-card em{font-size:10px;color:#a9bad0;line-height:1.7;font-style:normal}.management-root-card>b,.management-feature-card>b{position:absolute;left:10px;bottom:12px;color:#fbbf24;font-size:23px}
+    .management-feature-card{min-height:158px}.management-feature-copy{display:flex;flex-direction:column;gap:3px;padding:9px 11px 13px}
+    .management-building-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:13px}
+    .management-building-card{display:flex;flex-direction:column;overflow:hidden;min-width:0;padding:0;border:1px solid var(--border);border-radius:13px;background:linear-gradient(145deg,#111e33,#0b1322)}
+    .management-building-card>.management-photo{height:120px}
+    .management-building-content{display:flex;flex-direction:column;gap:8px;padding:11px}
+    .management-building-content>strong{color:#fff;font-size:13px}
+    .building-fact{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:10px;color:var(--text-muted)}
+    .building-fact strong{color:#e8f0fb;font-size:10px;text-align:left}
+    .management-building-card .btn{font-size:11px;padding:8px}
+    .management-bank-card{max-width:420px;margin:12px auto}
+    .management-bank-card>.management-photo{height:190px}
+    .management-bank-balance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}
+    .management-bank-balance>div{padding:10px 7px;border:1px solid var(--border);border-radius:10px;background:#0a1423;min-width:0}
+    .management-bank-balance small{display:block;color:var(--text-muted);font-size:9px}
+    .management-bank-balance strong{display:block;color:#fff;font-size:11px;margin-top:5px;overflow-wrap:anywhere}
+    .management-bank-actions{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+    .management-bank-actions input{width:100%;padding:11px;border-radius:9px;border:1px solid var(--border-bright);background:#09111e;color:#fff;font:inherit}
+    .management-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .management-tax-card{max-width:420px;margin:12px auto;overflow:hidden;border:1px solid var(--border);border-radius:13px;background:#0c1728}
+    .management-tax-card>.management-photo{height:170px}
+    .management-tax-card .management-building-content{padding:14px}
+    .management-resource-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:12px 0}
+    .management-resource-strip>div{padding:10px 7px;border:1px solid var(--border);border-radius:10px;background:#0a1423;min-width:0}
+    .management-resource-strip small{display:block;color:var(--text-muted);font-size:10px}
+    .management-resource-strip strong{display:block;color:#fff;font-size:12px;overflow-wrap:anywhere;margin-top:4px}
+    @media(max-width:520px){.management-root-grid,.management-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.management-building-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.management-building-card>.management-photo{height:98px}.management-root-card .management-photo{height:112px}.management-feature-card .management-photo{height:88px}.management-bank-balance{grid-template-columns:repeat(3,minmax(0,1fr))}.management-resource-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
     .statement-label{display:block;margin:14px 0 7px;color:#e2e8f0;font-size:12px;font-weight:800}
     .statement-composer{padding:15px;border:1px solid var(--border-bright);border-radius:15px;background:linear-gradient(145deg,rgba(17,29,49,.98),rgba(7,13,24,.98));box-shadow:0 12px 30px rgba(0,0,0,.2)}
     .statement-intro{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid rgba(56,189,248,.22);border-radius:12px;background:rgba(14,116,144,.08)}
@@ -2920,48 +2952,58 @@
       const dossier=document.getElementById('player-command-dossier'), title=document.getElementById('season-screen-title'), message=document.getElementById('season-screen-message');
       if(!dossier||!S||!S.p||!S.p.c)return;
       const r=S.p, catalog=S.economy_buildings||{}, buildings=r.buildings||{}, materials=r.materials||{};
-      const num=v=>new Intl.NumberFormat('fa-IR').format(Number(v)||0), icon=name=>'<img class="management-icon" src="static/ui/'+name+'.svg" alt="">';
+      const num=v=>new Intl.NumberFormat('fa-IR').format(Number(v)||0);
       if(r.alive===false){
         const reason=r.elimination_reason==='famine'?'قحطی و کمبود پایدار غذا':'ناآرامی و افت شدید رضایت عمومی';
         dossier.innerHTML='<div class="management-empty"><strong>کشور از چرخه بازی خارج شده است</strong><span>علت: '+reason+'<br>در فصل بعد می‌توانید دوباره کشور انتخاب کنید.</span></div>';
         if(title)title.textContent='پایان فرمانروایی';if(message)message.textContent='کشور شما دیگر در فهرست کشورهای فعال قرار ندارد.';return;
       }
-      const dailyIncome=Number(r.income_base||0)+Object.entries(buildings).reduce((sum,[key,count])=>sum+(Number(catalog[key]?.income)||0)*(Number(count)||0),0);
-      const metrics=[['treasury','خزانه',num(r.money)+' دلار'],['income','درآمد روزانه',num(dailyIncome)+' دلار'],['food','ذخیره غذا',num(r.food)+' واحد'],['satisfaction','رضایت عمومی',num(r.satisfaction)+'٪'],['oil','نفت',num(r.oil)+' بشکه']];
-      const stats='<div class="management-metrics">'+metrics.map(([ic,label,value])=>'<div class="management-metric">'+icon(ic)+'<span>'+label+'</span><strong>'+value+'</strong></div>').join('')+'</div>';
-      const menu=[['economy','treasury','اقتصاد و صنعت','کارخانه‌ها و درآمد پایدار'],['bank','treasury','بانک و سرمایه‌گذاری','سپرده، سود و وام'],['mines','mines','معادن و منابع','طلا، آهن، زغال‌سنگ و نفت'],['food','food','کشاورزی و غذا','تأمین غذای روزانه کشور'],['tax','tax','دریافت مالیات','درآمد روزانه با اثر بر رضایت'],['welfare','welfare','رفاه عمومی','خدمات شهری و رضایت مردم'],['diplomacy','diplomacy','روابط خارجی','کشورهای فعال و فرمانروایان']];
-      const overview='<div class="management-section-title"><div><small>اتاق مدیریت</small><h3>شاخص‌های کشور</h3></div><span class="management-status">سیزن فعال</span></div>'+stats+'<div class="management-section-title"><div><small>سامانه‌های مستقل</small><h3>مدیریت منابع و خدمات</h3></div><span class="management-count">۷ بخش</span></div><div class="management-menu">'+menu.map(([id,ic,label,desc])=>'<button class="management-menu-card" type="button" onclick="setManagementSection(\''+id+'\')">'+icon(ic)+'<span><strong>'+label+'</strong><small>'+desc+'</small></span><b class="management-arrow">‹</b></button>').join('')+'</div><p class="management-note">گزارش اقتصادی هر روز به وقت تهران به‌روزرسانی می‌شود. برای جلوگیری از بحران، تولید غذا و رفاه را متناسب با جمعیت کشور نگه دارید.</p>';
       const back='<button type="button" class="management-back" onclick="setManagementSection(\'overview\')">بازگشت به مدیریت کشور</button>';
+      const economyBack='<button type="button" class="management-back" onclick="setManagementSection(\'economy\')">بازگشت به اقتصاد و رفاهیات</button>';
+      const sectionTitle=(eyebrow,heading)=>'<div class="management-section-title"><div><small>'+eyebrow+'</small><h3>'+heading+'</h3></div></div>';
+      const image=(url,alt)=>'<div class="management-photo"><img src="'+url+'" alt="'+alt+'" loading="lazy" onerror="this.parentElement.classList.add(\'image-missing\')"></div>';
+      const menuCard=(id,name,desc,img)=>'<button class="management-feature-card" type="button" onclick="setManagementSection(\''+id+'\')">'+image(img,name)+'<span class="management-feature-copy"><strong>'+name+'</strong><small>'+desc+'</small></span><b>‹</b></button>';
+      const economyMenu='<div class="management-feature-grid">'+
+        menuCard('bank','بانک ملی','تأسیس، پس‌انداز و وام',catalog.bank?.image||'')+
+        menuCard('mines','معادن','طلا، آهن، زغال‌سنگ و نفت',catalog.mine_gold?.image||'')+
+        menuCard('food','کشاورزی و غذا','مزارع معمولی و صنعتی',catalog.farm_s?.image||'')+
+        menuCard('tax','مالیات','دریافت مالیات روزانه',catalog.bank?.image||'')+
+        menuCard('welfare','رفاهیات','خدمات شهری و رضایت عمومی',catalog.park?.image||'')+
+        '</div>';
+      const root='<div class="management-root-grid">'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\'economy\')">'+image(catalog.mine_gold?.image||'','اقتصاد و رفاهیات')+'<span><small>مدیریت منابع کشور</small><strong>اقتصاد و رفاهیات</strong><em>بانک، معادن، مالیات، کشاورزی و خدمات عمومی</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\'diplomacy\')">'+image('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/City_Park%2C_Denver.jpg/1280px-City_Park%2C_Denver.jpg','روابط خارجی')+'<span><small>ارتباط با جهان</small><strong>روابط خارجی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
+        '</div>';
       const makeCards=(category)=>Object.entries(catalog).filter(([key,b])=>b.category===category).map(([key,b])=>{
-        const owned=Number(buildings[key]||0);
-        const yieldText=b.income?'درآمد روزانه: '+num(b.income)+' دلار':b.food?'تولید غذا: '+num(b.food)+' واحد در روز':b.resource?'تولید روزانه: '+num(b.production)+' '+({gold:'واحد طلا',iron:'واحد آهن',coal:'واحد زغال‌سنگ',oil:'بشکه نفت'}[b.resource]||b.resource):'افزایش رضایت: '+num(b.happy)+' واحد در روز';
-        const locked=b.unique&&owned>0;
-        const payback=b.income?'بازگشت هزینه ساخت: حدود '+Math.max(1,Math.ceil(Number(b.cost)/Number(b.income)))+' روز':'';
-        return '<div class="management-building-card"><strong>'+b.fa+'</strong><span>تعداد ساخته‌شده: '+num(owned)+'</span><small>هزینه ساخت: '+num(b.cost)+' دلار</small><small>'+yieldText+'</small>'+(payback?'<small>'+payback+'</small>':'')+'<button class="btn btn-gold" '+(locked?'disabled':'')+' onclick="buyEconomyBuilding(\''+key+'\')">'+(locked?'تکمیل شده':'ساخت یک واحد')+'</button></div>';
+        const owned=Number(buildings[key]||0), locked=Boolean(b.unique&&owned>0);
+        const yieldText=b.income?'<div class="building-fact"><span>درآمد روزانه</span><strong>'+num(b.income)+' دلار</strong></div>':b.food?'<div class="building-fact"><span>تولید غذا در روز</span><strong>'+num(b.food)+' واحد</strong></div>':b.resource?'<div class="building-fact"><span>تولید منبع در روز</span><strong>'+num(b.production)+' '+({gold:'طلا',iron:'آهن',coal:'زغال‌سنگ',oil:'بشکه نفت'}[b.resource]||b.resource)+'</strong></div>':'<div class="building-fact"><span>افزایش رضایت روزانه</span><strong>'+num(b.happy)+' واحد</strong></div>';
+        return '<article class="management-building-card">'+image(b.image||'',b.fa)+'<div class="management-building-content"><strong>'+b.fa+'</strong><div class="building-fact"><span>هزینه ساخت</span><strong>'+num(b.cost)+' دلار</strong></div>'+yieldText+'<div class="building-fact"><span>ساخته‌شده</span><strong>'+num(owned)+'</strong></div><button class="btn btn-gold" '+(locked?'disabled':'')+' onclick="buyEconomyBuilding(\''+key+'\')">'+(locked?'بانک ساخته شده':'ساخت')+'</button></div></article>';
       }).join('');
-      let body=overview;
-      if(managementSection==='economy')body=back+'<div class="management-section-title"><div><small>زیرساخت اقتصادی</small><h3>صنعت و درآمد</h3></div>'+icon('treasury')+'</div>'+stats+'<div class="management-building-grid">'+makeCards('industry')+'</div><p class="management-note">کارخانه‌ها درآمد روزانه ایجاد می‌کنند. هزینه ساخت هر واحد از درآمد روزانه همان واحد کمتر است؛ تعداد ساخت را با موجودی خزانه تنظیم کنید.</p>';
+      let body=root, heading='مدیریت کشور';
+      if(managementSection==='economy'){body=back+sectionTitle('بخش اصلی','اقتصاد و رفاهیات')+economyMenu;heading='اقتصاد و رفاهیات';}
       if(managementSection==='bank'){
-        const bankOwned=Number(buildings.bank||0)>0;
-        const bankCard=makeCards('bank');
-        body=back+'<div class="management-section-title"><div><small>خدمات مالی</small><h3>بانک ملی</h3></div>'+icon('treasury')+'</div>'+bankCard+'<div class="management-detail-grid"><div class="management-detail-card"><span>موجودی سپرده</span><strong>'+num(r.vault||0)+' دلار</strong><small>سود روزانه ۰٫۵٪</small></div><div class="management-detail-card"><span>بدهی وام</span><strong>'+num(r.loan||0)+' دلار</strong><small>سقف وام ۲۵۰٬۰۰۰ دلار</small></div></div>'+(bankOwned?'<div class="management-bank-actions"><input id="economy-bank-amount" type="number" min="1000" max="250000" step="1000" placeholder="مبلغ به دلار"><div class="management-action-grid"><button class="btn" onclick="economyBank(\'deposit\')">واریز سپرده</button><button class="btn" onclick="economyBank(\'withdraw\')">برداشت</button><button class="btn" onclick="economyBank(\'loan\')">دریافت وام</button><button class="btn" onclick="economyBank(\'repay\')">بازپرداخت</button></div></div>':'<p class="management-note">ابتدا بانک ملی را تأسیس کنید تا خدمات سپرده، سود و وام فعال شود.</p>');
+        const owned=Number(buildings.bank||0)>0, bank=catalog.bank;
+        body=economyBack+sectionTitle('خدمات مالی','بانک ملی')+
+          '<article class="management-building-card management-bank-card">'+image(bank.image,'بانک ملی')+'<div class="management-building-content"><strong>بانک ملی</strong><div class="building-fact"><span>هزینه تأسیس</span><strong>'+num(bank.cost)+' دلار</strong></div><div class="building-fact"><span>درآمد روزانه</span><strong>'+num(bank.income)+' دلار</strong></div><div class="building-fact"><span>وضعیت</span><strong>'+(owned?'فعال و تأسیس‌شده':'تأسیس نشده')+'</strong></div><button class="btn btn-gold" '+(owned?'disabled':'')+' onclick="buyEconomyBuilding(\'bank\')">'+(owned?'بانک تأسیس شده':'تأسیس بانک')+'</button></div></article>'+
+          (owned?'<div class="management-bank-balance"><div><small>پس‌انداز</small><strong>'+num(r.vault||0)+' دلار</strong></div><div><small>وام باقی‌مانده</small><strong>'+num(r.loan||0)+' دلار</strong></div><div><small>سود سپرده</small><strong>۰٫۵٪ روزانه</strong></div></div><div class="management-bank-actions"><input id="economy-bank-amount" type="number" min="1000" max="250000" step="1000" placeholder="مبلغ به دلار"><div class="management-action-grid"><button class="btn" onclick="economyBank(\'deposit\')">پس‌انداز</button><button class="btn" onclick="economyBank(\'withdraw\')">برداشت</button><button class="btn" onclick="economyBank(\'loan\')">دریافت وام</button><button class="btn" onclick="economyBank(\'repay\')">بازپرداخت وام</button></div></div>':'');
+        heading='بانک ملی';
       }
       if(managementSection==='mines'){
-        const res='<div class="management-resource-strip"><div><small>طلا</small><strong>'+num(materials.gold)+' واحد</strong></div><div><small>آهن</small><strong>'+num(materials.iron)+' واحد</strong></div><div><small>زغال‌سنگ</small><strong>'+num(materials.coal)+' واحد</strong></div><div><small>نفت</small><strong>'+num(r.oil)+' بشکه</strong></div></div>';
-        body=back+'<div class="management-section-title"><div><small>استخراج منابع</small><h3>معادن و ذخایر طبیعی</h3></div>'+icon('oil')+'</div>'+res+'<div class="management-building-grid">'+makeCards('mines')+'</div><p class="management-note">هر معدن هم درآمد روزانه دارد و هم به ذخایر کشور مواد خام اضافه می‌کند. منابع در حساب کشور ذخیره می‌شوند.</p>';
+        const resourceStrip='<div class="management-resource-strip"><div><small>طلا</small><strong>'+num(materials.gold)+' واحد</strong></div><div><small>آهن</small><strong>'+num(materials.iron)+' واحد</strong></div><div><small>زغال‌سنگ</small><strong>'+num(materials.coal)+' واحد</strong></div><div><small>نفت</small><strong>'+num(r.oil)+' بشکه</strong></div></div>';
+        body=economyBack+sectionTitle('استخراج منابع','معادن')+resourceStrip+'<div class="management-building-grid">'+makeCards('mines')+'</div>';heading='معادن';
       }
-      if(managementSection==='food')body=back+'<div class="management-section-title"><div><small>امنیت غذایی</small><h3>کشاورزی و تولید غذا</h3></div>'+icon('food')+'</div>'+stats+'<div class="management-detail-grid"><div class="management-detail-card"><span>نیاز روزانه تخمینی</span><strong>'+num(100+Math.floor(Number(r.infantry||0)/5000))+' واحد</strong><small>بر اساس جمعیت و نیروهای ثبت‌شده</small></div><div class="management-detail-card"><span>موجودی انبار غذا</span><strong>'+num(r.food)+' واحد</strong><small>تولید مزرعه به‌صورت روزانه افزوده می‌شود</small></div></div><div class="management-building-grid">'+makeCards('food')+'</div><p class="management-note">اگر تولید روزانه از مصرف کمتر باشد، ذخیره کاهش می‌یابد. ادامه کمبود غذا برای چند روز پیاپی بحران قحطی ایجاد می‌کند.</p>';
+      if(managementSection==='food'){body=economyBack+sectionTitle('تأمین روزانه','کشاورزی و غذا')+'<div class="management-building-grid">'+makeCards('food')+'</div>';heading='کشاورزی و غذا';}
       if(managementSection==='tax'){
         const already=r.tax_date===new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Tehran'});
-        body=back+'<div class="management-section-title"><div><small>درآمد عمومی</small><h3>دریافت مالیات روزانه</h3></div>'+icon('treasury')+'</div><div class="management-detail-grid"><div class="management-detail-card"><span>درآمد مالیات امروز</span><strong>۳۵٬۰۰۰ دلار</strong><small>به خزانه افزوده می‌شود</small></div><div class="management-detail-card"><span>اثر بر رضایت</span><strong>۴٪ کاهش</strong><small>فشار مالیاتی بر مردم</small></div></div><button class="btn btn-gold" style="width:100%;margin-top:14px" '+(already?'disabled':'')+' onclick="collectEconomyTax()">'+(already?'مالیات امروز دریافت شده':'دریافت مالیات امروز')+'</button><p class="management-note">مالیات فقط یک‌بار در هر روز تهران قابل دریافت است. دریافت مداوم مالیات، درآمد فوری می‌دهد اما رضایت عمومی را کاهش می‌دهد.</p>';
+        body=economyBack+sectionTitle('درآمد عمومی','مالیات')+'<article class="management-tax-card">'+image(catalog.bank?.image||'','ساختمان اداری')+'<div class="management-building-content"><div class="building-fact"><span>درآمد امروز</span><strong>۳۵٬۰۰۰ دلار</strong></div><div class="building-fact"><span>کاهش رضایت</span><strong>۴٪</strong></div><button class="btn btn-gold" style="width:100%" '+(already?'disabled':'')+' onclick="collectEconomyTax()">'+(already?'مالیات امروز دریافت شده':'دریافت مالیات روزانه')+'</button></div></article>';heading='مالیات';
       }
-      if(managementSection==='welfare')body=back+'<div class="management-section-title"><div><small>کیفیت زندگی</small><h3>رفاه عمومی و خدمات شهری</h3></div>'+icon('satisfaction')+'</div><div class="management-detail-grid"><div class="management-detail-card"><span>رضایت فعلی</span><strong>'+num(r.satisfaction)+'٪</strong><small>هدف پیشنهادی: بالاتر از ۴۰٪</small></div><div class="management-detail-card"><span>وضعیت اجتماعی</span><strong>'+(Number(r.satisfaction)<20?'بحرانی':Number(r.satisfaction)<40?'نیازمند رسیدگی':'پایدار')+'</strong><small>زیر ۲۰٪ خطر ناآرامی افزایش می‌یابد</small></div></div><div class="management-building-grid">'+makeCards('welfare')+'</div><p class="management-note">ساختمان‌های رفاهی هر روز رضایت را بالا می‌برند. رضایت کمتر از ۲۰٪ برای سه روز متوالی کشور را وارد وضعیت ناآرامی و غیرفعال می‌کند.</p>';
+      if(managementSection==='welfare'){body=economyBack+sectionTitle('خدمات عمومی','رفاهیات')+'<div class="management-building-grid">'+makeCards('welfare')+'</div>';heading='رفاهیات';}
       if(managementSection==='diplomacy'){
         const others=(S.active_countries||[]).filter(x=>x.code!==S.p.c);
-        body=back+'<div class="management-section-title"><div><small>کشورهای دارای فرمانروا</small><h3>کشورهای فعال</h3></div><span class="management-count">'+num(others.length)+' کشور</span></div><div class="management-country-list">'+(others.length?others.map(x=>{const fx=FACTIONS[x.faction]||FACTIONS.neutral,info=COUNTRIES[x.code]||{};return '<div class="management-country-row"><img class="management-mini-flag" src="'+(info.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+(x.name_fa||info.name_fa||x.code)+'</strong><small>'+(x.ruler||'فرمانروا')+(x.username?' · @'+x.username:'')+'</small></span><span class="tactical-badge badge-'+(x.faction||'neutral')+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="">'+(fx.fa||'بدون جناح')+'</span></div>';}).join(''):'<div class="management-empty"><strong>هنوز کشور فعال دیگری ثبت نشده است</strong><span>با انتخاب کشور توسط بازیکنان، فرمانروایان در این بخش نمایش داده می‌شوند.</span></div>')+'</div>';
+        body=back+sectionTitle('کشورهای دارای فرمانروا','روابط خارجی')+'<div class="management-country-list">'+(others.length?others.map(x=>{const fx=FACTIONS[x.faction]||FACTIONS.neutral,info=COUNTRIES[x.code]||{};return '<div class="management-country-row"><img class="management-mini-flag" src="'+(info.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+(x.name_fa||info.name_fa||x.code)+'</strong><small>'+(x.ruler||'فرمانروا')+(x.username?' · @'+x.username:'')+'</small></span><span class="tactical-badge badge-'+(x.faction||'neutral')+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="">'+(fx.fa||'بدون جناح')+'</span></div>';}).join(''):'<div class="management-empty"><strong>هنوز کشور فعال دیگری ثبت نشده است</strong><span>با انتخاب کشور توسط بازیکنان، فرمانروایان در این بخش نمایش داده می‌شوند.</span></div>')+'</div>';heading='روابط خارجی';
       }
-      if(title)title.textContent=managementSection==='overview'?'مدیریت کشور':({economy:'اقتصاد و صنعت',bank:'بانک ملی',mines:'معادن و منابع',food:'کشاورزی و غذا',tax:'دریافت مالیات',welfare:'رفاه عمومی',diplomacy:'روابط خارجی'}[managementSection]||'مدیریت کشور');
-      if(message)message.textContent='سامانه‌های اقتصادی و خدمات عمومی کشور.';
+      if(title)title.textContent=heading;
+      if(message)message.textContent='مدیریت خدمات و منابع کشور.';
       dossier.innerHTML='<div class="management-dashboard">'+body+'</div>';
     }
 
