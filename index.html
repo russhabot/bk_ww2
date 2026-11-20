@@ -1054,6 +1054,15 @@
     .diplomacy-war-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:11px;background:rgba(5,11,20,.45)}
     .diplomacy-war-row>span{display:flex;flex-direction:column;gap:3px}.diplomacy-war-row strong{font-size:12px;color:#fff}.diplomacy-war-row small{font-size:10px;color:var(--text-muted)}
     @media(max-width:520px){.diplomacy-list-panel,.diplomacy-country-panel{padding:10px}.diplomacy-list-heading{align-items:stretch;flex-direction:column}.diplomacy-list-heading input{width:100%;min-width:0}#diplomacy-country-search{width:100%}.diplomacy-country-option{gap:7px;padding:8px}.diplomacy-country-option .tactical-badge{max-width:36%;font-size:9px}.diplomacy-profile-flag{width:66px;height:46px;flex-basis:66px}.diplomacy-profile-head h3{font-size:15px}.diplomacy-actions-grid{gap:7px}.diplomacy-action-card{padding:9px;min-height:138px}.diplomacy-action-card img{width:52px;height:48px}.diplomacy-embassy-intro{align-items:flex-start;gap:8px;padding:9px}.diplomacy-embassy-intro img{width:72px;height:66px;flex-basis:72px}.diplomacy-war-row{align-items:flex-start;flex-direction:column}}
+
+    .home-announcements{margin:16px 0;padding:14px;border:1px solid var(--border-bright);border-radius:14px;background:linear-gradient(145deg,rgba(15,29,49,.96),rgba(8,14,25,.98))}
+    .home-announcements-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.home-announcements-head span{display:flex;flex-direction:column}.home-announcements-head small{font-size:10px;color:var(--gold)}.home-announcements-head strong{font-size:16px;color:#fff}.home-announcements-head>b{font-size:10px;color:var(--text-muted);font-weight:500}
+    .home-announcements-empty{padding:12px;border-radius:9px;background:#0a1321;color:var(--text-muted);font-size:11px;text-align:center}
+    .home-notice-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--border)}.home-notice-row>img{width:58px;height:48px;flex:0 0 58px;object-fit:contain;padding:4px;border-radius:8px;background:#091321}.home-notice-row>div{min-width:0;flex:1}.home-notice-row strong{font-size:12px;color:#fff}.home-notice-row small,.home-notice-row p{display:block;margin:2px 0;color:var(--text-muted);font-size:10px;line-height:1.7;overflow-wrap:anywhere}.home-notice-actions{display:flex;gap:7px;margin-top:7px}.home-notice-actions .btn{padding:5px 10px;font-size:10px}
+    .diplomacy-tool-panel{margin-top:14px;padding:14px;border:1px solid var(--gold);border-radius:13px;background:linear-gradient(150deg,#121f33,#0a1220);display:flex;flex-direction:column;gap:8px}.diplomacy-tool-head{display:flex;align-items:center;gap:12px;margin-bottom:4px}.diplomacy-tool-head img{width:66px;height:58px;object-fit:contain;padding:5px;border-radius:9px;background:#091321}.diplomacy-tool-head>div{display:flex;flex-direction:column;gap:2px}.diplomacy-tool-head strong{font-size:13px;color:#fff}.diplomacy-tool-head small{font-size:10px;color:var(--text-muted);line-height:1.7}.diplomacy-tool-panel label{font-size:11px;color:#cbd5e1}.diplomacy-tool-panel select,.diplomacy-tool-panel input,.diplomacy-tool-panel textarea{width:100%;padding:10px;border:1px solid var(--border-bright);border-radius:9px;background:#080f1b;color:#fff;font:inherit;font-size:12px;outline:none}.diplomacy-tool-panel textarea{resize:vertical;min-height:88px;line-height:1.8}.diplomacy-tool-panel select:focus,.diplomacy-tool-panel input:focus,.diplomacy-tool-panel textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 2px var(--cyan-glow)}.diplomacy-tool-panel .btn{width:100%;margin-top:3px}
+    .management-feature-card .management-photo img,.management-root-card .management-photo img,.management-building-card .management-photo img{width:100%;height:100%;max-height:128px;object-fit:contain;padding:8px;background:#0a1422}.management-feature-card .management-photo,.management-root-card .management-photo,.management-building-card .management-photo{height:116px;overflow:hidden;border-radius:10px;background:#0a1422}.diplomacy-action-card img{width:58px;height:50px;object-fit:contain}
+    .diplomacy-war-card{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px;border:1px solid rgba(239,68,68,.35);border-radius:12px;background:rgba(127,29,29,.12)}.diplomacy-war-card img{width:70px;height:58px;object-fit:contain;flex:0 0 70px}.diplomacy-war-card>div{min-width:0;flex:1}.diplomacy-war-card strong{font-size:12px;color:#fecaca}.diplomacy-war-card small{display:block;color:var(--text-muted);font-size:10px;line-height:1.7}
+    @media(max-width:520px){.home-announcements{padding:10px}.home-notice-row>img{width:48px;height:42px;flex-basis:48px}.diplomacy-tool-panel{padding:10px}.diplomacy-tool-head img{width:54px;height:50px}.management-feature-card .management-photo,.management-root-card .management-photo,.management-building-card .management-photo{height:90px}}
 </style>
 </head>
 <body>
@@ -3056,11 +3065,13 @@
               '<div class="diplomacy-panel-top"><button class="management-back" type="button" onclick="closeDiplomacyCountry()">بازگشت به فهرست کشورها</button><span class="diplomacy-status-pill is-active">سفارت متقابل برقرار است</span></div>'+identity+
               '<div class="diplomacy-section-caption">خدمات و توافق‌های دوجانبه</div>'+
               '<div class="diplomacy-actions-grid">'+
-              '<button class="diplomacy-action-card" onclick="transferDiplomaticMoney('+selected.uid+')"><img src="/static/diplomacy/embassy.svg" alt="" onerror="this.onerror=null;this.src=\'/static/diplomacy/embassy.svg\'"><strong>انتقال پول</strong><small>ارسال وجه میان دو کشور</small></button>'+
-              '<button class="diplomacy-action-card" onclick="createNonAggressionPact('+selected.uid+')"><img src="/static/diplomacy/pact.svg" alt=""><strong>پیمان عدم تجاوز</strong><small>پیشنهاد توافق مدت‌دار</small></button>'+
+              '<button class="diplomacy-action-card" onclick="openDiplomacyTool(\'transfer\')"><img src="/static/diplomacy/transfer.svg" alt=""><strong>انتقال پول</strong><small>ثبت مبلغ و توضیح؛ انتقال پس از تأیید کشور مقصد</small></button>'+
+              '<button class="diplomacy-action-card" onclick="openDiplomacyTool(\'pact\')"><img src="/static/diplomacy/pact.svg" alt=""><strong>پیمان عدم تجاوز</strong><small>تنظیم متن و مدت پیمان و ارسال برای تأیید</small></button>'+
               '<article class="diplomacy-action-card is-disabled"><img src="/static/diplomacy/trade.svg" alt=""><strong>تجارت</strong><small>نیازمند بندر یا فرودگاه در هر دو کشور؛ جزئیات بعداً تکمیل می‌شود</small><span>به‌زودی</span></article>'+
               '<article class="diplomacy-action-card is-disabled"><img src="/static/diplomacy/support.svg" alt=""><strong>درخواست پشتیبانی</strong><small>سامانه درخواست و زمان‌بندی هنوز در دست توسعه است</small><span>به‌زودی</span></article>'+
               '</div>'+
+              '              <div id="diplomacy-tool-panel" class="diplomacy-tool-panel" style="display:none"></div>
+              '+
               (noWar?'<div class="diplomacy-notice">پیمان عدم تجاوز تا '+new Date(rel.pact_until*1000).toLocaleDateString('fa-IR')+' برقرار است؛ گزینه جنگ نمایش داده نمی‌شود.</div>':'<div class="diplomacy-war-row"><span><strong>وضعیت جنگ</strong><small>فعال‌سازی این بخش فقط با دستور ادمین انجام می‌شود.</small></span><button class="btn" '+(d.war_open?'':'disabled')+' onclick="showToast(\'جزئیات این بخش در به‌روزرسانی بعدی اضافه می‌شود.\')">جنگ '+(d.war_open?'(دستور ادمین صادر شده)':'(بسته توسط ادمین)')+'</button></div>')+
               '</section>';
           }else{
@@ -3089,7 +3100,7 @@
         if(data.s){S.p=data.s.p||S.p;S.active_countries=data.s.active_countries||S.active_countries;S.economy_buildings=data.s.economy_buildings||S.economy_buildings;S.diplomacy=data.s.diplomacy||S.diplomacy;}
         if(!res.ok||!data.ok){showToast(data.err||'عملیات انجام نشد.');return false;}
         showToast('عملیات با موفقیت ثبت شد.');
-        if(liveTab==='manage')showManagementView();
+        if(liveTab==='manage')showManagementView();else showWaitingRoom();
         return true;
       } catch(e) {showToast('ارتباط با سرور برقرار نشد.');return false;}
     }
@@ -3100,6 +3111,29 @@
     async function requestEmbassy(country){await gameAction('embassy_request',{country});}
     async function respondEmbassy(from,decision){await gameAction('embassy_respond',{from,decision});}
     async function respondPact(from,decision){await gameAction('diplomacy_pact_respond',{from,decision});}
+    async function respondMoneyTransfer(from,decision){await gameAction('diplomacy_money_respond',{from,decision});}
+    async function submitMoneyTransfer(target_uid){
+      const amount=Number(document.getElementById('diplomacy-money-amount')?.value||0);
+      const note=(document.getElementById('diplomacy-money-note')?.value||'').trim();
+      if(!Number.isInteger(amount)||amount<1000||amount>100000){showToast('مبلغ باید بین ۱٬۰۰۰ تا ۱۰۰٬۰۰۰ دلار باشد.');return;}
+      if(note.length<5){showToast('توضیح درخواست حداقل ۵ نویسه باشد.');return;}
+      await gameAction('diplomacy_transfer',{target_uid,amount,note});
+    }
+    async function submitPactProposal(target_uid){
+      const years=Number(document.getElementById('diplomacy-pact-years')?.value||0);
+      const note=(document.getElementById('diplomacy-pact-note')?.value||'').trim();
+      if(![1,2,3,5].includes(years)){showToast('مدت پیمان را انتخاب کنید.');return;}
+      if(note.length<5){showToast('متن پیشنهاد حداقل ۵ نویسه باشد.');return;}
+      await gameAction('diplomacy_pact',{target_uid,years,note});
+    }
+    function openDiplomacyTool(kind){
+      const box=document.getElementById('diplomacy-tool-panel');if(!box)return;
+      box.style.display='block';
+      if(kind==='pact')box.innerHTML='<div class="diplomacy-tool-head"><img src="/static/diplomacy/pact.svg" alt=""><div><strong>پیشنهاد پیمان عدم تجاوز</strong><small>پیشنهاد پس از ارسال در اعلانات کشور مقابل قرار می‌گیرد.</small></div></div><label>مدت پیمان</label><select id="diplomacy-pact-years"><option value="1">۱ سال</option><option value="2">۲ سال</option><option value="3">۳ سال</option><option value="5">۵ سال</option></select><label>متن و شرایط پیشنهادی</label><textarea id="diplomacy-pact-note" rows="4" maxlength="500" placeholder="هدف از این پیمان و شرایط مورد توافق را بنویسید..."></textarea><button class="btn btn-gold" onclick="submitPactProposal('+Number((S.active_countries||[]).find(x=>x.code===diplomacyTarget)?.uid||0)+')">ارسال پیشنهاد پیمان</button><button class="btn" onclick="closeDiplomacyTool()">بستن</button>';
+      else box.innerHTML='<div class="diplomacy-tool-head"><img src="/static/diplomacy/transfer.svg" alt=""><div><strong>درخواست انتقال وجه</strong><small>کشور مقصد پس از بررسی درخواست می‌تواند آن را تأیید یا رد کند.</small></div></div><label>مبلغ (دلار)</label><input id="diplomacy-money-amount" type="number" min="1000" max="100000" step="1000" placeholder="مثلاً ۱۰۰۰۰"><label>توضیح انتقال</label><textarea id="diplomacy-money-note" rows="4" maxlength="300" placeholder="دلیل و توضیح انتقال وجه را بنویسید..."></textarea><button class="btn btn-gold" onclick="submitMoneyTransfer('+Number((S.active_countries||[]).find(x=>x.code===diplomacyTarget)?.uid||0)+')">ارسال درخواست انتقال</button><button class="btn" onclick="closeDiplomacyTool()">بستن</button>';
+      box.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+    function closeDiplomacyTool(){const box=document.getElementById('diplomacy-tool-panel');if(box){box.style.display='none';box.innerHTML='';}}
     function openDiplomacyCountry(code){diplomacyTarget=code;setManagementSection('diplomacy');}
     function closeDiplomacyCountry(){diplomacyTarget=null;setManagementSection('diplomacy');}
     function filterDiplomacyCountries(value){
@@ -3108,8 +3142,7 @@
       document.querySelectorAll('.diplomacy-country-option').forEach(el=>{const show=!q||String(el.dataset.countrySearch||'').includes(q);el.style.display=show?'flex':'none';if(show)visible++;});
       const empty=document.getElementById('diplomacy-search-empty');if(empty)empty.style.display=visible?'none':'flex';
     }
-    async function transferDiplomaticMoney(target_uid){const raw=prompt('مبلغ انتقال به دلار (۱٬۰۰۰ تا ۱۰۰٬۰۰۰):');if(raw===null)return;await gameAction('diplomacy_transfer',{target_uid,amount:Number(raw)});}
-    async function createNonAggressionPact(target_uid){const raw=prompt('مدت پیمان به سال (۱، ۲، ۳ یا ۵):','1');if(raw===null)return;await gameAction('diplomacy_pact',{target_uid,years:Number(raw)});}
+
     async function submitStatement(){
       const text=(document.getElementById('statement-text')?.value||'').trim();
       const file=document.getElementById('statement-image')?.files?.[0]||null;
@@ -3205,6 +3238,18 @@
       return {power:Math.round((30+seed%38)*factionBoost),money:Math.round((16000+(seed%15)*1800)*tier),income:Math.round((900+(seed%11)*170)*tier),infantry:Math.round((45000+(seed%16)*18000)*tier),satisfaction:55+seed%31,oil:Math.round((500+(seed%13)*900)*tier),food:Math.round((8000+(seed%17)*2100)*tier)};
     }
 
+    function renderHomeAnnouncements(){
+      const d=S.diplomacy||{},incoming=d.incoming||[],pacts=d.pacts_incoming||[],money=d.money_incoming||[];
+      const total=incoming.length+pacts.length+money.length;
+      const countryName=code=>COUNTRIES[code]?.name_fa||code||'کشور ناشناس';
+      const rows=[
+        ...incoming.map(v=>'<article class="home-notice-row"><img src="/static/diplomacy/embassy.svg" alt=""><div><strong>درخواست تأسیس سفارت</strong><small>'+countryName(v.from_country)+' برای برقراری سفارت درخواست فرستاده است.</small><div class="home-notice-actions"><button class="btn btn-gold" onclick="respondEmbassy('+v.from+',\'accept\')">پذیرش</button><button class="btn" onclick="respondEmbassy('+v.from+',\'decline\')">رد</button></div></div></article>'),
+        ...pacts.map(v=>'<article class="home-notice-row"><img src="/static/diplomacy/pact.svg" alt=""><div><strong>پیشنهاد پیمان عدم تجاوز</strong><small>'+countryName(v.from_country)+' · مدت '+v.years+' سال</small><p>'+escapeHtml(v.note||'بدون متن توضیحی')+'</p><div class="home-notice-actions"><button class="btn btn-gold" onclick="respondPact('+v.from+',\'accept\')">پذیرش</button><button class="btn" onclick="respondPact('+v.from+',\'decline\')">رد</button></div></div></article>'),
+        ...money.map(v=>'<article class="home-notice-row"><img src="/static/diplomacy/transfer.svg" alt=""><div><strong>درخواست انتقال وجه</strong><small>'+countryName(v.from_country)+' · '+new Intl.NumberFormat('fa-IR').format(v.amount)+' دلار</small><p>'+escapeHtml(v.note||'بدون توضیح')+'</p><div class="home-notice-actions"><button class="btn btn-gold" onclick="respondMoneyTransfer('+v.from+',\'accept\')">تأیید انتقال</button><button class="btn" onclick="respondMoneyTransfer('+v.from+',\'decline\')">رد</button></div></div></article>')
+      ].join('');
+      return '<section class="home-announcements"><div class="home-announcements-head"><span><small>مرکز پیام‌های کشور</small><strong>اعلانات</strong></span><b>'+new Intl.NumberFormat('fa-IR').format(total)+' مورد جدید</b></div>'+(total?rows:'<div class="home-announcements-empty">اعلان تازه‌ای ندارید. درخواست‌های دیپلماتیک و پاسخ کشورها در این بخش نمایش داده می‌شوند.</div>')+'</section>';
+    }
+    function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
     function showWaitingRoom() {
       document.getElementById('section-waiting-room').style.display = 'block';
       const dossier = document.getElementById('player-command-dossier');
@@ -3272,6 +3317,7 @@
               <div class="economy-stat"><span class="economy-stat-label"><img src="static/ui/food.svg" alt=""> ذخیره غذا</span><strong>${fmt(resources.food)} واحد</strong></div>
             </div>
           </section>
+          ${renderHomeAnnouncements()}
           <div style="margin-top: 14px; background: rgba(30, 41, 59, 0.5); padding: 10px; border-radius: 8px; font-size: 12px; color: var(--text-muted);">
             <b>وضعیت آمادگی:</b> تمامی لشکرهای پیاده و زرهی سازماندهی شده‌اند. با دستور ستاد کل در لحظه آغاز سیزن، نبرد در سراسر جبهه‌ها آغاز خواهد شد.
           </div>
