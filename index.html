@@ -1010,6 +1010,16 @@
     .revolution-option-details>div{display:flex;justify-content:space-between;gap:8px;font-size:10px}
     .revolution-option-details small{color:var(--text-muted)}
     .revolution-option-details strong{color:#e2e8f0;text-align:left}
+    .revolution-description{font-size:11px;line-height:2.05;color:#c7d5e7;margin:11px 0 13px;text-align:justify;text-wrap:pretty}
+    .revolution-option-details{padding:10px 11px;border:1px solid rgba(148,163,184,.16);border-radius:10px;background:rgba(4,12,24,.38)}
+    .revolution-option-details>div{align-items:flex-start;padding:2px 0}
+    .revolution-option-details small{flex:0 0 37%;line-height:1.8}
+    .revolution-option-details strong{flex:1;line-height:1.8}
+    .revolution-title-line{display:flex;align-items:center;gap:9px;min-width:0}
+    .revolution-title-line>img{width:31px;height:31px;object-fit:contain;flex-shrink:0}
+    .revolution-option-heading>span{min-width:0}
+    @media(max-width:600px){.revolution-options-grid{grid-template-columns:minmax(0,1fr);gap:12px}.revolution-option-card{padding:13px}.revolution-flag-comparison img{height:88px}.revolution-description{font-size:12px}.revolution-option-details small{flex-basis:35%}}
+
     .revolution-start{width:100%;margin-top:5px}
     .management-root-grid,.management-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:13px}
     .management-root-card,.management-feature-card{position:relative;display:flex;flex-direction:column;overflow:hidden;text-align:right;padding:0;border:1px solid var(--border-bright);border-radius:15px;background:linear-gradient(150deg,#14243b,#091321);color:inherit;cursor:pointer;min-width:0}
@@ -3262,15 +3272,15 @@
         const paths={monarchy:['communism','fascism','democracy'],fascism:['communism','democracy'],communism:['fascism','democracy'],democracy:['communism','fascism']};
         const labels={communism:'بین‌الملل‌گرایی',fascism:'ملی‌گرایی',democracy:'دموکراسی'};
         const party={communism:'حزب کمونیست',fascism:'حزب ملی‌گرا و فاشیست',democracy:'حزب دموکراتیک'};
-        const leader={communism:'رئیس شورای خلق',fascism:'رهبر شورای ملی',democracy:'رئیس‌جمهور جدید'};
+        const leader={communism:'رئیس شورای اجرایی',fascism:'رئیس دولت جدید',democracy:'رئیس دولت منتخب'};
         const targets=paths[current]||paths.democracy;
         const built=Object.values(buildings).reduce((sum,v)=>sum+Math.max(0,Number(v)||0),0);
         const req=[['قدرت سیاسی',Number(r.power)||0,75,'واحد'],['خزانه',Number(r.money)||0,80000,'دلار'],['رضایت عمومی',Number(r.satisfaction)||0,65,'٪'],['ذخیره غذا',Number(r.food)||0,12000,'واحد'],['ذخیره نفت',Number(r.oil)||0,2500,'بشکه'],['ساختمان‌های اقتصادی',built,2,'ساختمان']];
-        const requirements='<div class="revolution-requirements"><div class="revolution-requirements-head"><strong>شرایط لازم برای انقلاب</strong><small>تمام شرایط باید هم‌زمان برقرار باشند</small></div><div class="revolution-requirements-grid">'+req.map(([name,value,need,unit])=>'<div class="revolution-requirement '+(value>=need?'is-met':'is-missing')+'"><span><i>'+(value>=need?'✓':'×')+'</i>'+name+'</span><strong>'+num(value)+' / '+num(need)+' '+unit+'</strong></div>').join('')+'</div><p>هزینه قطعی پس از تأیید: ۳۵ قدرت سیاسی، ۵۰٬۰۰۰ دلار، ۵٬۰۰۰ واحد غذا، ۱٬۰۰۰ بشکه نفت و ۸٪ رضایت عمومی.</p></div>';
+        const requirements='<div class="revolution-requirements"><div class="revolution-requirements-head"><strong>پیش‌نیازهای تغییر حکومت</strong><small>برای فعال شدن گزینه، همهٔ موارد باید تأمین شوند</small></div><div class="revolution-requirements-grid">'+req.map(([name,value,need,unit])=>'<div class="revolution-requirement '+(value>=need?'is-met':'is-missing')+'"><span><i>'+(value>=need?'✓':'×')+'</i>'+name+'</span><strong>'+num(value)+' / '+num(need)+' '+unit+'</strong></div>').join('')+'</div><p>پس از تأیید نهایی، ۳۵ واحد قدرت سیاسی، ۵۰٬۰۰۰ دلار، ۵٬۰۰۰ واحد غذا، ۱٬۰۰۰ بشکه نفت و ۸ واحد از رضایت عمومی کسر می‌شود.</p></div>';
         const movement={
-          communism:{party:'حزب کمونیست',description:'ائتلاف نیروهای چپ قدرت را می‌گیرد؛ سیاست اقتصادی به سوی مالکیت عمومی، برنامه‌ریزی دولتی و حمایت از تشکل‌های کارگری می‌رود.',fallback:'برای این مسیر هنوز طرح پرچم جداگانه‌ای ثبت نشده است.'},
-          fascism:{party:'حزب ملی‌گرا و اقتدارگرا',description:'جنبش ملی‌گرای اقتدارگرا قدرت را متمرکز می‌کند؛ نهادهای سیاسی و اداره کشور زیر نظر دولت و حزب تازه سازمان‌دهی می‌شوند.',fallback:'برای این مسیر هنوز طرح پرچم جداگانه‌ای ثبت نشده است.'},
-          democracy:{party:'ائتلاف دموکراتیک',description:'ائتلاف نیروهای دموکراتیک قدرت را می‌گیرد؛ انتخابات رقابتی، پارلمان، قانون اساسی و پاسخ‌گویی دولت تقویت می‌شوند.',fallback:'برای این مسیر هنوز طرح پرچم جداگانه‌ای ثبت نشده است.'}
+          communism:{party:'ائتلاف چپ و حزب کمونیست',leadership:'شورای اجرایی خلق',description:'در این مسیر، نیروهای چپ و تشکل‌های کارگری قدرت سیاسی را به دست می‌گیرند. ساختار تازه بر نقش گسترده‌تر دولت در اقتصاد، مالکیت عمومیِ بخش‌های کلیدی و برنامه‌ریزی متمرکز تکیه می‌کند؛ شکل نهایی آن به شرایط و نهادهای همان کشور وابسته است.',fallback:'برای این مسیر، پرچم تاریخیِ مستند و مستقلی در آرشیو بازی ثبت نشده است.'},
+          fascism:{party:'جنبش ملی‌گرای اقتدارگرا',leadership:'دولت متمرکز و رهبری حزبی',description:'این مسیر به استقرار حکومتی ملی‌گرای اقتدارگرا می‌انجامد؛ اختیارات اجرایی در مرکز متمرکز می‌شود و رقابت سیاسی و فعالیت مخالفان محدودتر خواهد شد. جزئیات سازمان حکومتی بر پایهٔ ساختار و زمینهٔ تاریخی هر کشور تعریف می‌شود.',fallback:'برای این مسیر، پرچم تاریخیِ مستند و مستقلی در آرشیو بازی ثبت نشده است.'},
+          democracy:{party:'ائتلاف احزاب و نیروهای دموکراتیک',leadership:'دولت منتخب و پارلمان',description:'در این مسیر، ائتلافی از نیروهای دموکراتیک برای تشکیل نظم سیاسی تازه به قدرت می‌رسد. برگزاری انتخابات رقابتی، احیای نهادهای نمایندگی، تضمین حقوق سیاسی و پاسخ‌گو کردن دولت، محورهای اصلی این گذار هستند.',fallback:'برای این مسیر، پرچم تاریخیِ مستند و مستقلی در آرشیو بازی ثبت نشده است.'}
         };
         const options=targets.map(target=>{
           const targetTag=getRegimeCategory({government_type:target});
@@ -3280,13 +3290,13 @@
           const fallbackFlag=country.base_flag_url||FALLBACK_FLAG;
           const ready=req.every(([,value,need])=>value>=need);
           const leaderName=leader[target]+' '+(country.name_fa||r.c);
-          return '<article class="revolution-option-card revolution-'+target+'"><div class="revolution-option-heading"><span class="revolution-title-line"><img src="'+escapeHtml(targetTag.badge_url)+'" alt="" loading="lazy"><span><small>مسیر تغییر نظام</small><strong>'+labels[target]+'</strong></span></span><b>'+targetTag.label+'</b></div><p class="revolution-description">'+info.description+'</p><div class="revolution-flag-comparison"><div><img src="'+escapeHtml(country.base_flag_url||country.flag_url||FALLBACK_FLAG)+'" alt="پرچم فعلی کشور" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><small>پرچم فعلی کشور</small></div><span class="revolution-flag-arrow">←</span><div><img src="'+escapeHtml(flag)+'" alt="پرچم مسیر انتخابی" loading="lazy" onerror="this.onerror=null;this.src=\''+escapeHtml(fallbackFlag)+'\'"><small>پرچم مسیر انتخابی</small></div></div><div class="revolution-option-details"><div><small>حزب حاکم جدید</small><strong>'+info.party+'</strong></div><div><small>حاکم جدید</small><strong>'+leaderName+'</strong></div></div><button class="btn btn-gold revolution-start" '+(!ready||country.revolution_used?'disabled':'')+' onclick="startRevolution(\''+target+'\')">'+(country.revolution_used?'انقلاب قبلاً انجام شده':ready?'آغاز انقلاب':'شرایط کافی نیست')+'</button></article>';
+          return '<article class="revolution-option-card revolution-'+target+'"><div class="revolution-option-heading"><span class="revolution-title-line"><img src="'+escapeHtml(targetTag.badge_url)+'" alt="" loading="lazy"><span><small>گزینهٔ تحول سیاسی</small><strong>'+labels[target]+'</strong></span></span><b>'+targetTag.label+'</b></div><p class="revolution-description">'+info.description+'</p><div class="revolution-flag-comparison"><div><img src="'+escapeHtml(country.base_flag_url||country.flag_url||FALLBACK_FLAG)+'" alt="پرچم فعلی کشور" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><small>وضعیت کنونی</small></div><span class="revolution-flag-arrow">←</span><div><img src="'+escapeHtml(flag)+'" alt="پرچم مسیر انتخابی" loading="lazy" onerror="this.onerror=null;this.src=\''+escapeHtml(fallbackFlag)+'\'"><small>نماد این جریان</small></div></div><div class="revolution-option-details"><div><small>جریان سیاسی پیشنهادی</small><strong>'+info.party+'</strong></div><div><small>ساختار رهبری</small><strong>'+info.leadership+'</strong></div><div><small>عنوان رهبر جدید</small><strong>'+leaderName+'</strong></div></div><button class="btn btn-gold revolution-start" '+(!ready||country.revolution_used?'disabled':'')+' onclick="startRevolution(\''+target+'\')">'+(country.revolution_used?'این کشور پیش‌تر انقلاب کرده':ready?'بررسی و آغاز انقلاب':'پیش‌نیازها تکمیل نشده')+'</button></article>';
         }).join('');
         const currentTag=getRegimeCategory(country);
         const usedNotice=country.revolution_used?'<div class="revolution-used-notice"><strong>انقلاب این کشور قبلاً انجام شده است.</strong><span>طبق قوانین بازی، هر کشور فقط یک‌بار می‌تواند نظام حاکم خود را تغییر دهد.</span></div>':'';
         body=back+sectionTitle('تحول سیاسی','انقلاب و تغییر نظام حاکم')+
           '<div class="revolution-current-state"><img src="'+escapeHtml(country.revolution_used?(country.flag_url||country.base_flag_url||FALLBACK_FLAG):(country.base_flag_url||country.flag_url||FALLBACK_FLAG))+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><div><small>وضعیت سیاسی فعلی · '+escapeHtml(country.name_fa||r.c)+'</small><strong>'+escapeHtml(currentTag.label)+'</strong><span>حزب حاکم: '+escapeHtml(country.ruling_party_fa||'بر اساس ساختار سیاسی فعلی')+'</span><span>رهبر فعلی: '+escapeHtml(country.leader_fa||country.leader||'ثبت نشده')+'</span></div></div>'+
-          '<div class="revolution-rules-note"><strong>قانون انقلاب:</strong> فقط در سیزن فعال و با تکمیل همهٔ پیش‌نیازها قابل اجراست. پس از پیروزی، حکومت، حزب حاکم و رهبر تغییر می‌کنند؛ جناح دیپلماتیک ثابت می‌ماند. هر کشور فقط یک‌بار امکان انقلاب دارد.</div>'+
+          '<div class="revolution-rules-note"><strong>قانون انقلاب:</strong> این تصمیم فقط در مرحلهٔ فعال سیزن و پس از تکمیل هم‌زمان همهٔ پیش‌نیازها در دسترس است. با اجرای موفق، ساختار حکومت، جریان سیاسی حاکم و رهبری کشور تغییر می‌کند؛ عضویت در جناح دیپلماتیک ثابت می‌ماند. هر کشور در هر سیزن فقط یک‌بار می‌تواند از این سازوکار استفاده کند.</div>'+
           usedNotice+requirements+'<div class="revolution-options-grid">'+options+'</div>';
         heading='انقلاب و تغییر نظام حاکم';
       }
