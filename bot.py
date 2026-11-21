@@ -111,7 +111,7 @@ REVOLUTION_RULES = {
         "government_type": "fascism", "ideology": "fascism",
         "regime_type": "nationalist_fascist_state",
         "regime_fa": "حکومت ملی‌گرای فاشیستی",
-        "party_fa": "حزب ملی‌گرا",
+        "party_fa": "حزب ملی‌گرا و فاشیست",
         "leader_prefix": "رهبر شورای ملی",
         "leader_title": "رهبر حزب ملی‌گرا"
     },
@@ -191,7 +191,8 @@ def perform_revolution(uid, player, body):
     player["satisfaction"] = max(0, safe_float(player.get("satisfaction")) - 8)
 
     new_leader = f"{rule['leader_prefix']} {country_name}"
-    new_leader_en = f"{rule['leader_prefix']} of {country_name_en}"
+    english_leaders = {"communism": "Chair of the People's Council", "fascism": "Leader of the National Council", "democracy": "President"}
+    new_leader_en = f"{english_leaders[target]} of {country_name_en}"
     politics = {
         "government_type": rule["government_type"],
         "ideology": rule["ideology"],
