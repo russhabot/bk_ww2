@@ -28,7 +28,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121wikimedia-catalog-fix-2" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-layout-flags-3" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -298,9 +298,12 @@ REVOLUTION_FLAG_META = {
 for _code, _country in COUNTRIES.items():
     _country.setdefault("base_flag_url", _country.get("flag_url") or "")
     if _code == "DE":
-        # The German scenario's original local artwork contains a prohibited-era
-        # emblem; revolution variants use the neutral national tricolour instead.
-        _country["base_flag_url"] = "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Germany.svg"
+        # The scenario begins in January 1934: use Germany's historically correct
+        # national flag for 1933–1935, not the modern Federal Republic flag.
+        _historical_de_flag = "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Germany_(1933%E2%80%931935).svg"
+        _country["base_flag_url"] = _historical_de_flag
+        if not _country.get("revolution_used"):
+            _country["flag_url"] = _historical_de_flag
 
 for _code, _politics in load_country_politics().items():
     if _code not in COUNTRIES or not isinstance(_politics, dict):
