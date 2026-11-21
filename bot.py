@@ -281,6 +281,7 @@ REVOLUTION_FLAG_META = {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Russian_Fascist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Russian_Fascist_Party.svg", "label": "پرچم حزب فاشیست روسیه؛ جریان ضدکمونیستِ مهاجر مستقر در هاربین (۱۹۳۱ تا ۱۹۴۳؛ نه اپوزیسیون داخلی شوروی)"}
     },
     "IR": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Persian_Azadistan.gif", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Persian_Azadistan.gif", "label": "پرچم حکومت کوتاه‌عمر آزادستان (۱۹۲۰؛ جنبش خودگردانی و مشروطه‌خواهانه در آذربایجان ایران)"},
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Persian_Socialist_Soviet_Republic.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Persian_Socialist_Soviet_Republic.svg", "label": "پرچم جمهوری شورایی سوسیالیستی ایران (۱۹۲۰ تا ۱۹۲۱؛ جنبش تاریخی پیش از سناریوی ۱۹۳۴)"}
     },
     "EE": {
@@ -289,9 +290,6 @@ REVOLUTION_FLAG_META = {
     "NI": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Liberal_Nacionalista_de_Nicaragua_%281912-1979%29.png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Liberal_Nacionalista_de_Nicaragua_(1912-1979).png", "label": "پرچم حزب لیبرال ملی نیکاراگوئه (۱۹۱۲ تا ۱۹۷۹؛ حزب سیاسی دورهٔ موردنظر)"}
     },
-    "PA": {
-        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Panama.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Panama.svg", "label": "پرچم ملی پاناما؛ رنگ آبی و قرمز آن به‌ترتیب نماد حزب محافظه‌کار و حزب لیبرال‌اند؛ نماد مشترک نظام حزبی"}
-    }
 }
 # Preserve the scenario's original national flag, then overlay any persistent
 # country-level political changes saved by previous deployments.
@@ -316,7 +314,7 @@ for _code, _politics in load_country_politics().items():
     if COUNTRIES[_code].get("revolution_used"):
         _government = str(COUNTRIES[_code].get("government_type", "democracy"))
         _flag_meta = REVOLUTION_FLAG_META.get(_code, {}).get(_government)
-        COUNTRIES[_code]["flag_url"] = (_flag_meta or {}).get("url") or COUNTRIES[_code].get("base_flag_url") or ""
+        COUNTRIES[_code]["flag_url"] = (_flag_meta or {}).get("url") or ""
 
 REVOLUTION_RULES = {
     "fascism": {
@@ -430,7 +428,7 @@ def perform_revolution(uid, player, body):
     save_country_politics(code, politics)
     country.update(politics)
     _flag_meta = REVOLUTION_FLAG_META.get(code, {}).get(target)
-    country["flag_url"] = (_flag_meta or {}).get("url") or country.get("base_flag_url") or ""
+    country["flag_url"] = (_flag_meta or {}).get("url") or ""
     print(f"[revolution] country={code} from={previous} to={target} actor={uid}")
     return None
 
@@ -1066,7 +1064,7 @@ async def revolution_flag_handler(request):
     if not country or government not in REVOLUTION_RULES:
         return web.Response(status=404, text="Flag not found")
     flag_meta = REVOLUTION_FLAG_META.get(code, {}).get(government)
-    target = (flag_meta or {}).get("url") or country.get("base_flag_url") or country.get("flag_url") or ""
+    target = (flag_meta or {}).get("url") or ""
     if target.startswith("static/"):
         target = "/" + target
     if not target:
