@@ -972,6 +972,45 @@
     .management-building-card{display:flex;flex-direction:column;gap:6px;min-width:0;padding:11px;border:1px solid var(--border);border-radius:11px;background:linear-gradient(145deg,#111e33,#0b1322)}
     .management-building-card strong{color:#fff;font-size:12px}.management-building-card span,.management-building-card small{color:var(--text-muted);font-size:10px;line-height:1.6}.management-building-card .btn{font-size:11px;padding:7px}
     .management-bank-actions{margin-top:10px;display:flex;flex-direction:column;gap:8px}.management-bank-actions input{width:100%;padding:11px;border-radius:9px;border:1px solid var(--border-bright);background:#09111e;color:#fff;font:inherit}.management-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .revolution-current-state{display:flex;align-items:center;gap:13px;padding:12px;border:1px solid var(--border-bright);border-radius:13px;background:linear-gradient(120deg,#13243b,#0a1422);margin:12px 0}
+    .revolution-current-state>img{width:94px;height:62px;object-fit:cover;border:1px solid #64748b;border-radius:7px;flex-shrink:0}
+    .revolution-current-state>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+    .revolution-current-state small,.revolution-current-state span{font-size:10px;color:var(--text-muted)}
+    .revolution-current-state strong{font-size:15px;color:#fff}
+    .revolution-rules-note,.revolution-used-notice{padding:11px 13px;border:1px solid rgba(56,189,248,.25);border-radius:10px;background:rgba(15,45,70,.28);font-size:11px;line-height:1.9;color:#b9cbe0;margin:10px 0}
+    .revolution-used-notice{border-color:rgba(248,113,113,.4);background:rgba(127,29,29,.18);display:flex;flex-direction:column;gap:3px}
+    .revolution-used-notice strong{color:#fca5a5}
+    .revolution-requirements{margin:13px 0;padding:13px;border:1px solid var(--border);border-radius:13px;background:#0b1525}
+    .revolution-requirements-head{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px}
+    .revolution-requirements-head strong{font-size:13px;color:#fff}
+    .revolution-requirements-head small{font-size:10px;color:var(--text-muted)}
+    .revolution-requirements-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .revolution-requirement{display:flex;flex-direction:column;gap:5px;padding:8px;border:1px solid var(--border);border-radius:8px;min-width:0}
+    .revolution-requirement span{font-size:10px;color:#cbd5e1;display:flex;gap:6px;align-items:center}
+    .revolution-requirement i{font-style:normal;font-weight:900}
+    .revolution-requirement strong{font-size:10px;color:#fff;overflow-wrap:anywhere}
+    .revolution-requirement.is-met{border-color:rgba(34,197,94,.42);background:rgba(20,83,45,.15)}
+    .revolution-requirement.is-met i{color:#4ade80}
+    .revolution-requirement.is-missing{border-color:rgba(248,113,113,.3);background:rgba(127,29,29,.12)}
+    .revolution-requirement.is-missing i{color:#f87171}
+    .revolution-requirements>p{font-size:10px;line-height:1.8;color:var(--text-muted);margin:10px 0 0}
+    .revolution-options-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:13px}
+    .revolution-option-card{min-width:0;padding:12px;border:1px solid var(--border-bright);border-radius:13px;background:linear-gradient(145deg,#132238,#0a1320)}
+    .revolution-option-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .revolution-option-heading>span{display:flex;flex-direction:column;gap:2px}
+    .revolution-option-heading small{font-size:10px;color:var(--text-muted)}
+    .revolution-option-heading strong{font-size:14px;color:#fff}
+    .revolution-option-heading>b{font-size:10px;padding:4px 7px;border:1px solid var(--border);border-radius:7px;color:#dbeafe;white-space:nowrap}
+    .revolution-flag-comparison{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
+    .revolution-flag-comparison>div{display:flex;flex:1;flex-direction:column;gap:5px;min-width:0;text-align:center}
+    .revolution-flag-comparison img{width:100%;height:76px;object-fit:cover;border:1px solid rgba(255,255,255,.22);border-radius:7px;background:#101827}
+    .revolution-flag-comparison small{font-size:9px;color:var(--text-muted)}
+    .revolution-flag-arrow{font-size:19px;color:var(--gold);flex-shrink:0}
+    .revolution-option-details{display:grid;gap:6px;margin:9px 0}
+    .revolution-option-details>div{display:flex;justify-content:space-between;gap:8px;font-size:10px}
+    .revolution-option-details small{color:var(--text-muted)}
+    .revolution-option-details strong{color:#e2e8f0;text-align:left}
+    .revolution-start{width:100%;margin-top:5px}
     .management-root-grid,.management-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:13px}
     .management-root-card,.management-feature-card{position:relative;display:flex;flex-direction:column;overflow:hidden;text-align:right;padding:0;border:1px solid var(--border-bright);border-radius:15px;background:linear-gradient(150deg,#14243b,#091321);color:inherit;cursor:pointer;min-width:0}
     .management-root-card .management-photo{height:142px}.management-feature-card .management-photo{height:105px}
@@ -3071,6 +3110,12 @@
 
 
     function setManagementSection(section) { managementSection = section || 'overview'; showManagementView(); }
+    function startRevolution(target){
+      if(!['communism','fascism','democracy'].includes(target))return;
+      if(!confirm('این تصمیم برگشت‌ناپذیر است و هر کشور فقط یک‌بار می‌تواند انقلاب کند. آیا از آغاز انقلاب مطمئن هستید؟'))return;
+      gameAction('revolution',{target});
+    }
+
     function showManagementView() {
       const dossier=document.getElementById('player-command-dossier'), title=document.getElementById('season-screen-title'), message=document.getElementById('season-screen-message');
       if(!dossier||!S||!S.p||!S.p.c)return;
@@ -3094,8 +3139,9 @@
         menuCard('welfare','رفاهیات','خدمات شهری و رضایت عمومی',catalog.park?.image||'')+
         '</div>';
       const root='<div class="management-root-grid">'+
-        '<button class="management-root-card" type="button" onclick="setManagementSection(\'economy\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/1930-67B.png?width=1280','اقتصاد و رفاهیات')+'<span><small>مدیریت منابع کشور</small><strong>اقتصاد و رفاهیات</strong><em>بانک، معادن، مالیات، کشاورزی و خدمات عمومی</em></span><b>‹</b></button>'+
-        '<button class="management-root-card" type="button" onclick="setManagementSection(\'diplomacy\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/League_of_Nations_Session_Manchurian_Crisis_1932.jpeg?width=1280','دیپلماسی')+'<span><small>ارتباط با جهان</small><strong>دیپلماسی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\\'economy\\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/1930-67B.png?width=1280','اقتصاد و رفاهیات')+'<span><small>مدیریت منابع کشور</small><strong>اقتصاد و رفاهیات</strong><em>بانک، معادن، مالیات، کشاورزی و خدمات عمومی</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\\'diplomacy\\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/League_of_Nations_Session_Manchurian_Crisis_1932.jpeg?width=1280','دیپلماسی')+'<span><small>ارتباط با جهان</small><strong>دیپلماسی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\\'internal\\')">'+image('static/diplomacy/pact.svg','تصمیمات داخلی')+'<span><small>سیاست داخلی کشور</small><strong>تصمیمات داخلی</strong><em>انقلاب، تغییر نظام حاکم و اصلاحات داخلی</em></span><b>‹</b></button>'+
         '</div>';
       const makeCards=(category)=>Object.entries(catalog).filter(([key,b])=>b.category===category && !(category==='mines' && key==='mine_oil')).map(([key,b])=>{
         const owned=Number(buildings[key]||0), locked=Boolean(b.unique&&owned>0);
@@ -3135,6 +3181,39 @@
         body=economyBack+sectionTitle('خدمات عمومی','رفاهیات')+welfareSummary+'<div class="management-building-grid">'+makeCards('welfare')+'</div>';heading='رفاهیات';
       }
 
+      const internalMenu='<div class="management-feature-grid">'+
+        menuCard('revolution','انقلاب و تغییر نظام حاکم','تغییر حزب حاکم، ساختار سیاسی، رهبر و پرچم کشور','static/ui/power.svg')+
+        '</div>';
+      if(managementSection==='internal'){
+        body=back+sectionTitle('سیاست داخلی','تصمیمات داخلی')+
+          '<div class="management-empty"><strong>تصمیمات داخلی کشور</strong><span>در این بخش، تصمیم‌های مهم سیاسی و ساختاری کشور ثبت می‌شوند. در حال حاضر فقط سامانه انقلاب و تغییر نظام حاکم فعال است.</span></div>'+internalMenu;
+        heading='تصمیمات داخلی';
+      }
+      if(managementSection==='revolution'){
+        const country=COUNTRIES[r.c]||{},current=String(country.government_type||getRegimeCategory(country).key).toLowerCase();
+        const paths={monarchy:['communism','fascism','democracy'],fascism:['communism','democracy'],communism:['fascism','democracy'],democracy:['communism','fascism']};
+        const labels={communism:'بین‌الملل‌گرایی',fascism:'ملی‌گرایی',democracy:'دموکراسی'};
+        const party={communism:'حزب کمونیست',fascism:'حزب ملی‌گرا و فاشیست',democracy:'حزب دموکراتیک'};
+        const leader={communism:'رئیس شورای خلق',fascism:'رهبر شورای ملی',democracy:'رئیس‌جمهور جدید'};
+        const targets=paths[current]||paths.democracy;
+        const built=Object.values(buildings).reduce((sum,v)=>sum+Math.max(0,Number(v)||0),0);
+        const req=[['قدرت سیاسی',Number(r.power)||0,75,'واحد'],['خزانه',Number(r.money)||0,80000,'دلار'],['رضایت عمومی',Number(r.satisfaction)||0,65,'٪'],['ذخیره غذا',Number(r.food)||0,12000,'واحد'],['ذخیره نفت',Number(r.oil)||0,2500,'بشکه'],['ساختمان‌های اقتصادی',built,2,'ساختمان']];
+        const requirements='<div class="revolution-requirements"><div class="revolution-requirements-head"><strong>شرایط لازم برای انقلاب</strong><small>تمام شرایط باید هم‌زمان برقرار باشند</small></div><div class="revolution-requirements-grid">'+req.map(([name,value,need,unit])=>'<div class="revolution-requirement '+(value>=need?'is-met':'is-missing')+'"><span><i>'+(value>=need?'✓':'×')+'</i>'+name+'</span><strong>'+num(value)+' / '+num(need)+' '+unit+'</strong></div>').join('')+'</div><p>هزینه قطعی پس از تأیید: ۳۵ قدرت سیاسی، ۵۰٬۰۰۰ دلار، ۵٬۰۰۰ واحد غذا، ۱٬۰۰۰ بشکه نفت و ۸٪ رضایت عمومی.</p></div>';
+        const options=targets.map(target=>{
+          const targetLabel=getRegimeCategory({government_type:target}).label;
+          const flag='/flag/'+encodeURIComponent(r.c)+'/'+target+'.svg';
+          const ready=req.every(([,value,need])=>value>=need);
+          const leaderName=leader[target]+' '+(country.name_fa||r.c);
+          return '<article class="revolution-option-card revolution-'+target+'"><div class="revolution-option-heading"><span><small>مسیر تغییر نظام</small><strong>'+labels[target]+'</strong></span><b>'+targetLabel+'</b></div><div class="revolution-flag-comparison"><div><img src="'+escapeHtml(country.flag_url||FALLBACK_FLAG)+'" alt="پرچم فعلی '+escapeHtml(country.name_fa||r.c)+'" onerror="this.onerror=null;this.src=\\''+FALLBACK_FLAG+'\\'"><small>پرچم فعلی</small></div><span class="revolution-flag-arrow">←</span><div><img src="'+flag+'" alt="پرچم پیشنهادی '+escapeHtml(country.name_fa||r.c)+' پس از انقلاب '+labels[target]+'" onerror="this.onerror=null;this.src=\\''+FALLBACK_FLAG+'\\'"><small>پرچم پس از انقلاب</small></div></div><div class="revolution-option-details"><div><small>حزب حاکم جدید</small><strong>'+party[target]+'</strong></div><div><small>حاکم جدید</small><strong>'+leaderName+'</strong></div></div><button class="btn btn-gold revolution-start" '+(!ready||country.revolution_used?'disabled':'')+' onclick="startRevolution(\\''+target+'\\')">'+(country.revolution_used?'انقلاب قبلاً انجام شده':ready?'آغاز انقلاب':'شرایط کافی نیست')+'</button></article>';
+        }).join('');
+        const currentTag=getRegimeCategory(country);
+        const usedNotice=country.revolution_used?'<div class="revolution-used-notice"><strong>انقلاب این کشور قبلاً انجام شده است.</strong><span>طبق قوانین بازی، هر کشور فقط یک‌بار می‌تواند نظام حاکم خود را تغییر دهد.</span></div>':'';
+        body=back+sectionTitle('تحول سیاسی','انقلاب و تغییر نظام حاکم')+
+          '<div class="revolution-current-state"><img src="'+escapeHtml(country.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.style.display=\\'none\\'"><div><small>وضعیت سیاسی فعلی · '+escapeHtml(country.name_fa||r.c)+'</small><strong>'+escapeHtml(currentTag.label)+'</strong><span>رهبر فعلی: '+escapeHtml(country.leader_fa||country.leader||'ثبت نشده')+'</span></div></div>'+
+          '<div class="revolution-rules-note">انقلاب فقط در سیزن فعال امکان‌پذیر است. پس از پیروزی، نوع حکومت، حزب حاکم، رهبر و پرچم کشور تغییر می‌کند؛ جناح دیپلماتیک فعلاً ثابت می‌ماند. هر کشور در تمام دوره بازی فقط یک‌بار می‌تواند انقلاب کند.</div>'+
+          usedNotice+requirements+'<div class="revolution-options-grid">'+options+'</div>';
+        heading='انقلاب و تغییر نظام حاکم';
+      }
       if(managementSection==='diplomacy'){
         const others=(S.active_countries||[]).filter(x=>x.code!==S.p.c);
         const d=S.diplomacy||{incoming:[],outgoing:[],relations:[],war_open:false};
@@ -3203,7 +3282,7 @@
       try {
         const res=await fetch('/api/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({init:tg?.initData||'',...(payload||{})})});
         const data=await res.json();
-        if(data.s){S.p=data.s.p||S.p;S.active_countries=data.s.active_countries||S.active_countries;S.economy_buildings=data.s.economy_buildings||S.economy_buildings;S.diplomacy=data.s.diplomacy||S.diplomacy;}
+        if(data.s){S.p=data.s.p||S.p;S.active_countries=data.s.active_countries||S.active_countries;S.economy_buildings=data.s.economy_buildings||S.economy_buildings;S.diplomacy=data.s.diplomacy||S.diplomacy;(data.s.active_countries||[]).forEach(country=>{if(country.code&&COUNTRIES[country.code])Object.assign(COUNTRIES[country.code],country);});}
         if(!res.ok||!data.ok){showToast(data.err||'عملیات انجام نشد.');return false;}
         showToast('عملیات با موفقیت ثبت شد.');
         if(liveTab==='manage')showManagementView();else showWaitingRoom();
