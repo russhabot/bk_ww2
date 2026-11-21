@@ -3281,7 +3281,7 @@
         }).join('');
         const currentTag=getRegimeCategory(country);
         const currentFlagMeta=country.revolution_flags?.[current]||null;
-        const currentFlagNote=country.revolution_used ? (currentFlagMeta ? '<span class="revolution-current-flag-note">پرچم ثبت‌شده: '+escapeHtml(currentFlagMeta.label)+'</span>' : '<span class="revolution-current-flag-note">پرچم حزبی مستند نشده؛ پرچم ملی حفظ شده است.</span>') : '';
+        const currentFlagNote=country.revolution_used ? (currentFlagMeta ? '<span class="revolution-current-flag-note">'+(currentFlagMeta.source_kind==='community-art'?'طرح هنری غیررسمی ثبت‌شده: ':'پرچم ثبت‌شده: ')+escapeHtml(currentFlagMeta.label)+'</span>' : '<span class="revolution-current-flag-note">طرح جداگانه ثبت نشده؛ پرچم ملی حفظ شده است.</span>') : '';
         const usedNotice=country.revolution_used?'<div class="revolution-used-notice"><strong>انقلاب این کشور قبلاً انجام شده است.</strong><span>طبق قوانین بازی، هر کشور فقط یک‌بار می‌تواند نظام حاکم خود را تغییر دهد.</span></div>':'';
         body=back+sectionTitle('تحول سیاسی','انقلاب و تغییر نظام حاکم')+
           '<div class="revolution-current-state"><img src="'+escapeHtml(country.flag_url||country.base_flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><div><small>وضعیت سیاسی فعلی · '+escapeHtml(country.name_fa||r.c)+'</small><strong>'+escapeHtml(currentTag.label)+'</strong><span>حزب حاکم: '+escapeHtml(country.ruling_party_fa||'بر اساس ساختار سیاسی فعلی')+'</span><span>رهبر فعلی: '+escapeHtml(country.leader_fa||country.leader||'ثبت نشده')+'</span>'+currentFlagNote+'</div></div>'+
