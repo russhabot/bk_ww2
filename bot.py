@@ -88,10 +88,12 @@ COUNTRIES = sync_country_catalog(COUNTRIES)
 REVOLUTION_FLAG_META = {
     "DE": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Germany.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Germany.svg", "label": "پرچم حزب کمونیست آلمان (KPD)"},
-        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Social_Democratic_Party_of_Germany.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Social_Democratic_Party_of_Germany.svg", "label": "پرچم حزب سوسیال‌دموکرات آلمان (SPD)"}
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Social_Democratic_Party_of_Germany.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Social_Democratic_Party_of_Germany.svg", "label": "پرچم حزب سوسیال‌دموکرات آلمان (SPD)"},
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_NSDAP_(1920%E2%80%931945).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_NSDAP_(1920%E2%80%931945).svg", "label": "پرچم حزب ناسیونال‌سوسیالیست آلمان (۱۹۲۰ تا ۱۹۴۵)"}
     },
     "IT": {
-        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_National_Fascist_Party_(PNF).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_National_Fascist_Party_(PNF).svg", "label": "پرچم حزب ملی فاشیست ایتالیا (PNF)"}
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_National_Fascist_Party_(PNF).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_National_Fascist_Party_(PNF).svg", "label": "پرچم حزب ملی فاشیست ایتالیا (PNF)"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Italian_Communist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Italian_Communist_Party.svg", "label": "پرچم حزب کمونیست ایتالیا؛ بازنمایی معاصر از نشان حزبی"}
     },
     "GB": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_British_Union_of_Fascists.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_British_Union_of_Fascists.svg", "label": "پرچم اتحادیه فاشیست‌های بریتانیا (۱۹۳۲ تا ۱۹۳۵)"}
@@ -107,7 +109,8 @@ REVOLUTION_FLAG_META = {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Prior_Flag_of_the_Kuomintang.svg", "source_url": "https://commons.wikimedia.org/wiki/Blue_Sky_White_Sun", "label": "پرچم حزب کومینتانگ؛ نشان آسمان آبی و خورشید سفید"}
     },
     "ES": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Spain_(1930s).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Spain_(1930s).svg", "label": "پرچم حزب کمونیست اسپانیا در دههٔ ۱۹۳۰"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Spain_(1930s).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Spain_(1930s).svg", "label": "پرچم حزب کمونیست اسپانیا در دههٔ ۱۹۳۰"},
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_FE_JONS.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_FE_JONS.svg", "label": "پرچم فالانژ اسپانیا؛ نسخهٔ بازسازی‌شدهٔ ویکی‌مدیا"}
     },
     "BR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Brasilian_Integralism_Flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Brasilian_Integralism_Flag.svg", "label": "پرچم جنبش انتگرالیسم برزیل (AIB)"}
@@ -116,7 +119,8 @@ REVOLUTION_FLAG_META = {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Syndicalist_Movement.png", "source_url": "https://commons.wikimedia.org/wiki/File:National_Syndicalist_Movement.png", "label": "پرچم جنبش ملی‌سندیکالیستی پرتغال"}
     },
     "RO": {
-        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Iron_Guard_(Legion_of_the_Archangel_Michael_or_Legionary_Movement).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Iron_Guard_(Legion_of_the_Archangel_Michael_or_Legionary_Movement).svg", "label": "پرچم گارد آهنین رومانی (جنبش لژیونری)"}
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Iron_Guard_(Legion_of_the_Archangel_Michael_or_Legionary_Movement).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Iron_Guard_(Legion_of_the_Archangel_Michael_or_Legionary_Movement).svg", "label": "پرچم گارد آهنین رومانی (جنبش لژیونری)"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_PCR.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_PCR.svg", "label": "بازسازی پرچم حزب کمونیست رومانی؛ نسخهٔ شناخته‌شده مربوط به دورهٔ پس از جنگ است"}
     },
     "AT": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Fatherland_Front_of_Austria.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Fatherland_Front_of_Austria.svg", "label": "پرچم جبهه میهن‌پرستان اتریش"}
@@ -128,7 +132,8 @@ REVOLUTION_FLAG_META = {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_National_Socialist_Movement_of_Chile.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_National_Socialist_Movement_of_Chile.svg", "label": "پرچم جنبش ملی‌سوسیالیست شیلی (۱۹۳۲ تا ۱۹۳۸)"}
     },
     "IE": {
-        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Irish_Blueshirts.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Irish_Blueshirts.svg", "label": "پرچم جنبش بلوز‌شرت‌های ایرلند در دههٔ ۱۹۳۰"}
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Irish_Blueshirts.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Irish_Blueshirts.svg", "label": "پرچم جنبش بلوز‌شرت‌های ایرلند در دههٔ ۱۹۳۰"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Ireland.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Ireland.svg", "label": "پرچم حزب کمونیست ایرلند"}
     },
     "NO": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Nasjonal_Samling.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Nasjonal_Samling.svg", "label": "پرچم حزب ناسیونال سام‌لینگ نروژ (۱۹۳۳ تا ۱۹۴۵)"}
@@ -138,9 +143,6 @@ REVOLUTION_FLAG_META = {
     },
     "DK": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/DNSAP-FlagV1.svg", "source_url": "https://commons.wikimedia.org/wiki/File:DNSAP-FlagV1.svg", "label": "پرچم حزب کارگران ناسیونال‌سوسیالیست دانمارک"}
-    },
-    "DE": {
-        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_NSDAP_(1920%E2%80%931945).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_NSDAP_(1920%E2%80%931945).svg", "label": "پرچم حزب ناسیونال‌سوسیالیست آلمان (۱۹۲۰ تا ۱۹۴۵)"}
     },
     "HU": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Party_of_National_Unity_Hungary.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Party_of_National_Unity_Hungary.svg", "label": "پرچم حزب وحدت ملی مجارستان؛ حزب حاکم دورهٔ گیولا گومبوش"}
@@ -161,9 +163,6 @@ REVOLUTION_FLAG_META = {
     "JP": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Old_Japanese_Communist_Flag.gif", "source_url": "https://commons.wikimedia.org/wiki/File:Old_Japanese_Communist_Flag.gif", "label": "پرچم قدیمی حزب کمونیست ژاپن؛ تاریخ دقیق این نسخه مشخص نیست"}
     },
-    "IE": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Ireland.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Ireland.svg", "label": "پرچم حزب کمونیست ایرلند"}
-    },
     "IN": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_India.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_India.jpg", "label": "پرچم حزب کمونیست هند"},
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Indian_National_Congress_(1931%E2%80%931971).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Indian_National_Congress_(1931%E2%80%931971).svg", "label": "پرچم کنگرهٔ ملی هند (از ۱۹۳۱)"}
@@ -174,9 +173,6 @@ REVOLUTION_FLAG_META = {
     "AR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Fascist_Party_of_Argentina.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Fascist_Party_of_Argentina.svg", "label": "بازسازی پرچم حزب فاشیست آرژانتین؛ تصویر بازسازی‌شده در ویکی‌مدیا"}
     },
-    "IT": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Italian_Communist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Italian_Communist_Party.svg", "label": "پرچم حزب کمونیست ایتالیا؛ بازنمایی معاصر از نشان حزبی"}
-    },
     "PL": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Oboz_Narodowo_Radykalny.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Oboz_Narodowo_Radykalny.svg", "label": "نماد پرچمی اردوگاه ملی رادیکال لهستان؛ نسخهٔ ویکی‌مدیا، نه سند پرچم رسمی ۱۹۳۴"}
     },
@@ -186,9 +182,6 @@ REVOLUTION_FLAG_META = {
     "GR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Greek_National_Socialist_party_flag.png", "source_url": "https://commons.wikimedia.org/wiki/File:Greek_National_Socialist_party_flag.png", "label": "پرچم حزب ملی‌سوسیالیست یونان (۱۹۳۲ تا ۱۹۴۳)"}
     },
-    "ES": {
-        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_FE_JONS.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_FE_JONS.svg", "label": "پرچم فالانژ اسپانیا؛ نسخهٔ بازسازی‌شدهٔ ویکی‌مدیا"}
-    },
     "IQ": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Iraqi_Communist_Party_(old).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Iraqi_Communist_Party_(old).svg", "label": "نسخهٔ قدیمی پرچم حزب کمونیست عراق؛ حزب از ۱۹۳۴"}
     },
@@ -197,9 +190,6 @@ REVOLUTION_FLAG_META = {
     },
     "AU": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/A_de_facto_flag_used_by_the_CPA.svg", "source_url": "https://commons.wikimedia.org/wiki/File:A_de_facto_flag_used_by_the_CPA.svg", "label": "یکی از پرچم‌های مورد استفادهٔ حزب کمونیست استرالیا؛ حدود دهه‌های ۱۹۴۰ و ۱۹۵۰"}
-    },
-    "RO": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_PCR.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_PCR.svg", "label": "بازسازی پرچم حزب کمونیست رومانی؛ نسخهٔ شناخته‌شده مربوط به دورهٔ پس از جنگ است"}
     },
     "SK": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Hlinka_party_(1938%E2%80%931945)_variant_1.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Hlinka_party_(1938%E2%80%931945)_variant_1.svg", "label": "پرچم حزب مردم هlinka در اسلواکی (۱۹۳۸ تا ۱۹۴۵؛ متأخر نسبت به آغاز سناریو)"}
@@ -241,21 +231,8 @@ REVOLUTION_FLAG_META = {
     },
     "PE": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "label": "پرچم حزب کمونیست پرو"}
-    },
-    "CR": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_Partido_Vanguardia_Popular_Costa_Rica.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_Partido_Vanguardia_Popular_Costa_Rica.svg", "label": "پرچم حزب پیشتاز خلق کاستاریکا؛ اصل پرچم از ۱۹۳۱"}
-    },
-    "SV": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_pcs.gif", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_pcs.gif", "label": "پرچم حزب کمونیست السالوادور"}
-    },
-    "GT": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_pgt.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_pgt.jpg", "label": "پرچم حزب کارگران گواتمالا؛ مربوط به دورهٔ بعدی و نه ۱۹۳۴"}
-    },
-    "UY": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_PCU.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_PCU.svg", "label": "پرچم حزب کمونیست اروگوئه"}
     }
 }
-
 # Preserve the scenario's original national flag, then overlay any persistent
 # country-level political changes saved by previous deployments.
 for _code, _country in COUNTRIES.items():
