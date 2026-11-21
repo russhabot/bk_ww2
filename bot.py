@@ -288,6 +288,9 @@ REVOLUTION_FLAG_META = {
     },
     "NI": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Liberal_Nacionalista_de_Nicaragua_%281912-1979%29.png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Liberal_Nacionalista_de_Nicaragua_(1912-1979).png", "label": "پرچم حزب لیبرال ملی نیکاراگوئه (۱۹۱۲ تا ۱۹۷۹؛ حزب سیاسی دورهٔ موردنظر)"}
+    },
+    "PA": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Panama.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Panama.svg", "label": "پرچم ملی پاناما؛ رنگ آبی و قرمز آن به‌ترتیب نماد حزب محافظه‌کار و حزب لیبرال‌اند؛ نماد مشترک نظام حزبی"}
     }
 }
 # Preserve the scenario's original national flag, then overlay any persistent
