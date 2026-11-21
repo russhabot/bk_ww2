@@ -242,13 +242,6 @@ REVOLUTION_FLAG_META = {
     "PE": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "label": "پرچم حزب کمونیست پرو"}
     },
-    "TH": {
-        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Republican_People%27s_Party_(Turkey).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Republican_People%27s_Party_(Turkey).svg", "label": "پرچم حزب جمهوری‌خواه خلق؛ این پرچم مربوط به ترکیه است و برای تایلند استفاده نمی‌شود"}
-    },
-    "CO": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Comunista_Colombiano.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Comunista_Colombiano.svg", "label": "پرچم حزب کمونیست کلمبیا"},
-        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Liberal_Colombiano.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Liberal_Colombiano.svg", "label": "پرچم حزب لیبرال کلمبیا"}
-    },
     "CR": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_Partido_Vanguardia_Popular_Costa_Rica.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_Partido_Vanguardia_Popular_Costa_Rica.svg", "label": "پرچم حزب پیشتاز خلق کاستاریکا؛ اصل پرچم از ۱۹۳۱"}
     },
