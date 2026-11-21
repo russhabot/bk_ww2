@@ -27,7 +27,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121home-mobile" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121embassy-safe1" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -113,26 +113,54 @@ def same_user_pair(item, first, second):
 
 
 def embassy_endpoint_uid(value):
-    """Resolve both current numeric user IDs and legacy country-code endpoints."""
-    if isinstance(value, int) or (isinstance(value, str) and value.strip().isdigit()):
-        return safe_int(value)
-    code = str(value or "").strip().upper()
-    if not code:
+    """Resolve numeric Telegram IDs (including legacy numeric strings) and country codes."""
+    if isinstance(value, bool):
         return 0
-    found_uid, _ = find_player_by_country(code)
+    if isinstance(value, (int, float)):
+        return safe_int(value) if float(value).is_integer() else 0
+    raw = str(value or "").strip()
+    if not raw:
+        return 0
+    try:
+        numeric = float(raw)
+        if numeric.is_integer():
+            return int(numeric)
+    except (TypeError, ValueError, OverflowError):
+        pass
+    found_uid, _ = find_player_by_country(raw.upper())
     return safe_int(found_uid)
 
 
+def embassy_endpoint_code(item, side):
+    keys = ("from_country", "from_code", "from") if side == "from" else ("to_country", "to_code", "to")
+    for key in keys:
+        value = item.get(key)
+        if value is None or str(value).strip() == "":
+            continue
+        raw = str(value).strip()
+        if embassy_endpoint_uid(raw) == 0:
+            return raw.upper()
+    uid = embassy_endpoint_uid(item.get(side + "_uid") or item.get(side))
+    player = pget(uid) if uid else None
+    return str((player or {}).get("c") or "").strip().upper()
+
+
 def same_embassy_pair(item, first_uid, second_uid):
-    endpoints = {
-        embassy_endpoint_uid(item.get("from") or item.get("from_country")),
-        embassy_endpoint_uid(item.get("to") or item.get("to_country")),
-    }
-    return endpoints == {safe_int(first_uid), safe_int(second_uid)}
+    first_uid, second_uid = safe_int(first_uid), safe_int(second_uid)
+    raw_from = item.get("from_uid") or item.get("from") or item.get("from_country") or item.get("from_code")
+    raw_to = item.get("to_uid") or item.get("to") or item.get("to_country") or item.get("to_code")
+    endpoints = {embassy_endpoint_uid(raw_from), embassy_endpoint_uid(raw_to)}
+    if endpoints == {first_uid, second_uid}:
+        return True
+    first, second = pget(first_uid) or {}, pget(second_uid) or {}
+    codes = {str(first.get("c") or "").strip().upper(), str(second.get("c") or "").strip().upper()}
+    record_codes = {embassy_endpoint_code(item, "from"), embassy_endpoint_code(item, "to")}
+    return bool("" not in codes and codes == record_codes)
 
 
 def active_embassy(item):
-    return str(item.get("status", "")).strip().lower() in {"active", "accepted", "approved", "established"}
+    status = str(item.get("status", "")).strip().lower()
+    return status in {"active", "accepted", "approved", "established", "open"}
 
 
 def safe_float(value, default=0.0):
@@ -520,22 +548,32 @@ def save_diplomacy(value):
 def diplomacy_state_for(uid):
     state = load_diplomacy()
     incoming, outgoing, relations, pacts_incoming, pacts_outgoing, money_incoming, money_outgoing = [], [], [], [], [], [], []
+    current_uid = safe_int(uid)
+    current_player = pget(current_uid) or {}
+    current_code = str(current_player.get("c") or "").strip().upper()
     now = int(time.time())
     changed = False
     for item in state.get("embassies", []):
-        from_uid = embassy_endpoint_uid(item.get("from") or item.get("from_country"))
-        to_uid = embassy_endpoint_uid(item.get("to") or item.get("to_country"))
+        from_raw = item.get("from_uid") or item.get("from") or item.get("from_country") or item.get("from_code")
+        to_raw = item.get("to_uid") or item.get("to") or item.get("to_country") or item.get("to_code")
+        from_uid, to_uid = embassy_endpoint_uid(from_raw), embassy_endpoint_uid(to_raw)
+        from_code, to_code = embassy_endpoint_code(item, "from"), embassy_endpoint_code(item, "to")
         status = str(item.get("status", "")).strip().lower()
-        if to_uid == safe_int(uid) and status == "pending":
+        is_from = from_uid == current_uid or (current_code and from_code == current_code)
+        is_to = to_uid == current_uid or (current_code and to_code == current_code)
+        if is_to and status == "pending":
             sender = pget(from_uid) or {}
-            incoming.append({**item, "from": from_uid, "to": to_uid, "from_country": sender.get("c", item.get("from_country", ""))})
-        elif from_uid == safe_int(uid) and status == "pending":
+            incoming.append({**item, "from": from_uid, "to": current_uid,
+                "from_country": str(sender.get("c") or from_code).upper()})
+        elif is_from and status == "pending":
             receiver = pget(to_uid) or {}
-            outgoing.append({**item, "from": from_uid, "to": to_uid, "to_country": receiver.get("c", item.get("to_country", ""))})
-        elif safe_int(uid) in (from_uid, to_uid) and active_embassy(item):
-            other_uid = to_uid if from_uid == safe_int(uid) else from_uid
+            outgoing.append({**item, "from": current_uid, "to": to_uid,
+                "to_country": str(receiver.get("c") or to_code).upper()})
+        elif (is_from or is_to) and active_embassy(item):
+            other_uid = to_uid if is_from else from_uid
+            other_code = to_code if is_from else from_code
             other = pget(other_uid) or {}
-            other_code = str(other.get("c") or (item.get("to_country") if from_uid == safe_int(uid) else item.get("from_country")) or "").upper()
+            other_code = str(other.get("c") or other_code or "").strip().upper()
             if item.get("pact_until") and safe_int(item.get("pact_until")) <= now:
                 item.pop("pact_until", None)
                 item.pop("pact_years", None)
@@ -581,7 +619,7 @@ def get_api_state(uid, player, season, membership_info=None):
         owners[c] = {"name": p_name or p_uname or "فرمانروا", "username": p_uname, "uid": p_uid}
         owners[c.lower()] = owners[c]
         if c in COUNTRIES:
-            active_countries.append({"code": c, "uid": p_uid, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral")})
+            active_countries.append({"code": c, "uid": p_uid, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral"), "regime_type": COUNTRIES[c].get("regime_type", ""), "regime_fa": COUNTRIES[c].get("regime_fa", "نوع حکومت ثبت نشده")})
 
     return {
         "season": season,
@@ -694,7 +732,7 @@ async def api_handler(request):
                     pset(uid, player)
 
 
-        elif action in ("embassy_request", "embassy_respond", "diplomacy_transfer", "diplomacy_money_respond", "diplomacy_pact", "diplomacy_pact_respond"):
+        elif action in ("embassy_request", "embassy_respond", "embassy_close", "diplomacy_transfer", "diplomacy_money_respond", "diplomacy_pact", "diplomacy_pact_respond"):
             if not player or not player.get("c"):
                 error = "ابتدا باید کشور خود را انتخاب کنید."
             elif player.get("alive", True) is False:
@@ -716,15 +754,37 @@ async def api_handler(request):
                     else:
                         dstate["embassies"].append({"from": uid, "to": target_uid, "status": "pending", "created": now})
                         save_diplomacy(dstate)
+                        # Embassy requests are delivered only through the in-app Announcements panel.
+                        print(f"[embassy-request] from={uid} to={target_uid} status=pending")
+                elif action == "embassy_close":
+                    target_uid = safe_int(body.get("target_uid"))
+                    target = pget(target_uid)
+                    relation = next((e for e in dstate["embassies"]
+                        if active_embassy(e) and same_embassy_pair(e, uid, target_uid)), None)
+                    if not target_uid or target_uid == uid or not target or not relation:
+                        error = "سفارت فعالی میان دو کشور پیدا نشد."
+                    else:
+                        relation["status"] = "closed"
+                        relation["closed_at"] = now
+                        relation["closed_by"] = uid
+                        for proposal in dstate.get("pacts", []):
+                            if same_user_pair(proposal, uid, target_uid) and proposal.get("status") == "pending":
+                                proposal["status"] = "cancelled"
+                                proposal["responded"] = now
+                        for transfer in dstate.get("money_transfers", []):
+                            if same_user_pair(transfer, uid, target_uid) and transfer.get("status") == "pending":
+                                transfer["status"] = "cancelled"
+                                transfer["responded"] = now
+                        save_diplomacy(dstate)
                         if bot:
                             try:
-                                await bot.send_message(target_uid, f"🏛 کشور {player.get('c')} درخواست تأسیس سفارت متقابل فرستاده است. برای پذیرش یا رد، وارد بخش دیپلماسی شوید.")
+                                await bot.send_message(target_uid, f"🏛 کشور {player.get('c')} سفارت متقابل را تعطیل کرد. پیمان‌ها و درخواست‌های در انتظار این رابطه نیز لغو شدند.")
                             except Exception as exc:
-                                print(f"[embassy-notification-error] {exc}")
+                                print(f"[embassy-close-notification-error] {exc}")
                 elif action == "embassy_respond":
                     sender_uid = safe_int(body.get("from"))
                     decision = str(body.get("decision", ""))
-                    req = next((e for e in dstate["embassies"] if embassy_endpoint_uid(e.get("from", e.get("from_country"))) == safe_int(sender_uid) and embassy_endpoint_uid(e.get("to", e.get("to_country"))) == safe_int(uid) and str(e.get("status", "")).strip().lower() == "pending"), None)
+                    req = next((e for e in dstate["embassies"] if embassy_endpoint_uid(e.get("from_uid") or e.get("from") or e.get("from_country") or e.get("from_code")) == safe_int(sender_uid) and embassy_endpoint_uid(e.get("to_uid") or e.get("to") or e.get("to_country") or e.get("to_code")) == safe_int(uid) and str(e.get("status", "")).strip().lower() == "pending"), None)
                     sender = pget(sender_uid) if req else None
                     if not req or decision not in ("accept", "decline"):
                         error = "درخواست سفارت معتبر نیست یا قبلاً پاسخ داده شده است."
