@@ -3069,27 +3069,51 @@
           body: JSON.stringify({ init: initData })
         });
         const data = await res.json();
-        if (!res.ok && data.must_join) {
-          S.membership = { ok:false, missing:data.missing || [], channels:data.channels || [] };
-          handleMembershipGate(S.membership);
-          return;
+        // Keep the public season phase synchronized even when membership or Telegram auth blocks game data.
+        if (data.s && data.s.season) {
+          S.season = data.s.season === 'alive' ? 'live' : data.s.season;
         }
-        if (res.ok) {
+        if (!res.ok && data.must_join) {
           if (data.s) {
-            S.season = (data.s.season === 'alive' ? 'live' : (data.s.season || 'wait'));
             S.p = data.s.p || null;
             S.taken = data.s.taken || [];
             S.owners = data.s.owners || {};
             S.active_countries = data.s.active_countries || [];
-            S.economy_buildings = data.s.economy_buildings || {};
-            S.diplomacy = data.s.diplomacy || S.diplomacy;
-            if (data.s.bg_music) S.bg_music = data.s.bg_music;
-            if (data.s.membership) {
-              S.membership = data.s.membership;
-              handleMembershipGate(S.membership);
-            }
-            onStateUpdated();
           }
+          S.membership = { ok:false, missing:data.missing || [], channels:data.channels || [] };
+          handleMembershipGate(S.membership);
+          onStateUpdated();
+          return;
+        }
+        if (!res.ok) {
+          // /health exposes only the public phase, so it is safe to use when Telegram auth is unavailable.
+          try {
+            const healthRes = await fetch('/health', { cache: 'no-store' });
+            const health = await healthRes.json();
+            if (healthRes.ok && health.season) {
+              S.season = health.season === 'alive' ? 'live' : health.season;
+              onStateUpdated();
+            }
+          } catch (healthError) {
+            console.warn('Could not read public season status:', healthError);
+          }
+          console.warn('Game state request was rejected:', res.status);
+          return;
+        }
+        if (res.ok && data.s) {
+          S.season = data.s.season === 'alive' ? 'live' : (data.s.season || 'wait');
+          S.p = data.s.p || null;
+          S.taken = data.s.taken || [];
+          S.owners = data.s.owners || {};
+          S.active_countries = data.s.active_countries || [];
+          S.economy_buildings = data.s.economy_buildings || {};
+          S.diplomacy = data.s.diplomacy || S.diplomacy;
+          if (data.s.bg_music) S.bg_music = data.s.bg_music;
+          if (data.s.membership) {
+            S.membership = data.s.membership;
+            handleMembershipGate(S.membership);
+          }
+          onStateUpdated();
         }
       } catch(e) {
         console.log('Using local client state');
