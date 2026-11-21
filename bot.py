@@ -262,6 +262,12 @@ REVOLUTION_FLAG_META = {
     },
     "EC": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Falange_Nacional_Garciana_Ecuatoriana.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Falange_Nacional_Garciana_Ecuatoriana.svg", "label": "پرچم فالانژ ملی گارسیا در اکوادور؛ تاریخ دقیق کاربرد این نسخه روشن نیست"}
+    },
+    "AL": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flamuri_i_Partis_Nacional-Ballkanike_Shqiptare_(1929).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flamuri_i_Partis_Nacional-Ballkanike_Shqiptare_(1929).svg", "label": "پرچم حزب ملی‌ـ‌بالکانی آلبانی (۱۹۲۹؛ بازسازی دیجیتال)"
+    },
+    "TH": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Thailand.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Thailand.svg", "label": "پرچم حزب کمونیست تایلند؛ حزب از ۱۹۴۲، متأخر نسبت به سناریوی ۱۹۳۴"}
     }
 }
 # Preserve the scenario's original national flag, then overlay any persistent
