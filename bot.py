@@ -98,7 +98,7 @@ for _code, _politics in load_country_politics().items():
     for _key in (
         "government_type", "ideology", "regime_type", "regime_fa", "leader",
         "leader_fa", "leader_en", "leader_title", "leader_img", "leader_url",
-        "revolution_used", "revolution_path", "revolution_previous_government",
+        "revolution_used", "revolution_path", "revolution_previous_government", "ruling_party_fa", "desc",
         "revolution_at"
     ):
         if _key in _politics:
@@ -205,17 +205,18 @@ def perform_revolution(uid, player, body):
         "leader_url": f"/revolution-leader/{target}.svg",
         "revolution_used": True,
         "revolution_path": target,
+        "ruling_party_fa": rule["party_fa"],
         "revolution_previous_government": previous,
         "revolution_at": int(time.time())
     }
-    save_country_politics(code, politics)
-    country.update(politics)
-    country["flag_url"] = f"/flag/{code}/{target}.svg"
-    country["desc"] = (
+    politics["desc"] = (
         str(country.get("desc") or "").rstrip()
         + f" در جریان سیزن، انقلاب {rule['party_fa']} به پیروزی رسید؛ "
         + f"ساختار حکومت به {rule['regime_fa']} تغییر کرد و {new_leader} زمام امور را به دست گرفت."
     )
+    save_country_politics(code, politics)
+    country.update(politics)
+    country["flag_url"] = f"/flag/{code}/{target}.svg"
     print(f"[revolution] country={code} from={previous} to={target} actor={uid}")
     return None
 
@@ -776,7 +777,8 @@ def get_api_state(uid, player, season, membership_info=None):
                 "leader_img": COUNTRIES[c].get("leader_img", ""),
                 "ideology": COUNTRIES[c].get("ideology", ""),
                 "revolution_used": bool(COUNTRIES[c].get("revolution_used", False)),
-                "revolution_path": COUNTRIES[c].get("revolution_path", "")
+                "revolution_path": COUNTRIES[c].get("revolution_path", ""),
+                "ruling_party_fa": COUNTRIES[c].get("ruling_party_fa", "")
             })
 
     return {
