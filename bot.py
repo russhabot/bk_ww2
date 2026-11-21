@@ -885,7 +885,7 @@ async def api_handler(request):
                         save_diplomacy(dstate)
                         if bot:
                             try:
-                                await bot.send_message(target_uid, f"📜 کشور {player.get('c')} پیشنهاد پیمان عدم تجاوز برای {years} سال فرستاده است. برای پذیرش یا رد، وارد بخش دیپلماسی شوید.")
+                                await bot.send_message(target_uid, f"📜 کشور {player.get('c')} پیشنهاد پیمان عدم تجاوز برای {years} سال فرستاده است. برای پذیرش یا رد، بخش اعلانات خانه را باز کنید.")
                             except Exception as exc:
                                 print(f"[pact-notification-error] {exc}")
                 elif action == "diplomacy_pact_respond":
