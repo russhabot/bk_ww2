@@ -1204,6 +1204,8 @@
       .revolution-current-state>img{width:30%;max-width:92px;max-height:62px;flex-shrink:0}
       .revolution-option-heading>b{font-size:9px}
     }
+
+    .revolution-current-flag-note{font-size:9px;line-height:1.7;color:#fbbf24;margin-top:3px}
 </style>
 </head>
 <body>
@@ -3241,9 +3243,11 @@
           return '<article class="revolution-option-card revolution-'+target+'"><div class="revolution-option-heading"><span class="revolution-title-line"><img src="'+escapeHtml(targetTag.badge_url)+'" alt="نشان '+escapeHtml(labels[target])+'" loading="lazy"><span><small>مسیر تغییر نظام</small><strong>'+labels[target]+'</strong></span></span><b>'+targetTag.label+'</b></div><p class="revolution-description">'+info.description+'</p><div class="revolution-flag-comparison"><div><img src="'+escapeHtml(country.base_flag_url||country.flag_url||FALLBACK_FLAG)+'" alt="پرچم فعلی '+escapeHtml(country.name_fa||r.c)+'" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><small>پرچم فعلی کشور</small></div><span class="revolution-flag-arrow">←</span><div><img src="'+escapeHtml(flag)+'" alt="'+escapeHtml(flagMeta?.label||info.fallback)+'" loading="lazy" onerror="this.onerror=null;this.src=\''+escapeHtml(fallbackFlag)+'\'"><small>'+(flagMeta?'پرچم حزب / جنبش اپوزیسیون':'پرچم ملی؛ پرچم حزبی مستند نشده')+'</small></div></div><div class="revolution-flag-caption">'+escapeHtml(flagMeta?.label||info.fallback)+'</div>'+sourceLink+'<div class="revolution-option-details"><div><small>حزب حاکم جدید</small><strong>'+info.party+'</strong></div><div><small>حاکم جدید</small><strong>'+leaderName+'</strong></div></div><button class="btn btn-gold revolution-start" '+(!ready||country.revolution_used?'disabled':'')+' onclick="startRevolution(\''+target+'\')">'+(country.revolution_used?'انقلاب قبلاً انجام شده':ready?'آغاز انقلاب':'شرایط کافی نیست')+'</button></article>';
         }).join('');
         const currentTag=getRegimeCategory(country);
+        const currentFlagMeta=country.revolution_flags?.[current]||null;
+        const currentFlagNote=country.revolution_used ? (currentFlagMeta ? '<span class="revolution-current-flag-note">پرچم ثبت‌شده: '+escapeHtml(currentFlagMeta.label)+'</span>' : '<span class="revolution-current-flag-note">پرچم حزبی مستند نشده؛ پرچم ملی حفظ شده است.</span>') : '';
         const usedNotice=country.revolution_used?'<div class="revolution-used-notice"><strong>انقلاب این کشور قبلاً انجام شده است.</strong><span>طبق قوانین بازی، هر کشور فقط یک‌بار می‌تواند نظام حاکم خود را تغییر دهد.</span></div>':'';
         body=back+sectionTitle('تحول سیاسی','انقلاب و تغییر نظام حاکم')+
-          '<div class="revolution-current-state"><img src="'+escapeHtml(country.flag_url||country.base_flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><div><small>وضعیت سیاسی فعلی · '+escapeHtml(country.name_fa||r.c)+'</small><strong>'+escapeHtml(currentTag.label)+'</strong><span>حزب حاکم: '+escapeHtml(country.ruling_party_fa||'بر اساس ساختار سیاسی فعلی')+'</span><span>رهبر فعلی: '+escapeHtml(country.leader_fa||country.leader||'ثبت نشده')+'</span></div></div>'+
+          '<div class="revolution-current-state"><img src="'+escapeHtml(country.flag_url||country.base_flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><div><small>وضعیت سیاسی فعلی · '+escapeHtml(country.name_fa||r.c)+'</small><strong>'+escapeHtml(currentTag.label)+'</strong><span>حزب حاکم: '+escapeHtml(country.ruling_party_fa||'بر اساس ساختار سیاسی فعلی')+'</span><span>رهبر فعلی: '+escapeHtml(country.leader_fa||country.leader||'ثبت نشده')+'</span>'+currentFlagNote+'</div></div>'+
           '<div class="revolution-rules-note">انقلاب فقط در سیزن فعال امکان‌پذیر است. پس از پیروزی، نوع حکومت، حزب حاکم، رهبر و پرچم کشور تغییر می‌کند؛ جناح دیپلماتیک فعلاً ثابت می‌ماند. هر کشور در تمام دوره بازی فقط یک‌بار می‌تواند انقلاب کند.</div>'+
           usedNotice+requirements+'<div class="revolution-options-grid">'+options+'</div>';
         heading='انقلاب و تغییر نظام حاکم';
