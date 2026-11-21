@@ -921,7 +921,7 @@ def auth(init_data):
     # The old fallback let unauthenticated requests act as the shared test user (1001).
     if not init_data:
         if TOKEN:
-            print("[auth-debug] rejected: initData missing")
+            print("[auth-fail] empty initData")
             return None
         return {"id": 1001, "first_name": "فرمانده آزمایشی", "username": "commander_dev"}
 
@@ -940,7 +940,7 @@ def auth(init_data):
         fields = dict(parse_qsl(init_data, keep_blank_values=True, max_num_fields=64))
         received_hash = fields.pop("hash", "")
         if not received_hash:
-            print(f"[auth-debug] rejected: hash missing; fields={sorted(fields.keys())}; init_len={len(init_data)}")
+            print("[auth-fail] missing hash")
             return None
 
         secret = hmac.new(b"WebAppData", TOKEN.encode("utf-8"), hashlib.sha256).digest()
@@ -958,7 +958,7 @@ def auth(init_data):
         )
 
         if not valid_hash:
-            print(f"[auth-debug] rejected: hash mismatch; fields={sorted(fields.keys())}; signature_present={'signature' in fields}; user_present={'user' in fields}; init_len={len(init_data)}; hash_len={len(received_hash)}")
+            print(f"[auth-fail] hash mismatch; fields={sorted(fields)}")
             return None
 
         if "user" in fields:
@@ -1124,15 +1124,30 @@ async def options_handler(request):
     return resp
 
 
+FIX_TAG = '<script src="/static/bk_fix.js?v=20261121auth"></script>'
+
+
 async def index_handler(request):
     target = INDEX_PATH if os.path.exists(INDEX_PATH) else "index.html"
     if not os.path.exists(target):
         return web.Response(text="index.html not found on server", status=404)
-    resp = web.FileResponse(target)
-    resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
-    resp.headers["Pragma"] = "no-cache"
-    resp.headers["Expires"] = "0"
-    return resp
+    headers = {
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
+    try:
+        with open(target, "r", encoding="utf-8") as fh:
+            html = fh.read()
+    except OSError as exc:
+        print(f"[index-read-error] {exc}")
+        resp = web.FileResponse(target)
+        resp.headers.update(headers)
+        return resp
+    if "bk_fix.js" not in html:
+        match = re.search(r"<head[^>]*>", html, re.I)
+        html = (html[:match.end()] + FIX_TAG + html[match.end():]) if match else (FIX_TAG + html)
+    return web.Response(text=html, content_type="text/html", charset="utf-8", headers=headers)
 
 
 async def geojson_handler(request):
