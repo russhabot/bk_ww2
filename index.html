@@ -3062,7 +3062,7 @@
     // Fetch live state from backend
     async function fetchState() {
       try {
-        const initData = tg?.initData || '';
+        const initData = window.Telegram?.WebApp?.initData || '';
         const res = await fetch('/api/state', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3137,7 +3137,7 @@
       errBox.style.display = 'none';
 
       try {
-        const initData = tg?.initData || '';
+        const initData = window.Telegram?.WebApp?.initData || '';
         const res = await fetch('/api/check_membership', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3950,7 +3950,7 @@
       btn.innerHTML = ICONS.refresh + ' در حال مخابره به ستاد کل...';
 
       try {
-        const initData = tg?.initData || '';
+        const initData = window.Telegram?.WebApp?.initData || '';
         const res = await fetch('/api/claim', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
