@@ -953,7 +953,10 @@ async def api_handler(request):
                 error = "کشور شما از بازی خارج شده است."
             else:
                 changed = apply_daily_economy(player)
-                error = perform_revolution(uid, player, body)
+                if player.get("alive", True) is False:
+                    error = "کشور شما پس از محاسبه اقتصاد روزانه از بازی خارج شده است."
+                else:
+                    error = perform_revolution(uid, player, body)
                 if error is None or changed:
                     pset(uid, player)
 
