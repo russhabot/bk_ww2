@@ -534,9 +534,11 @@ def perform_revolution(uid, player, body):
 
 
 
-# Start the current season workflow in the waiting room on its first launch.
+# Mark the season-state migration without overwriting an existing season.
+# init_db() already supplies "wait" only when the setting is genuinely absent.
 if kget("season_default_migrated") is None:
-    kset("season", "wait")
+    if kget("season") is None:
+        kset("season", "wait")
     kset("season_default_migrated", "1")
 elif kget("season") is None:
     kset("season", "wait")
