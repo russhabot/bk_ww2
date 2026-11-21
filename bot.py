@@ -102,6 +102,7 @@ REVOLUTION_FLAG_META = {
 
     "US": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Communist_Party_USA_Flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Communist_Party_USA_Flag.svg", "label": "پرچم حزب کمونیست آمریکا"}
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_German_American_Bund.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_German_American_Bund.svg", "label": "پرچم اتحادیه آلمانی‌آمریکایی؛ سازمان ناسیونال‌سوسیالیست فعال در آمریکا (۱۹۳۳ تا ۱۹۴۱)"}
     },
     "FR": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Proposed_flag_of_the_French_Communist_Party_(1936).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Proposed_flag_of_the_French_Communist_Party_(1936).svg", "label": "طرح پیشنهادی پرچم حزب کمونیست فرانسه (۱۹۳۶؛ نه پرچم رسمی ۱۹۳۴)"}
@@ -121,6 +122,7 @@ REVOLUTION_FLAG_META = {
 
     "PT": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Syndicalist_Movement.png", "source_url": "https://commons.wikimedia.org/wiki/File:National_Syndicalist_Movement.png", "label": "پرچم جنبش ملی‌سندیکالیستی پرتغال"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Portuguese_Communist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Portuguese_Communist_Party.svg", "label": "پرچم حزب کمونیست پرتغال؛ نسخهٔ معاصر از حزبی با ریشه در ۱۹۲۱"}
     },
     "RO": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Iron_Guard_(Legion_of_the_Archangel_Michael_or_Legionary_Movement).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Iron_Guard_(Legion_of_the_Archangel_Michael_or_Legionary_Movement).svg", "label": "پرچم گارد آهنین رومانی (جنبش لژیونری)"},
@@ -191,27 +193,33 @@ REVOLUTION_FLAG_META = {
 
     "AR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Fascist_Party_of_Argentina.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Fascist_Party_of_Argentina.svg", "label": "بازسازی پرچم حزب فاشیست آرژانتین؛ تصویر بازسازی‌شده در ویکی‌مدیا"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Argentina_(Extraordinary_Congress).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Argentina_(Extraordinary_Congress).svg", "label": "پرچم شاخهٔ کنگرهٔ فوق‌العادهٔ حزب کمونیست آرژانتین؛ نسخهٔ معاصر"}
     },
     "CA": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Parti_National_Social_Chr%C3%A9tien.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Parti_National_Social_Chr%C3%A9tien.svg", "label": "پرچم حزب ملی‌سوسیالیست مسیحی کانادا؛ گروه سیاسی دههٔ ۱۹۳۰"}
     },
     "GR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Greek_National_Socialist_party_flag.png", "source_url": "https://commons.wikimedia.org/wiki/File:Greek_National_Socialist_party_flag.png", "label": "پرچم حزب ملی‌سوسیالیست یونان (۱۹۳۲ تا ۱۹۴۳)"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Greece_(1940s).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Greece_(1940s).svg", "label": "پرچم حزب کمونیست یونان در دههٔ ۱۹۴۰؛ خارج از دورهٔ آغازین ۱۹۳۴"}
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Freethinkers%27_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Freethinkers%27_Party.svg", "label": "پرچم حزب آزاداندیشان یونان؛ حزب سیاسی دورهٔ میان‌دوجنگ"}
     },
     "IQ": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Iraqi_Communist_Party_(old).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Iraqi_Communist_Party_(old).svg", "label": "نسخهٔ قدیمی پرچم حزب کمونیست عراق؛ حزب از ۱۹۳۴"}
     },
     "EG": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Wafd_Flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Wafd_Flag.svg", "label": "پرچم حزب وفد مصر؛ جنبش سیاسی مشروطه‌خواه و پارلمانی"}
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Young_Egypt_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Young_Egypt_Party.svg", "label": "پرچم حزب مصر جوان؛ جنبش ملی‌گرای رادیکال از ۱۹۳۳"}
     },
     "AU": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/A_de_facto_flag_used_by_the_CPA.svg", "source_url": "https://commons.wikimedia.org/wiki/File:A_de_facto_flag_used_by_the_CPA.svg", "label": "یکی از پرچم‌های مورد استفادهٔ حزب کمونیست استرالیا؛ حدود دهه‌های ۱۹۴۰ و ۱۹۵۰"}
     },
     "SK": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Hlinka_party_(1938%E2%80%931945)_variant_1.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Hlinka_party_(1938%E2%80%931945)_variant_1.svg", "label": "پرچم حزب مردم هlinka در اسلواکی (۱۹۳۸ تا ۱۹۴۵؛ متأخر نسبت به آغاز سناریو)"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Slovakia.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Slovakia.svg", "label": "پرچم حزب کمونیست اسلواکی؛ نسخهٔ ثبت‌شدهٔ معاصر"}
     },
     "LV": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Perkonkrusta_karogs.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Perkonkrusta_karogs.svg", "label": "پرچم سازمان ملی‌گرای پِرکُن‌کروستس لتونی؛ بازسازی بر پایهٔ توصیف تاریخی"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Latvia_(1940-41).png", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Latvia_(1940-41).png", "label": "پرچم حزب کمونیست لتونی در ۱۹۴۰ تا ۱۹۴۱؛ متأخر نسبت به آغاز سناریو"}
     },
     "MZ": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Concordia_Association.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Concordia_Association.svg", "label": "پرچم انجمن کنکوردیا در منچوکوئو (۱۹۳۲ تا ۱۹۴۵)"}
