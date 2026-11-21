@@ -251,10 +251,10 @@ COUNTRIES = {
         "leader_img": "https://commons.wikimedia.org/wiki/Special:FilePath/Ramsay_MacDonald.jpg",
         "leader_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Ramsay_MacDonald.jpg",
         "flag_url": "static/flags/GB.svg",
-        "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور رامسی مک‌دونالد (Ramsay MacDonald) بود. ساختار سیاسی: پادشاهی مشروطهٔ پارلمانی. جناح سناریویی: متفقین.",
+        "desc": "در سناریوی آغازشده در ۱ ژانویهٔ ۱۹۳۴، رهبر سیاسی کشور رامسی مک‌دونالد (Ramsay MacDonald) بود. ساختار سیاسی: دموکراسی پارلمانی در چارچوب پادشاهی مشروطه. جناح سناریویی: متفقین.",
         "leader_en": "Ramsay MacDonald",
-        "regime_type": "constitutional_monarchy",
-        "regime_fa": "پادشاهی مشروطهٔ پارلمانی",
+        "regime_type": "parliamentary_democracy",
+        "regime_fa": "دموکراسی پارلمانی",
         "scenario_date": "1934-01-01"
     },
     "US": {
@@ -1569,6 +1569,9 @@ GOVERNMENT_TYPES = {
 
 
 def _government_type_for_country(country):
+    # The United Kingdom is categorized under the game's democracy tag.
+    if str(country.get("code") or "").upper() == "GB":
+        return "democracy"
     regime_type = str(country.get("regime_type") or "").lower()
     regime_fa = str(country.get("regime_fa") or "").lower()
     ideology = str(country.get("ideology") or "").lower()
