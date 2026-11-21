@@ -3209,7 +3209,7 @@
         const currentTag=getRegimeCategory(country);
         const usedNotice=country.revolution_used?'<div class="revolution-used-notice"><strong>انقلاب این کشور قبلاً انجام شده است.</strong><span>طبق قوانین بازی، هر کشور فقط یک‌بار می‌تواند نظام حاکم خود را تغییر دهد.</span></div>':'';
         body=back+sectionTitle('تحول سیاسی','انقلاب و تغییر نظام حاکم')+
-          '<div class="revolution-current-state"><img src="'+escapeHtml(country.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.style.display=\'none\'"><div><small>وضعیت سیاسی فعلی · '+escapeHtml(country.name_fa||r.c)+'</small><strong>'+escapeHtml(currentTag.label)+'</strong><span>رهبر فعلی: '+escapeHtml(country.leader_fa||country.leader||'ثبت نشده')+'</span></div></div>'+
+          '<div class="revolution-current-state"><img src="'+escapeHtml(country.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.style.display=\'none\'"><div><small>وضعیت سیاسی فعلی · '+escapeHtml(country.name_fa||r.c)+'</small><strong>'+escapeHtml(currentTag.label)+'</strong><span>حزب حاکم: '+escapeHtml(country.ruling_party_fa||'بر اساس ساختار سیاسی فعلی')+'</span><span>رهبر فعلی: '+escapeHtml(country.leader_fa||country.leader||'ثبت نشده')+'</span></div></div>'+
           '<div class="revolution-rules-note">انقلاب فقط در سیزن فعال امکان‌پذیر است. پس از پیروزی، نوع حکومت، حزب حاکم، رهبر و پرچم کشور تغییر می‌کند؛ جناح دیپلماتیک فعلاً ثابت می‌ماند. هر کشور در تمام دوره بازی فقط یک‌بار می‌تواند انقلاب کند.</div>'+
           usedNotice+requirements+'<div class="revolution-options-grid">'+options+'</div>';
         heading='انقلاب و تغییر نظام حاکم';
