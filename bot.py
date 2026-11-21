@@ -83,6 +83,46 @@ from database import (
 )
 COUNTRIES = sync_country_catalog(COUNTRIES)
 
+# Documented party / opposition flags. Where no period-appropriate party flag is
+# verifiable, the UI deliberately says so instead of fabricating a historical flag.
+REVOLUTION_FLAG_META = {
+    "DE": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Germany.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Germany.svg", "label": "پرچم حزب کمونیست آلمان (KPD)"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Social_Democratic_Party_of_Germany.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Social_Democratic_Party_of_Germany.svg", "label": "پرچم حزب سوسیال‌دموکرات آلمان (SPD)"}
+    },
+    "IT": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_National_Fascist_Party_(PNF).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_National_Fascist_Party_(PNF).svg", "label": "پرچم حزب ملی فاشیست ایتالیا (PNF)"}
+    },
+    "GB": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_British_Union_of_Fascists.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_British_Union_of_Fascists.svg", "label": "پرچم اتحادیه فاشیست‌های بریتانیا (۱۹۳۲ تا ۱۹۳۵)"}
+    },
+    "US": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Communist_Party_USA_Flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Communist_Party_USA_Flag.svg", "label": "پرچم حزب کمونیست آمریکا"}
+    },
+    "FR": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Proposed_flag_of_the_French_Communist_Party_(1936).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Proposed_flag_of_the_French_Communist_Party_(1936).svg", "label": "طرح پیشنهادی پرچم حزب کمونیست فرانسه (۱۹۳۶؛ نه پرچم رسمی ۱۹۳۴)"}
+    },
+    "CN": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Chinese_soviet_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Chinese_soviet_flag.svg", "label": "پرچم جمهوری شورایی چین (۱۹۳۱ تا ۱۹۳۴)"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Prior_Flag_of_the_Kuomintang.svg", "source_url": "https://commons.wikimedia.org/wiki/Blue_Sky_White_Sun", "label": "پرچم حزب کومینتانگ؛ نشان آسمان آبی و خورشید سفید"}
+    },
+    "ES": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Spain_(1930s).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Spain_(1930s).svg", "label": "پرچم حزب کمونیست اسپانیا در دههٔ ۱۹۳۰"}
+    },
+    "BR": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Brasilian_Integralism_Flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Brasilian_Integralism_Flag.svg", "label": "پرچم جنبش انتگرالیسم برزیل (AIB)"}
+    },
+    "PT": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/National_Syndicalist_Movement.png", "source_url": "https://commons.wikimedia.org/wiki/File:National_Syndicalist_Movement.png", "label": "پرچم جنبش ملی‌سندیکالیستی پرتغال"}
+    },
+    "RO": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Iron_Guard_(Legion_of_the_Archangel_Michael_or_Legionary_Movement).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Iron_Guard_(Legion_of_the_Archangel_Michael_or_Legionary_Movement).svg", "label": "پرچم گارد آهنین رومانی (جنبش لژیونری)"}
+    },
+    "AT": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Fatherland_Front_of_Austria.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Fatherland_Front_of_Austria.svg", "label": "پرچم جبهه میهن‌پرستان اتریش"}
+    }
+}
+
 # Preserve the scenario's original national flag, then overlay any persistent
 # country-level political changes saved by previous deployments.
 for _code, _country in COUNTRIES.items():
@@ -104,7 +144,9 @@ for _code, _politics in load_country_politics().items():
         if _key in _politics:
             COUNTRIES[_code][_key] = _politics[_key]
     if COUNTRIES[_code].get("revolution_used"):
-        COUNTRIES[_code]["flag_url"] = f"/flag/{_code}/{COUNTRIES[_code].get('government_type', 'democracy')}.svg"
+        _government = str(COUNTRIES[_code].get("government_type", "democracy"))
+        _flag_meta = REVOLUTION_FLAG_META.get(_code, {}).get(_government)
+        COUNTRIES[_code]["flag_url"] = (_flag_meta or {}).get("url") or COUNTRIES[_code].get("base_flag_url") or ""
 
 REVOLUTION_RULES = {
     "fascism": {
@@ -217,7 +259,8 @@ def perform_revolution(uid, player, body):
     )
     save_country_politics(code, politics)
     country.update(politics)
-    country["flag_url"] = f"/flag/{code}/{target}.svg"
+    _flag_meta = REVOLUTION_FLAG_META.get(code, {}).get(target)
+    country["flag_url"] = (_flag_meta or {}).get("url") or country.get("base_flag_url") or ""
     print(f"[revolution] country={code} from={previous} to={target} actor={uid}")
     return None
 
@@ -773,6 +816,8 @@ def get_api_state(uid, player, season, membership_info=None):
                 "regime_type": COUNTRIES[c].get("regime_type", ""),
                 "regime_fa": COUNTRIES[c].get("regime_fa", "نوع حکومت ثبت نشده"),
                 "flag_url": COUNTRIES[c].get("flag_url", ""),
+                "base_flag_url": COUNTRIES[c].get("base_flag_url", ""),
+                "revolution_flags": REVOLUTION_FLAG_META.get(c, {}),
                 "leader_fa": COUNTRIES[c].get("leader_fa", ""),
                 "leader_title": COUNTRIES[c].get("leader_title", ""),
                 "leader_img": COUNTRIES[c].get("leader_img", ""),
@@ -842,32 +887,13 @@ async def revolution_flag_handler(request):
     country = COUNTRIES.get(code)
     if not country or government not in REVOLUTION_RULES:
         return web.Response(status=404, text="Flag not found")
-    base = str(country.get("base_flag_url") or country.get("flag_url") or "").strip()
-    if base.startswith("static/"):
-        base = "/" + base
-    if code == "DE":
-        base = "https://flagcdn.com/w320/de.png"
-    if not (base.startswith("/") or base.startswith("https://") or base.startswith("http://")):
-        base = "/static/flags/" + code + ".svg"
-    safe_base = html_escape(base, quote=True)
-    if government == "communism":
-        emblem = '<rect x="0" y="0" width="250" height="600" fill="#b91c1c" opacity=".94"/><polygon points="125,155 145,215 208,215 157,252 176,315 125,276 74,315 93,252 42,215 105,215" fill="#fff"/>'
-        stripe = '<rect x="250" y="0" width="34" height="600" fill="#b91c1c" opacity=".92"/>'
-    elif government == "fascism":
-        emblem = '<rect x="0" y="0" width="250" height="600" fill="#172033" opacity=".93"/><circle cx="125" cy="300" r="75" fill="none" stroke="#e7bd63" stroke-width="12"/><path d="M125 225 C85 250 76 290 92 330 M125 225 C165 250 174 290 158 330 M85 330 Q125 390 165 330 M100 280 L150 280 M105 305 L145 305" fill="none" stroke="#e7bd63" stroke-width="11" stroke-linecap="round"/><path d="M125 225 L125 375" stroke="#e7bd63" stroke-width="8"/>'
-        stripe = '<rect x="250" y="0" width="34" height="600" fill="#b08a3e" opacity=".95"/>'
-    else:
-        emblem = '<rect x="0" y="0" width="250" height="600" fill="#174a83" opacity=".94"/><circle cx="125" cy="300" r="78" fill="none" stroke="#fff" stroke-width="10"/><polygon points="125,232 141,282 194,282 151,313 167,364 125,333 83,364 99,313 56,282 109,282" fill="#fff"/>'
-        stripe = '<rect x="250" y="0" width="34" height="600" fill="#174a83" opacity=".95"/>'
-    svg = (
-        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1000 600">'
-        f'<image href="{safe_base}" xlink:href="{safe_base}" width="1000" height="600" preserveAspectRatio="xMidYMid slice"/>'
-        '<rect width="1000" height="600" fill="#07111f" opacity=".12"/>'
-        + emblem + stripe
-        + '<rect x="5" y="5" width="990" height="590" fill="none" stroke="#e5e7eb" stroke-opacity=".45" stroke-width="10"/>'
-        + '</svg>'
-    )
-    return web.Response(text=svg, content_type="image/svg+xml", headers={"Cache-Control": "public, max-age=3600"})
+    flag_meta = REVOLUTION_FLAG_META.get(code, {}).get(government)
+    target = (flag_meta or {}).get("url") or country.get("base_flag_url") or country.get("flag_url") or ""
+    if target.startswith("static/"):
+        target = "/" + target
+    if not target:
+        return web.Response(status=404, text="No documented flag available")
+    raise web.HTTPFound(target)
 
 
 async def revolution_leader_handler(request):
