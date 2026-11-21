@@ -27,7 +27,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121embassy-safe1" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121govtags-embassyphotos" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -77,8 +77,10 @@ REQUIRED_CHANNELS = [
 ]
 
 from database import (
-    all_players, find_player_by_country, kget, kset, pdel, pget, pset, reset_season
+    all_players, find_player_by_country, kget, kset, pdel, pget, pset, reset_season,
+    sync_country_catalog
 )
+COUNTRIES = sync_country_catalog(COUNTRIES)
 
 # Start the current season workflow in the waiting room on its first launch.
 if kget("season_default_migrated") is None:
@@ -619,7 +621,7 @@ def get_api_state(uid, player, season, membership_info=None):
         owners[c] = {"name": p_name or p_uname or "فرمانروا", "username": p_uname, "uid": p_uid}
         owners[c.lower()] = owners[c]
         if c in COUNTRIES:
-            active_countries.append({"code": c, "uid": p_uid, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral"), "regime_type": COUNTRIES[c].get("regime_type", ""), "regime_fa": COUNTRIES[c].get("regime_fa", "نوع حکومت ثبت نشده")})
+            active_countries.append({"code": c, "uid": p_uid, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral"), "government_type": COUNTRIES[c].get("government_type", "democracy"), "regime_type": COUNTRIES[c].get("regime_type", ""), "regime_fa": COUNTRIES[c].get("regime_fa", "نوع حکومت ثبت نشده")})
 
     return {
         "season": season,
