@@ -619,7 +619,7 @@ def get_api_state(uid, player, season, membership_info=None):
         owners[c] = {"name": p_name or p_uname or "فرمانروا", "username": p_uname, "uid": p_uid}
         owners[c.lower()] = owners[c]
         if c in COUNTRIES:
-            active_countries.append({"code": c, "uid": p_uid, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral")})
+            active_countries.append({"code": c, "uid": p_uid, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral"), "regime_type": COUNTRIES[c].get("regime_type", ""), "regime_fa": COUNTRIES[c].get("regime_fa", "نوع حکومت ثبت نشده")})
 
     return {
         "season": season,
@@ -754,11 +754,8 @@ async def api_handler(request):
                     else:
                         dstate["embassies"].append({"from": uid, "to": target_uid, "status": "pending", "created": now})
                         save_diplomacy(dstate)
-                        if bot:
-                            try:
-                                await bot.send_message(target_uid, f"🏛 کشور {player.get('c')} درخواست تأسیس سفارت متقابل فرستاده است. برای پذیرش یا رد، وارد بخش دیپلماسی شوید.")
-                            except Exception as exc:
-                                print(f"[embassy-notification-error] {exc}")
+                        # Embassy requests are delivered only through the in-app Announcements panel.
+                        print(f"[embassy-request] from={uid} to={target_uid} status=pending")
                 elif action == "embassy_close":
                     target_uid = safe_int(body.get("target_uid"))
                     target = pget(target_uid)
