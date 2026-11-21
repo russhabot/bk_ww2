@@ -3027,7 +3027,10 @@
         webApp = window.Telegram?.WebApp || webApp || null;
         if (webApp) {
           try { webApp.ready(); } catch (e) {}
-          const value = String(webApp.initData || '').trim();
+          let value = String(webApp.initData || '').trim();
+          if (!value && typeof window.__bkInitData === 'function') {
+            try { value = String(window.__bkInitData() || '').trim(); } catch (e) {}
+          }
           if (value) {
             cachedTelegramInitData = value;
             return cachedTelegramInitData;
