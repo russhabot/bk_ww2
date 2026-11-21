@@ -1557,3 +1557,38 @@ COUNTRIES = {
         "scenario_date": "1934-01-01"
     }
 }
+
+
+# The four government tags used throughout the country selector and country records.
+GOVERNMENT_TYPES = {
+    "fascism": {"id": "fascism", "fa": "فاشیسم", "en": "Fascism", "color": "#c084fc", "badge_url": IDEOLOGIES["fascism"]["badge_url"]},
+    "communism": {"id": "communism", "fa": "کمونیسم", "en": "Communism", "color": "#f87171", "badge_url": IDEOLOGIES["communism"]["badge_url"]},
+    "monarchy": {"id": "monarchy", "fa": "سلطنت", "en": "Monarchy", "color": "#fbbf24", "badge_url": "static/badges/monarchy.svg"},
+    "democracy": {"id": "democracy", "fa": "دموکراسی", "en": "Democracy", "color": "#38bdf8", "badge_url": IDEOLOGIES["democracy"]["badge_url"]},
+}
+
+
+def _government_type_for_country(country):
+    regime_type = str(country.get("regime_type") or "").lower()
+    regime_fa = str(country.get("regime_fa") or "").lower()
+    ideology = str(country.get("ideology") or "").lower()
+
+    # A kingdom or empire remains a monarchy even when its cabinet is fascist.
+    if (
+        any(token in regime_type for token in (
+            "monarchy", "regency_theocracy", "royal_dictatorship", "hereditary_oligarchy"
+        ))
+        or any(token in regime_fa for token in ("پادشاهی", "امپراتوری", "سلطنت", "امامت زیدی"))
+    ):
+        return "monarchy"
+    if ideology == "communism" or "communis" in regime_type or "کمونی" in regime_fa:
+        return "communism"
+    if ideology == "fascism" or "fascis" in regime_type or "فاشی" in regime_fa:
+        return "fascism"
+    # The remaining republics and non-monarchical administrations use the
+    # fourth selector tag; their precise historical description stays in regime_fa.
+    return "democracy"
+
+
+for _country in COUNTRIES.values():
+    _country["government_type"] = _government_type_for_country(_country)
