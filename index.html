@@ -3989,8 +3989,12 @@
       btn.innerHTML = ICONS.refresh + ' در حال مخابره به ستاد کل...';
 
       try {
-        // Preserve the previously working Telegram WebApp auth flow for country claims.
-        const initData = tg?.initData || '';
+        // Use the same cached, signed Telegram initData flow as every other API request.
+        const initData = await getTelegramInitData();
+        if (!initData) {
+          showToast('اطلاعات ورود تلگرام دریافت نشد؛ مینی‌اپ را از داخل ربات باز کنید.');
+          return;
+        }
         const res = await fetch('/api/claim', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
