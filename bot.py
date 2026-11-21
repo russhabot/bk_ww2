@@ -275,6 +275,9 @@ REVOLUTION_FLAG_META = {
     },
     "PY": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_Partido_Colorado_de_Paraguay.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_Partido_Colorado_de_Paraguay.svg", "label": "پرچم حزب کلرادو پاراگوئه؛ حزب محافظه‌کار تاریخی"}
+    },
+    "SU": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Soviet_Union_(1924%E2%80%931936).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Soviet_Union_(1924%E2%80%931936).svg", "label": "پرچم رسمی اتحاد جماهیر شوروی (۱۹۲۴ تا ۱۹۳۶؛ مناسب سناریوی ۱۹۳۴)"}
     }
 }
 # Preserve the scenario's original national flag, then overlay any persistent
