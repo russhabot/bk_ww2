@@ -28,7 +28,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-flags-audit-5" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-flags-audit-6" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -184,6 +184,8 @@ REVOLUTION_FLAG_META = {
     },
     "BE": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Verdinaso.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Verdinaso.svg", "label": "پرچم جنبش ملی‌گرای اقتدارگرای وردیناسو"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Communist_party_belgium_flag_(1978).png", "source_url": "https://commons.wikimedia.org/wiki/File:Communist_party_belgium_flag_(1978).png", "label": "پرچم حزب کمونیست بلژیک"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/BSP-logo.svg", "source_url": "https://commons.wikimedia.org/wiki/File:BSP-logo.svg", "label": "نشان حزب سوسیالیست بلژیک"},
     },
     "JP": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Old_Japanese_Communist_Flag.gif", "source_url": "https://commons.wikimedia.org/wiki/File:Old_Japanese_Communist_Flag.gif", "label": "پرچم قدیمی حزب کمونیست ژاپن"}
@@ -277,6 +279,7 @@ REVOLUTION_FLAG_META = {
     },
     "PH": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_the_Philippines.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_the_Philippines.svg", "label": "پرچم حزب کمونیست فیلیپین"}
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Liberal_Party_Philippines_logo_1961.png", "source_url": "https://commons.wikimedia.org/wiki/File:Liberal_Party_Philippines_logo_1961.png", "label": "نشان حزب لیبرال فیلیپین"},
     },
     "BO": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_FSB.png", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_FSB.png", "label": "پرچم فالانژ سوسیالیست بولیوی"}
@@ -286,6 +289,7 @@ REVOLUTION_FLAG_META = {
     },
     "YU": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Communist_Party_of_Yugoslavia_Flag_(1920%E2%80%931952).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Communist_Party_of_Yugoslavia_Flag_(1920%E2%80%931952).svg", "label": "پرچم حزب کمونیست یوگسلاوی (۱۹۲۰ تا ۱۹۵۲)"}
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Yugoslav_Radical_Union.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Yugoslav_Radical_Union.svg", "label": "پرچم اتحادیه رادیکال یوگسلاو"},
     },
     "CP": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Chinese_Communist_Party_(Pre-1996).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Chinese_Communist_Party_(Pre-1996).svg", "label": "پرچم حزب کمونیست چین"}
