@@ -3,6 +3,7 @@ import asyncio
 import base64
 import hashlib
 import hmac
+from html import escape as html_escape
 import json
 import os
 import re
@@ -27,7 +28,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121govtags-embassyphotos-tagsui" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121internal-revolution" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -78,9 +79,147 @@ REQUIRED_CHANNELS = [
 
 from database import (
     all_players, find_player_by_country, kget, kset, pdel, pget, pset, reset_season,
-    sync_country_catalog
+    sync_country_catalog, load_country_politics, save_country_politics
 )
 COUNTRIES = sync_country_catalog(COUNTRIES)
+
+# Preserve the scenario's original national flag, then overlay any persistent
+# country-level political changes saved by previous deployments.
+for _code, _country in COUNTRIES.items():
+    _country.setdefault("base_flag_url", _country.get("flag_url") or "")
+    if _code == "DE":
+        # The German scenario's original local artwork contains a prohibited-era
+        # emblem; revolution variants use the neutral national tricolour instead.
+        _country["base_flag_url"] = "https://flagcdn.com/w320/de.png"
+
+for _code, _politics in load_country_politics().items():
+    if _code not in COUNTRIES or not isinstance(_politics, dict):
+        continue
+    for _key in (
+        "government_type", "ideology", "regime_type", "regime_fa", "leader",
+        "leader_fa", "leader_en", "leader_title", "leader_img", "leader_url",
+        "revolution_used", "revolution_path", "revolution_previous_government",
+        "revolution_at"
+    ):
+        if _key in _politics:
+            COUNTRIES[_code][_key] = _politics[_key]
+    if COUNTRIES[_code].get("revolution_used"):
+        COUNTRIES[_code]["flag_url"] = f"/flag/{_code}/{COUNTRIES[_code].get('government_type', 'democracy')}.svg"
+
+REVOLUTION_RULES = {
+    "fascism": {
+        "government_type": "fascism", "ideology": "fascism",
+        "regime_type": "nationalist_fascist_state",
+        "regime_fa": "حکومت ملی‌گرای فاشیستی",
+        "party_fa": "حزب ملی‌گرا",
+        "leader_prefix": "رهبر شورای ملی",
+        "leader_title": "رهبر حزب ملی‌گرا"
+    },
+    "communism": {
+        "government_type": "communism", "ideology": "communism",
+        "regime_type": "communist_one_party_state",
+        "regime_fa": "جمهوری سوسیالیستی تک‌حزبی",
+        "party_fa": "حزب کمونیست",
+        "leader_prefix": "رئیس شورای خلق",
+        "leader_title": "دبیرکل حزب کمونیست"
+    },
+    "democracy": {
+        "government_type": "democracy", "ideology": "democracy",
+        "regime_type": "democratic_republic",
+        "regime_fa": "جمهوری دموکراتیک",
+        "party_fa": "حزب دموکراتیک",
+        "leader_prefix": "رئیس‌جمهور",
+        "leader_title": "رئیس‌جمهور"
+    }
+}
+REVOLUTION_TRANSITIONS = {
+    "monarchy": ("communism", "fascism", "democracy"),
+    "fascism": ("communism", "democracy"),
+    "communism": ("fascism", "democracy"),
+    "democracy": ("communism", "fascism")
+}
+REVOLUTION_REQUIREMENTS = {
+    "power": 75, "money": 80000, "satisfaction": 65,
+    "food": 12000, "oil": 2500, "buildings": 2
+}
+
+
+def perform_revolution(uid, player, body):
+    code = str(player.get("c") or "").strip().upper()
+    country = COUNTRIES.get(code)
+    target = str(body.get("target") or "").strip().lower()
+    if not country or target not in REVOLUTION_RULES:
+        return "مسیر انقلاب یا کشور انتخاب‌شده معتبر نیست."
+    if country.get("revolution_used"):
+        return "این کشور قبلاً یک‌بار انقلاب کرده است؛ امکان انقلاب دوباره وجود ندارد."
+    current = str(country.get("government_type") or "democracy").lower()
+    allowed = REVOLUTION_TRANSITIONS.get(current, ())
+    if target not in allowed:
+        return "این مسیر با ساختار سیاسی فعلی کشور سازگار نیست."
+    buildings = player.get("buildings") if isinstance(player.get("buildings"), dict) else {}
+    built_count = sum(max(0, safe_int(value)) for value in buildings.values())
+    checks = {
+        "power": safe_float(player.get("power")),
+        "money": safe_float(player.get("money")),
+        "satisfaction": safe_float(player.get("satisfaction")),
+        "food": safe_float(player.get("food")),
+        "oil": safe_float(player.get("oil")),
+        "buildings": built_count
+    }
+    labels = {
+        "power": "قدرت سیاسی", "money": "خزانه", "satisfaction": "رضایت عمومی",
+        "food": "ذخیره غذا", "oil": "ذخیره نفت", "buildings": "ساختمان‌های اقتصادی"
+    }
+    missing = [
+        f"{labels[key]}: حداقل {REVOLUTION_REQUIREMENTS[key]:,}"
+        for key in REVOLUTION_REQUIREMENTS
+        if checks[key] < REVOLUTION_REQUIREMENTS[key]
+    ]
+    if missing:
+        return "شرایط انقلاب هنوز کامل نیست: " + "، ".join(missing)
+    if safe_float(player.get("money")) < 50000 or safe_float(player.get("power")) < 35:
+        return "خزانه یا قدرت سیاسی برای تأمین هزینه انقلاب کافی نیست."
+
+    rule = REVOLUTION_RULES[target]
+    country_name = str(country.get("name_fa") or code)
+    country_name_en = str(country.get("name_en") or code)
+    previous = current
+    player["power"] = safe_float(player.get("power")) - 35
+    player["money"] = safe_int(player.get("money")) - 50000
+    player["food"] = safe_int(player.get("food")) - 5000
+    player["oil"] = safe_int(player.get("oil")) - 1000
+    player["satisfaction"] = max(0, safe_float(player.get("satisfaction")) - 8)
+
+    new_leader = f"{rule['leader_prefix']} {country_name}"
+    new_leader_en = f"{rule['leader_prefix']} of {country_name_en}"
+    politics = {
+        "government_type": rule["government_type"],
+        "ideology": rule["ideology"],
+        "regime_type": rule["regime_type"],
+        "regime_fa": rule["regime_fa"],
+        "leader": new_leader,
+        "leader_fa": new_leader,
+        "leader_en": new_leader_en,
+        "leader_title": rule["leader_title"],
+        "leader_img": f"/revolution-leader/{target}.svg",
+        "leader_url": f"/revolution-leader/{target}.svg",
+        "revolution_used": True,
+        "revolution_path": target,
+        "revolution_previous_government": previous,
+        "revolution_at": int(time.time())
+    }
+    save_country_politics(code, politics)
+    country.update(politics)
+    country["flag_url"] = f"/flag/{code}/{target}.svg"
+    country["desc"] = (
+        str(country.get("desc") or "").rstrip()
+        + f" در جریان سیزن، انقلاب {rule['party_fa']} به پیروزی رسید؛ "
+        + f"ساختار حکومت به {rule['regime_fa']} تغییر کرد و {new_leader} زمام امور را به دست گرفت."
+    )
+    print(f"[revolution] country={code} from={previous} to={target} actor={uid}")
+    return None
+
+
 
 # Start the current season workflow in the waiting room on its first launch.
 if kget("season_default_migrated") is None:
@@ -621,7 +760,24 @@ def get_api_state(uid, player, season, membership_info=None):
         owners[c] = {"name": p_name or p_uname or "فرمانروا", "username": p_uname, "uid": p_uid}
         owners[c.lower()] = owners[c]
         if c in COUNTRIES:
-            active_countries.append({"code": c, "uid": p_uid, "name_fa": COUNTRIES[c].get("name_fa", c), "name_en": COUNTRIES[c].get("name_en", c), "ruler": p_name or p_uname or "فرمانروا", "username": p_uname, "faction": COUNTRIES[c].get("faction", "neutral"), "government_type": COUNTRIES[c].get("government_type", "democracy"), "regime_type": COUNTRIES[c].get("regime_type", ""), "regime_fa": COUNTRIES[c].get("regime_fa", "نوع حکومت ثبت نشده")})
+            active_countries.append({
+                "code": c, "uid": p_uid,
+                "name_fa": COUNTRIES[c].get("name_fa", c),
+                "name_en": COUNTRIES[c].get("name_en", c),
+                "ruler": p_name or p_uname or COUNTRIES[c].get("leader_fa") or "فرمانروا",
+                "username": p_uname,
+                "faction": COUNTRIES[c].get("faction", "neutral"),
+                "government_type": COUNTRIES[c].get("government_type", "democracy"),
+                "regime_type": COUNTRIES[c].get("regime_type", ""),
+                "regime_fa": COUNTRIES[c].get("regime_fa", "نوع حکومت ثبت نشده"),
+                "flag_url": COUNTRIES[c].get("flag_url", ""),
+                "leader_fa": COUNTRIES[c].get("leader_fa", ""),
+                "leader_title": COUNTRIES[c].get("leader_title", ""),
+                "leader_img": COUNTRIES[c].get("leader_img", ""),
+                "ideology": COUNTRIES[c].get("ideology", ""),
+                "revolution_used": bool(COUNTRIES[c].get("revolution_used", False)),
+                "revolution_path": COUNTRIES[c].get("revolution_path", "")
+            })
 
     return {
         "season": season,
@@ -675,6 +831,57 @@ async def catalog_handler(request):
         "ideologies": IDEOLOGIES,
         "default_music": BACKGROUND_MUSIC_URL
     })
+
+
+async def revolution_flag_handler(request):
+    code = str(request.match_info.get("code") or "").upper()
+    government = str(request.match_info.get("government") or "").lower()
+    country = COUNTRIES.get(code)
+    if not country or government not in REVOLUTION_RULES:
+        return web.Response(status=404, text="Flag not found")
+    base = str(country.get("base_flag_url") or country.get("flag_url") or "").strip()
+    if base.startswith("static/"):
+        base = "/" + base
+    if code == "DE":
+        base = "https://flagcdn.com/w320/de.png"
+    if not (base.startswith("/") or base.startswith("https://") or base.startswith("http://")):
+        base = "/static/flags/" + code + ".svg"
+    safe_base = html_escape(base, quote=True)
+    if government == "communism":
+        emblem = '<rect x="0" y="0" width="250" height="600" fill="#b91c1c" opacity=".94"/><polygon points="125,155 145,215 208,215 157,252 176,315 125,276 74,315 93,252 42,215 105,215" fill="#fff"/>'
+        stripe = '<rect x="250" y="0" width="34" height="600" fill="#b91c1c" opacity=".92"/>'
+    elif government == "fascism":
+        emblem = '<rect x="0" y="0" width="250" height="600" fill="#172033" opacity=".93"/><circle cx="125" cy="300" r="75" fill="none" stroke="#e7bd63" stroke-width="12"/><path d="M125 225 C85 250 76 290 92 330 M125 225 C165 250 174 290 158 330 M85 330 Q125 390 165 330 M100 280 L150 280 M105 305 L145 305" fill="none" stroke="#e7bd63" stroke-width="11" stroke-linecap="round"/><path d="M125 225 L125 375" stroke="#e7bd63" stroke-width="8"/>'
+        stripe = '<rect x="250" y="0" width="34" height="600" fill="#b08a3e" opacity=".95"/>'
+    else:
+        emblem = '<rect x="0" y="0" width="250" height="600" fill="#174a83" opacity=".94"/><circle cx="125" cy="300" r="78" fill="none" stroke="#fff" stroke-width="10"/><polygon points="125,232 141,282 194,282 151,313 167,364 125,333 83,364 99,313 56,282 109,282" fill="#fff"/>'
+        stripe = '<rect x="250" y="0" width="34" height="600" fill="#174a83" opacity=".95"/>'
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1000 600">'
+        f'<image href="{safe_base}" xlink:href="{safe_base}" width="1000" height="600" preserveAspectRatio="xMidYMid slice"/>'
+        '<rect width="1000" height="600" fill="#07111f" opacity=".12"/>'
+        + emblem + stripe
+        + '<rect x="5" y="5" width="990" height="590" fill="none" stroke="#e5e7eb" stroke-opacity=".45" stroke-width="10"/>'
+        + '</svg>'
+    )
+    return web.Response(text=svg, content_type="image/svg+xml", headers={"Cache-Control": "public, max-age=3600"})
+
+
+async def revolution_leader_handler(request):
+    government = str(request.match_info.get("government") or "").lower()
+    if government not in REVOLUTION_RULES:
+        return web.Response(status=404, text="Leader emblem not found")
+    colors = {"communism": "#ef4444", "fascism": "#c49a43", "democracy": "#38bdf8"}
+    color = colors[government]
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">'
+        '<circle cx="120" cy="120" r="112" fill="#0b1728" stroke="' + color + '" stroke-width="8"/>'
+        '<circle cx="120" cy="84" r="38" fill="' + color + '" opacity=".9"/>'
+        '<path d="M48 204c6-45 34-68 72-68s66 23 72 68" fill="' + color + '" opacity=".9"/>'
+        '<path d="M32 218h176" stroke="#e2e8f0" stroke-opacity=".45" stroke-width="4"/>'
+        '</svg>'
+    )
+    return web.Response(text=svg, content_type="image/svg+xml", headers={"Cache-Control": "public, max-age=3600"})
 
 
 async def api_handler(request):
@@ -733,6 +940,19 @@ async def api_handler(request):
                 if error is None or changed:
                     pset(uid, player)
 
+
+        elif action == "revolution":
+            if not player or not player.get("c"):
+                error = "ابتدا باید یک کشور انتخاب کنید."
+            elif season != "live":
+                error = "انقلاب فقط پس از آغاز رسمی سیزن قابل انجام است."
+            elif player.get("alive", True) is False:
+                error = "کشور شما از بازی خارج شده است."
+            else:
+                changed = apply_daily_economy(player)
+                error = perform_revolution(uid, player, body)
+                if error is None or changed:
+                    pset(uid, player)
 
         elif action in ("embassy_request", "embassy_respond", "embassy_close", "diplomacy_transfer", "diplomacy_money_respond", "diplomacy_pact", "diplomacy_pact_respond"):
             if not player or not player.get("c"):
@@ -1156,6 +1376,8 @@ async def main():
     app = web.Application(client_max_size=6 * 1024 * 1024)
     app.router.add_get("/health", health_handler)
     app.router.add_get("/api/catalog", catalog_handler)
+    app.router.add_get("/flag/{code}/{government}.svg", revolution_flag_handler)
+    app.router.add_get("/revolution-leader/{government}.svg", revolution_leader_handler)
     app.router.add_get("/", index_handler)
     static_dir = os.path.join(BASE_DIR, "static")
     if os.path.isdir(static_dir):
