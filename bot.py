@@ -241,6 +241,18 @@ REVOLUTION_FLAG_META = {
     },
     "LR": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/True_Whig_Party_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:True_Whig_Party_flag.svg", "label": "پرچم حزب ویگ واقعی لیبریا"}
+    },
+    "YU": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Communist_Party_of_Yugoslavia_Flag_(1920%E2%80%931952).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Communist_Party_of_Yugoslavia_Flag_(1920%E2%80%931952).svg", "label": "پرچم حزب کمونیست یوگسلاوی (۱۹۲۰ تا ۱۹۵۲)"}
+    },
+    "CP": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Chinese_soviet_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Chinese_soviet_flag.svg", "label": "پرچم جمهوری شورایی چین؛ مرتبط با ساختار کمونیستی یان‌آن"}
+    },
+    "NP": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Nepal_(Unified_Marxist-Leninist).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Nepal_(Unified_Marxist-Leninist).svg", "label": "پرچم حزب کمونیست نپال (تأسیس ۱۹۹۱؛ متأخر نسبت به سناریوی ۱۹۳۴)"}
+    },
+    "CU": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Cuba.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Cuba.svg", "label": "پرچم حزب کمونیست کوبا (تأسیس ۱۹۶۵؛ متأخر نسبت به سناریوی ۱۹۳۴)"}
     }
 }
 # Preserve the scenario's original national flag, then overlay any persistent
