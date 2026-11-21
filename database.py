@@ -84,6 +84,14 @@ def init_db() -> None:
             )
         """)
         _execute("""
+            CREATE TABLE IF NOT EXISTS country_catalog (
+                country_code TEXT PRIMARY KEY,
+                government_type TEXT NOT NULL,
+                data TEXT NOT NULL,
+                updated_at BIGINT NOT NULL
+            )
+        """)
+        _execute("""
             CREATE TABLE IF NOT EXISTS season_history (
                 id BIGSERIAL PRIMARY KEY,
                 season_number BIGINT NOT NULL,
@@ -137,6 +145,14 @@ def init_db() -> None:
         CREATE TABLE IF NOT EXISTS players (
             uid INTEGER PRIMARY KEY, country_code TEXT UNIQUE, data TEXT NOT NULL,
             created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
+        )
+    """)
+    _execute("""
+        CREATE TABLE IF NOT EXISTS country_catalog (
+            country_code TEXT PRIMARY KEY,
+            government_type TEXT NOT NULL,
+            data TEXT NOT NULL,
+            updated_at INTEGER NOT NULL
         )
     """)
     _execute("""
@@ -223,6 +239,46 @@ def pset(uid: int, data: dict[str, Any]) -> None:
         (int(uid), code, payload, int(data.get("created_at") or now), now),
     )
     db.commit()
+
+
+def sync_country_catalog(countries: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Persist the authoritative country catalog and return its database-backed records."""
+    allowed = {"fascism", "communism", "monarchy", "democracy"}
+    now = int(time.time())
+    country_codes = []
+    for raw_code, raw_country in countries.items():
+        code = str(raw_code or "").strip().upper()
+        if not code or not isinstance(raw_country, dict):
+            continue
+        government_type = str(raw_country.get("government_type") or "").strip().lower()
+        if government_type not in allowed:
+            raise ValueError(f"Invalid government_type for {code}: {government_type!r}")
+        country = dict(raw_country)
+        country["government_type"] = government_type
+        _execute(
+            "INSERT INTO country_catalog(country_code, government_type, data, updated_at) VALUES(?, ?, ?, ?) "
+            "ON CONFLICT(country_code) DO UPDATE SET government_type=excluded.government_type, "
+            "data=excluded.data, updated_at=excluded.updated_at",
+            (code, government_type, json.dumps(country, ensure_ascii=False), now),
+        )
+        country_codes.append(code)
+    db.commit()
+
+    stored = {}
+    for row in _execute("SELECT country_code, data FROM country_catalog ORDER BY country_code").fetchall():
+        code = str(row["country_code"])
+        if code not in country_codes:
+            continue
+        try:
+            country = json.loads(row["data"])
+        except (ValueError, TypeError):
+            continue
+        if isinstance(country, dict):
+            stored[code] = country
+    if len(stored) != len(country_codes):
+        raise RuntimeError(f"Country catalog sync mismatch: expected {len(country_codes)}, got {len(stored)}")
+    print(f"[database] Country catalog synced; {len(stored)} countries across 4 government tags")
+    return stored
 
 
 def pdel(uid: int) -> None:
