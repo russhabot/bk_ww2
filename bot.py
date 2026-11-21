@@ -244,7 +244,7 @@ REVOLUTION_FLAG_META = {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Communist_Party_of_Yugoslavia_Flag_(1920%E2%80%931952).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Communist_Party_of_Yugoslavia_Flag_(1920%E2%80%931952).svg", "label": "پرچم حزب کمونیست یوگسلاوی (۱۹۲۰ تا ۱۹۵۲)"}
     },
     "CP": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Chinese_soviet_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Chinese_soviet_flag.svg", "label": "پرچم جمهوری شورایی چین؛ مرتبط با ساختار کمونیستی یان‌آن"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Chinese_Communist_Party_(Pre-1996).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Chinese_Communist_Party_(Pre-1996).svg", "label": "پرچم حزب کمونیست چین؛ طرح حزبی پیش از ۱۹۹۶ و متفاوت از پرچم جمهوری شورایی چین"}
     },
     "NP": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Nepal_(Unified_Marxist-Leninist).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Nepal_(Unified_Marxist-Leninist).svg", "label": "پرچم حزب کمونیست نپال (تأسیس ۱۹۹۱؛ متأخر نسبت به سناریوی ۱۹۳۴)"}
@@ -287,6 +287,28 @@ REVOLUTION_FLAG_META = {
     },
     "EE": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/P%C3%B5llumeeste_Kogud_flag%2C_1934.svg", "source_url": "https://commons.wikimedia.org/wiki/Category:Flags_of_political_parties_in_Estonia", "label": "پرچم تشکل سیاسی Põllumeeste Kogud؛ نسخهٔ ثبت‌شده در ۱۹۳۴"}
+    },
+    "PL": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Green_flag_with_symbol_of_falanga.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Green_flag_with_symbol_of_falanga.svg", "label": "پرچم سبز با نشان فالانگا؛ نماد جریان ملی‌ـ‌رادیکال لهستان با ریشه در ۱۹۳۳، نسخهٔ بازنمایی‌شده"}
+    },
+    "BT": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Communist_Party_of_Bhutan_Flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Communist_Party_of_Bhutan_Flag.svg", "label": "پرچم حزب کمونیست بوتان؛ خارج از دورهٔ ۱۹۳۴"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Druk_National_Congress.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Druk_National_Congress.svg", "label": "پرچم کنگرهٔ ملی دروک بوتان؛ جنبش سیاسی متأخر"}
+    },
+    "YE": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Yemeni_Socialist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Yemeni_Socialist_Party.svg", "label": "پرچم حزب سوسیالیست یمن؛ تأسیس در دههٔ ۱۹۷۰ و خارج از دورهٔ ۱۹۳۴"}
+    },
+    "OM": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Dhofar_Liberation_Front.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Dhofar_Liberation_Front.svg", "label": "پرچم جبههٔ آزادی‌بخش ظفار (۱۹۶۵ تا ۱۹۶۸)؛ جنبش چپ‌گرای متأخر"}
+    },
+    "PA": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Partido_Revolucionario_Democr%C3%A1tico.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Partido_Revolucionario_Democr%C3%A1tico.jpg", "label": "پرچم حزب انقلابی دموکراتیک پاناما؛ تأسیس ۱۹۷۹ و خارج از دورهٔ ۱۹۳۴"}
+    },
+    "DO": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Dominican_Liberation_Party_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Dominican_Liberation_Party_flag.svg", "label": "پرچم حزب آزادی‌بخش دومینیکن؛ تأسیس ۱۹۷۳ و خارج از دورهٔ ۱۹۳۴"}
+    },
+    "ET": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Ethiopian_Workers%27_Party.png", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Ethiopian_Workers%27_Party.png", "label": "پرچم حزب کارگران اتیوپی؛ تأسیس ۱۹۸۴ و خارج از دورهٔ ۱۹۳۴"}
     },
     "NI": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Liberal_Nacionalista_de_Nicaragua_%281912-1979%29.png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Liberal_Nacionalista_de_Nicaragua_(1912-1979).png", "label": "پرچم حزب لیبرال ملی نیکاراگوئه (۱۹۱۲ تا ۱۹۷۹؛ حزب سیاسی دورهٔ موردنظر)"}
