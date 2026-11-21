@@ -282,7 +282,8 @@ REVOLUTION_FLAG_META = {
     },
     "IR": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Persian_Azadistan.gif", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Persian_Azadistan.gif", "label": "پرچم حکومت کوتاه‌عمر آزادستان (۱۹۲۰؛ جنبش خودگردانی و مشروطه‌خواهانه در آذربایجان ایران)"},
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Persian_Socialist_Soviet_Republic.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Persian_Socialist_Soviet_Republic.svg", "label": "پرچم جمهوری شورایی سوسیالیستی ایران (۱۹۲۰ تا ۱۹۲۱؛ جنبش تاریخی پیش از سناریوی ۱۹۳۴)"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Persian_Socialist_Soviet_Republic.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Persian_Socialist_Soviet_Republic.svg", "label": "پرچم جمهوری شورایی سوسیالیستی ایران (۱۹۲۰ تا ۱۹۲۱؛ جنبش تاریخی پیش از سناریوی ۱۹۳۴)"},
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_SUMKA.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_SUMKA.svg", "label": "پرچم حزب سومکا، حزب سوسیالیست ملی کارگران ایران (تأسیس ۱۹۵۲؛ خارج از دورهٔ آغازین ۱۹۳۴)"}
     },
     "EE": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/P%C3%B5llumeeste_Kogud_flag%2C_1934.svg", "source_url": "https://commons.wikimedia.org/wiki/Category:Flags_of_political_parties_in_Estonia", "label": "پرچم تشکل سیاسی Põllumeeste Kogud؛ نسخهٔ ثبت‌شده در ۱۹۳۴"}
