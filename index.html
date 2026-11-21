@@ -3016,6 +3016,27 @@
     let isAudioPlaying = false;
 
     const tg = window.Telegram?.WebApp;
+
+    // Resolve Telegram's signed launch payload when the WebApp bridge finishes initializing.
+    // Keep the first valid signed payload for all subsequent authenticated API calls.
+    let cachedTelegramInitData = '';
+    async function getTelegramInitData() {
+      if (cachedTelegramInitData) return cachedTelegramInitData;
+      let webApp = window.Telegram?.WebApp || tg || null;
+      for (let attempt = 0; attempt < 50; attempt++) {
+        webApp = window.Telegram?.WebApp || webApp || null;
+        if (webApp) {
+          try { webApp.ready(); } catch (e) {}
+          const value = String(webApp.initData || '').trim();
+          if (value) {
+            cachedTelegramInitData = value;
+            return cachedTelegramInitData;
+          }
+        }
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      return cachedTelegramInitData;
+    }
     if (tg) {
       try {
         tg.ready();
@@ -3062,7 +3083,11 @@
     // Fetch live state from backend
     async function fetchState() {
       try {
-        const initData = window.Telegram?.WebApp?.initData || '';
+        const initData = await getTelegramInitData();
+        if (!initData) {
+          console.warn('Telegram signed initData is not available yet; skipping authenticated state request.');
+          return;
+        }
         const res = await fetch('/api/state', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3137,7 +3162,12 @@
       errBox.style.display = 'none';
 
       try {
-        const initData = window.Telegram?.WebApp?.initData || '';
+        const initData = await getTelegramInitData();
+        if (!initData) {
+          errBox.textContent = 'اطلاعات ورود تلگرام دریافت نشد؛ اتصال مینی‌اپ به تلگرام کامل نشد. دوباره باز کنید.';
+          errBox.style.display = 'block';
+          return;
+        }
         const res = await fetch('/api/check_membership', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3413,7 +3443,9 @@
 
     async function gameAction(action, payload) {
       try {
-        const res=await fetch('/api/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({init:tg?.initData||'',...(payload||{})})});
+        const initData = await getTelegramInitData();
+        if (!initData) { showToast('اطلاعات ورود تلگرام دریافت نشد؛ اتصال مینی‌اپ به تلگرام کامل نشد.'); return false; }
+        const res=await fetch('/api/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({init:initData,...(payload||{})})});
         const data=await res.json();
         if(data.s){S.p=data.s.p||S.p;S.active_countries=data.s.active_countries||S.active_countries;S.economy_buildings=data.s.economy_buildings||S.economy_buildings;S.diplomacy=data.s.diplomacy||S.diplomacy;(data.s.active_countries||[]).forEach(country=>{if(country.code&&COUNTRIES[country.code])Object.assign(COUNTRIES[country.code],country);});}
         if(!res.ok||!data.ok){showToast(data.err||'عملیات انجام نشد.');return false;}
@@ -3950,7 +3982,11 @@
       btn.innerHTML = ICONS.refresh + ' در حال مخابره به ستاد کل...';
 
       try {
-        const initData = window.Telegram?.WebApp?.initData || '';
+        const initData = await getTelegramInitData();
+        if (!initData) {
+          showToast('اطلاعات ورود تلگرام دریافت نشد؛ اتصال مینی‌اپ به تلگرام کامل نشد. دوباره باز کنید.');
+          return;
+        }
         const res = await fetch('/api/claim', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
