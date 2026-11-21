@@ -133,7 +133,7 @@ REVOLUTION_FLAG_META = {
     },
     "IE": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Irish_Blueshirts.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Irish_Blueshirts.svg", "label": "پرچم جنبش بلوز‌شرت‌های ایرلند در دههٔ ۱۹۳۰"},
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Ireland.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Ireland.svg", "label": "پرچم حزب کمونیست ایرلند"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Ireland.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Ireland.svg", "label": "نسخهٔ معاصر پرچم حزب کمونیست ایرلند؛ حزب از ۱۹۳۳"}
     },
     "NO": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Nasjonal_Samling.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Nasjonal_Samling.svg", "label": "پرچم حزب ناسیونال سام‌لینگ نروژ (۱۹۳۳ تا ۱۹۴۵)"}
@@ -149,10 +149,10 @@ REVOLUTION_FLAG_META = {
     },
     "BG": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Bulgarian_National_Socialist_Workers_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Bulgarian_National_Socialist_Workers_Party.svg", "label": "پرچم حزب کارگران ناسیونال‌سوسیالیست بلغارستان (تأسیس ۱۹۳۲)"},
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Bulgarian_Communist_Party_-_%D0%91%D1%8A%D0%BB%D0%B3%D0%B0%D1%80%D1%81%D0%BA%D0%B0_%D0%9A%D0%BE%D0%BC%D1%83%D0%BD%D0%B8%D1%81%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0_%D0%9F%D0%B0%D1%80%D1%82%D0%B8%D1%8F_(%D0%91%D0%9A%D0%9F).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Bulgarian_Communist_Party_-_Българска_Комунистическа_Партия_(БКП).svg", "label": "پرچم حزب کمونیست بلغارستان (بازنمایی ویکی‌مدیا)"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Bulgarian_Communist_Party_-_%D0%91%D1%8A%D0%BB%D0%B3%D0%B0%D1%80%D1%81%D0%BA%D0%B0_%D0%9A%D0%BE%D0%BC%D1%83%D0%BD%D0%B8%D1%81%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0_%D0%9F%D0%B0%D1%80%D1%82%D0%B8%D1%8F_(%D0%91%D0%9A%D0%9F).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Bulgarian_Communist_Party_-_Българска_Комунистическа_Партия_(БКП).svg", "label": "بازنمایی ویکی‌مدیا از پرچم حزب کمونیست بلغارستان؛ تاریخ دقیق نسخه مشخص نیست"}
     },
     "CZ": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_KSC.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_KSC.svg", "label": "پرچم حزب کمونیست چکسلواکی"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_KSC.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_KSC.svg", "label": "پرچم معاصر حزب کمونیست چکسلواکی؛ حزب از ۱۹۲۱"}
     },
     "NL": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_National_Socialist_Movement_in_the_Netherlands.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_National_Socialist_Movement_in_the_Netherlands.svg", "label": "پرچم جنبش ملی‌سوسیالیستی هلند (NSB؛ از ۱۹۳۱)"}
@@ -164,18 +164,15 @@ REVOLUTION_FLAG_META = {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Old_Japanese_Communist_Flag.gif", "source_url": "https://commons.wikimedia.org/wiki/File:Old_Japanese_Communist_Flag.gif", "label": "پرچم قدیمی حزب کمونیست ژاپن؛ تاریخ دقیق این نسخه مشخص نیست"}
     },
     "IN": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_India.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_India.jpg", "label": "پرچم حزب کمونیست هند"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_India.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_India.jpg", "label": "پرچم معاصر حزب کمونیست هند؛ حزب از ۱۹۲۵"},
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Indian_National_Congress_(1931%E2%80%931971).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Indian_National_Congress_(1931%E2%80%931971).svg", "label": "پرچم کنگرهٔ ملی هند (از ۱۹۳۱)"}
     },
     "ZA": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_South_African_Communist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_South_African_Communist_Party.svg", "label": "پرچم حزب کمونیست آفریقای جنوبی"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_South_African_Communist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_South_African_Communist_Party.svg", "label": "پرچم معاصر حزب کمونیست آفریقای جنوبی؛ حزب از ۱۹۲۱"},
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_South_African_Gentile_National_Socialist_Movement.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_South_African_Gentile_National_Socialist_Movement.svg", "label": "پرچم جنبش ملی‌سوسیالیست آفریقای جنوبی (گری‌شرت‌ها؛ از ۱۹۳۳)"}
     },
     "AR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Fascist_Party_of_Argentina.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Fascist_Party_of_Argentina.svg", "label": "بازسازی پرچم حزب فاشیست آرژانتین؛ تصویر بازسازی‌شده در ویکی‌مدیا"}
-    },
-    "PL": {
-        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Oboz_Narodowo_Radykalny.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Oboz_Narodowo_Radykalny.svg", "label": "نماد پرچمی اردوگاه ملی رادیکال لهستان؛ نسخهٔ ویکی‌مدیا، نه سند پرچم رسمی ۱۹۳۴"}
     },
     "CA": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Parti_National_Social_Chr%C3%A9tien.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Parti_National_Social_Chr%C3%A9tien.svg", "label": "پرچم حزب ملی‌سوسیالیست مسیحی کانادا؛ گروه سیاسی دههٔ ۱۹۳۰"}
@@ -202,20 +199,20 @@ REVOLUTION_FLAG_META = {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Concordia_Association.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Concordia_Association.svg", "label": "پرچم انجمن کنکوردیا در منچوکوئو (۱۹۳۲ تا ۱۹۴۵)"}
     },
     "MN": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Mongolian_People%27s_Party_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Mongolian_People%27s_Party_flag.svg", "label": "پرچم حزب مردم مغولستان؛ حزب تاریخی بنیان‌گذاری‌شده در ۱۹۲۱"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Mongolian_People%27s_Party_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Mongolian_People%27s_Party_flag.svg", "label": "پرچم رسمی کنونی حزب مردم مغولستان؛ بازنمایی معاصر از حزبی با پیشینهٔ ۱۹۲۱"}
     },
     "VE": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Partido_liberal_de_Venezuela.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Partido_liberal_de_Venezuela.svg", "label": "پرچم حزب لیبرال ونزوئلا"}
     },
     "HN": {
-        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Liberal_Party_of_Honduras_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Liberal_Party_of_Honduras_flag.svg", "label": "پرچم حزب لیبرال هندوراس"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Liberal_Party_of_Honduras_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Liberal_Party_of_Honduras_flag.svg", "label": "پرچم معاصر حزب لیبرال هندوراس"},
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Partido_comunista_de_Honduras.png", "source_url": "https://commons.wikimedia.org/wiki/File:Partido_comunista_de_Honduras.png", "label": "نشان پرچمی حزب کمونیست هندوراس"}
     },
     "TR": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_CHF.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_CHF.jpg", "label": "پرچم حزب جمهوری‌خواه خلق ترکیه؛ سند تصویری مربوط به ۱۹۳۳"}
     },
     "CO": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Comunista_Colombiano.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Comunista_Colombiano.svg", "label": "پرچم حزب کمونیست کلمبیا"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Comunista_Colombiano.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Comunista_Colombiano.svg", "label": "پرچم معاصر حزب کمونیست کلمبیا؛ حزب از ۱۹۳۰"},
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Liberal_Colombiano.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Liberal_Colombiano.svg", "label": "پرچم حزب لیبرال کلمبیا"}
     },
     "CR": {
@@ -228,11 +225,11 @@ REVOLUTION_FLAG_META = {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_pgt.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_pgt.jpg", "label": "پرچم حزب کارگران گواتمالا؛ مربوط به دورهٔ بعدی و نه ۱۹۳۴"}
     },
     "UY": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_PCU.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_PCU.svg", "label": "پرچم حزب کمونیست اروگوئه"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_PCU.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_PCU.svg", "label": "پرچم معاصر حزب کمونیست اروگوئه؛ حزب از ۱۹۲۰"},
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Colorado_Party_(Uruguay).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Colorado_Party_(Uruguay).svg", "label": "پرچم حزب کلرادو اروگوئه"}
     },
     "PE": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "label": "پرچم حزب کمونیست پرو"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "label": "نسخهٔ ویکی‌مدیا از پرچم حزب کمونیست پرو؛ حزب از ۱۹۲۸"}
     },
     "PH": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_the_Philippines.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_the_Philippines.svg", "label": "پرچم حزب کمونیست فیلیپین؛ این حزب در ۱۹۶۸ تأسیس شد و با دورهٔ آغازین ۱۹۳۴ هم‌زمان نیست"}
