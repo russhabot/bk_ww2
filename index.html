@@ -3989,11 +3989,8 @@
       btn.innerHTML = ICONS.refresh + ' در حال مخابره به ستاد کل...';
 
       try {
-        const initData = await getTelegramInitData();
-        if (!initData) {
-          showToast('اطلاعات ورود تلگرام دریافت نشد؛ مینی‌اپ را با دکمهٔ ورود داخل ربات باز کنید.');
-          return;
-        }
+        // Preserve the previously working Telegram WebApp auth flow for country claims.
+        const initData = tg?.initData || '';
         const res = await fetch('/api/claim', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
