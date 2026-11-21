@@ -1063,6 +1063,25 @@
     .management-feature-card .management-photo img,.management-root-card .management-photo img,.management-building-card .management-photo img{width:100%;height:100%;max-height:none;object-fit:cover;padding:0;background:transparent}.management-feature-card .management-photo,.management-root-card .management-photo,.management-building-card .management-photo{height:116px;overflow:hidden;border-radius:10px;background:#0a1422}.diplomacy-action-card img{width:58px;height:50px;object-fit:contain}
     .diplomacy-war-card{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px;border:1px solid rgba(239,68,68,.35);border-radius:12px;background:rgba(127,29,29,.12)}.diplomacy-war-card img{width:70px;height:58px;object-fit:contain;flex:0 0 70px}.diplomacy-war-card>div{min-width:0;flex:1}.diplomacy-war-card strong{font-size:12px;color:#fecaca}.diplomacy-war-card small{display:block;color:var(--text-muted);font-size:10px;line-height:1.7}
     @media(max-width:520px){.home-announcements{padding:10px}.home-notice-row>img{width:48px;height:42px;flex-basis:48px}.diplomacy-tool-panel{padding:10px}.diplomacy-tool-head img{width:54px;height:50px}.management-feature-card .management-photo,.management-root-card .management-photo,.management-building-card .management-photo{height:90px}.management-feature-card .management-photo img,.management-root-card .management-photo img,.management-building-card .management-photo img{max-height:none;object-fit:cover;padding:0}}
+    .diplomacy-embassy-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0;margin-top:14px;overflow:hidden;border:1px solid rgba(201,169,111,.34);border-radius:15px;background:linear-gradient(145deg,#14243a,#0a1422);box-shadow:0 12px 28px rgba(0,0,0,.18)}
+    .diplomacy-embassy-hero>img{display:block;width:100%;height:100%;min-height:190px;max-height:220px;object-fit:cover;object-position:center 52%;background:#0a1422}
+    .diplomacy-embassy-copy{display:flex;flex-direction:column;justify-content:center;gap:8px;min-width:0;padding:18px}
+    .diplomacy-embassy-copy>span{color:#d6b779;font-size:10px;letter-spacing:.04em}
+    .diplomacy-embassy-copy strong{font-size:16px;color:#fff}
+    .diplomacy-embassy-copy p{margin:0;color:#b9c5d4;font-size:11px;line-height:1.9}
+    .diplomacy-war-standalone{margin:12px 0 16px}
+    .diplomacy-war-standalone button{flex:0 0 auto;min-width:116px}
+    .economy-demand-panel{margin:12px 0 15px;padding:13px;border:1px solid var(--border-bright);border-radius:13px;background:linear-gradient(145deg,#132238,#0a1422)}
+    .economy-demand-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:11px}
+    .economy-demand-heading strong{font-size:13px;color:#fff}.economy-demand-heading small{font-size:10px;color:var(--text-muted)}
+    .economy-demand-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .economy-demand-grid>div{min-width:0;padding:10px;border:1px solid rgba(148,163,184,.15);border-radius:9px;background:rgba(4,11,20,.45)}
+    .economy-demand-grid small{display:block;color:var(--text-muted);font-size:10px;margin-bottom:5px}
+    .economy-demand-grid strong{display:block;color:#e8eef7;font-size:14px;overflow-wrap:anywhere}
+    .economy-demand-grid em{font-size:9px;font-style:normal;color:#9eacbd}
+    .economy-demand-grid .is-positive strong{color:#86efac}.economy-demand-grid .is-negative strong{color:#fca5a5}
+    .economy-demand-panel>p{margin:10px 1px 0;color:var(--text-muted);font-size:10px;line-height:1.8}
+    @media(max-width:620px){.diplomacy-embassy-hero{grid-template-columns:1fr}.diplomacy-embassy-hero>img{height:150px;min-height:0;max-height:150px}.diplomacy-embassy-copy{padding:13px}.diplomacy-war-standalone{align-items:flex-start;flex-wrap:wrap}.diplomacy-war-standalone button{width:100%}.economy-demand-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.economy-demand-heading{flex-direction:column;gap:3px}}
 </style>
 </head>
 <body>
@@ -3033,20 +3052,41 @@
         const resourceStrip='<div class="management-resource-strip"><div><small>طلا</small><strong>'+num(materials.gold)+' واحد</strong></div><div><small>آهن</small><strong>'+num(materials.iron)+' واحد</strong></div><div><small>زغال‌سنگ</small><strong>'+num(materials.coal)+' واحد</strong></div></div>';
         body=economyBack+sectionTitle('استخراج منابع','معادن')+resourceStrip+'<div class="management-building-grid">'+makeCards('mines')+'</div>';heading='معادن';
       }
-      if(managementSection==='food'){body=economyBack+sectionTitle('تأمین روزانه','کشاورزی و غذا')+'<div class="management-building-grid">'+makeCards('food')+'</div>';heading='کشاورزی و غذا';}
+      if(managementSection==='food'){
+        const dailyFoodNeed=150+Math.floor(Math.max(0,Number(r.infantry)||0)/3000);
+        const dailyFoodOutput=Object.entries(catalog).reduce((sum,[key,b])=>sum+(b.category==='food'?Number(b.food||0)*Number(buildings[key]||0):0),0);
+        const foodBalance=dailyFoodOutput-dailyFoodNeed;
+        const foodSummary='<div class="economy-demand-panel"><div class="economy-demand-heading"><strong>نیاز روزانه کشور به غذا</strong><small>بر اساس جمعیت و تولید مزارع</small></div><div class="economy-demand-grid"><div><small>ذخیره فعلی</small><strong>'+num(r.food||0)+' <em>واحد</em></strong></div><div><small>مصرف روزانه</small><strong>'+num(dailyFoodNeed)+' <em>واحد</em></strong></div><div><small>تولید روزانه</small><strong>'+num(dailyFoodOutput)+' <em>واحد</em></strong></div><div class="'+(foodBalance>=0?'is-positive':'is-negative')+'"><small>'+(foodBalance>=0?'مازاد روزانه':'کسری روزانه')+'</small><strong>'+num(Math.abs(foodBalance))+' <em>واحد</em></strong></div></div><p>اگر تولید از مصرف کمتر باشد، ذخیره غذا کاهش می‌یابد و کمبود طولانی‌مدت به رضایت عمومی آسیب می‌زند.</p></div>';
+        body=economyBack+sectionTitle('تأمین روزانه','کشاورزی و غذا')+foodSummary+'<div class="management-building-grid">'+makeCards('food')+'</div>';heading='کشاورزی و غذا';
+      }
       if(managementSection==='tax'){
         const already=r.tax_date===new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Tehran'});
         body=economyBack+sectionTitle('درآمد عمومی','مالیات')+'<article class="management-tax-card">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/Tax_Office%3F_LCCN2016862907.jpg?width=1280','ساختمان اداره مالیات در دهه ۱۹۳۰')+'<div class="management-building-content"><div class="building-fact"><span>درآمد امروز</span><strong>۳۵٬۰۰۰ دلار</strong></div><div class="building-fact"><span>کاهش رضایت</span><strong>۴٪</strong></div><button class="btn btn-gold" style="width:100%" '+(already?'disabled':'')+' onclick="collectEconomyTax()">'+(already?'مالیات امروز دریافت شده':'دریافت مالیات روزانه')+'</button></div></article>';heading='مالیات';
       }
-      if(managementSection==='welfare'){body=economyBack+sectionTitle('خدمات عمومی','رفاهیات')+'<div class="management-building-grid">'+makeCards('welfare')+'</div>';heading='رفاهیات';}
+      if(managementSection==='welfare'){
+        const dailyWelfareNeed=2+Math.floor(Math.max(0,Number(r.infantry)||0)/150000);
+        const welfarePoints=Object.entries(catalog).reduce((sum,[key,b])=>sum+(b.category==='welfare'?Number(b.happy||0)*Number(buildings[key]||0):0),0);
+        const welfareEffect=welfarePoints*0.5;
+        const welfareBalance=welfareEffect-dailyWelfareNeed;
+        const welfareSummary='<div class="economy-demand-panel"><div class="economy-demand-heading"><strong>نیاز روزانه کشور به رفاهیات</strong><small>بر اساس جمعیت و خدمات ساخته‌شده</small></div><div class="economy-demand-grid"><div><small>نیاز روزانه</small><strong>'+num(dailyWelfareNeed)+' <em>امتیاز</em></strong></div><div><small>اثر خدمات فعلی</small><strong>'+num(welfareEffect.toFixed(1))+' <em>امتیاز</em></strong></div><div class="'+(welfareBalance>=0?'is-positive':'is-negative')+'"><small>'+(welfareBalance>=0?'مازاد رفاه':'کمبود رفاه')+'</small><strong>'+num(Math.abs(welfareBalance).toFixed(1))+' <em>امتیاز</em></strong></div><div><small>رضایت فعلی</small><strong>'+num(Math.round(Number(r.satisfaction)||0))+' <em>از ۱۰۰</em></strong></div></div><p>هر روز اثر خدمات عمومی با نیاز جمعیت مقایسه می‌شود؛ کمبود مداوم باعث افت رضایت و افزایش ناآرامی خواهد شد.</p></div>';
+        body=economyBack+sectionTitle('خدمات عمومی','رفاهیات')+welfareSummary+'<div class="management-building-grid">'+makeCards('welfare')+'</div>';heading='رفاهیات';
+      }
 
       if(managementSection==='diplomacy'){
         const others=(S.active_countries||[]).filter(x=>x.code!==S.p.c);
         const d=S.diplomacy||{incoming:[],outgoing:[],relations:[],war_open:false};
-        const relationFor=country=>(d.relations||[]).find(v=>Number(v.uid)===Number(typeof country==='object'?country.uid:country)||(typeof country==='object'&&v.country===country.code));
-        const selected=(S.active_countries||[]).find(x=>x.code===diplomacyTarget);
+        const relationFor=country=>{
+          const target=typeof country==='object'?country:{uid:country};
+          const targetUid=Number(target.uid||0),targetCode=String(target.code||'').trim().toUpperCase();
+          return (d.relations||[]).find(v=>
+            (targetUid>0&&Number(v.uid||0)===targetUid)||
+            (targetCode&&String(v.country||'').trim().toUpperCase()===targetCode)
+          );
+        };
+        const selected=(S.active_countries||[]).find(x=>String(x.code||'').toUpperCase()===String(diplomacyTarget||'').toUpperCase());
         const rel=selected?relationFor(selected):null;
         const countryName=x=>x.name_fa||COUNTRIES[x.code]?.name_fa||x.code;
+        const warCard='<section class="diplomacy-war-card diplomacy-war-standalone"><img src="/static/diplomacy/war.svg" alt="مرکز اعلام نبرد"><div><strong>مرکز اعلام نبرد</strong><small>این بخش مستقل از تأسیس سفارت است. دسترسی به وضعیت نبرد با تنظیم مدیر سیزن فعال می‌شود.</small></div><button class="btn" '+(d.war_open?'':'disabled')+' onclick="showToast(\'مرکز نبرد فعال است؛ اطلاعیه‌های رسمی در این بخش پیگیری می‌شود.\')">'+(d.war_open?'مشاهده وضعیت':'غیرفعال')+'</button></section>';
         const cards=others.map(x=>{
           const fx=FACTIONS[x.faction]||FACTIONS.neutral,info=COUNTRIES[x.code]||{},relItem=relationFor(x),pending=(d.outgoing||[]).some(v=>v.to_country===x.code)||(d.incoming||[]).some(v=>v.from_country===x.code);
           const status=relItem?'سفارت برقرار':pending?'در انتظار پاسخ':'بدون سفارت';
@@ -3073,20 +3113,20 @@
               '<article class="diplomacy-action-card is-disabled"><img src="/static/diplomacy/support.svg" alt=""><strong>درخواست پشتیبانی</strong><small>سامانه درخواست و زمان‌بندی هنوز در دست توسعه است</small><span>به‌زودی</span></article>'+
               '</div>'+
               '<div id="diplomacy-tool-panel" class="diplomacy-tool-panel" style="display:none"></div>'+
-              (noWar?'<div class="diplomacy-notice">پیمان عدم تجاوز تا '+new Date(rel.pact_until*1000).toLocaleDateString('fa-IR')+' برقرار است؛ گزینه جنگ نمایش داده نمی‌شود.</div>':'<div class="diplomacy-war-card"><img src="/static/diplomacy/war.svg" alt="وضعیت جنگ"><div><strong>مرکز وضعیت جنگ</strong><small>وضعیت جنگ فقط با دستور ادمین تغییر می‌کند. در زمان فعال‌شدن، وضعیت و اطلاعیه‌های رسمی در همین پنل نمایش داده می‌شود.</small></div><button class="btn" '+(d.war_open?'':'disabled')+' onclick="showToast(\'پنل مدیریت جنگ در انتظار تنظیمات ادمین است.\')">'+(d.war_open?'مشاهده وضعیت':'غیرفعال')+'</button></div>')+
+              (noWar?'<div class="diplomacy-notice">پیمان عدم تجاوز تا '+new Date(rel.pact_until*1000).toLocaleDateString('fa-IR')+' برقرار است؛ امکان اعلام نبرد در مدت پیمان غیرفعال است.</div>':'')+
               '</section>';
           }else{
             const pending=(d.outgoing||[]).some(v=>v.to_country===selected.code),pendingIncoming=(d.incoming||[]).some(v=>v.from_country===selected.code);
             detail='<section class="diplomacy-country-panel">'+
               '<div class="diplomacy-panel-top"><button class="management-back" type="button" onclick="closeDiplomacyCountry()">بازگشت به فهرست کشورها</button><span class="diplomacy-status-pill '+(pending?'is-pending':'')+'">'+(pending?'در انتظار پاسخ':pendingIncoming?'درخواست سفارت دریافتی':'هنوز سفارتی برقرار نیست')+'</span></div>'+identity+
-              '<div class="diplomacy-embassy-intro"><img src="/static/diplomacy/embassy.svg" alt="ساختمان سفارت" onerror="this.style.display=\'none\'"><div><strong>تأسیس سفارت متقابل</strong><p>با ارسال درخواست، کشور مقابل می‌تواند آن را بپذیرد یا رد کند. پس از پذیرش، از هر دو کشور ۵٬۰۰۰ دلار و ۵ واحد قدرت سیاسی کسر می‌شود.</p></div></div>'+
+              '<div class="diplomacy-embassy-hero"><img src="/static/diplomacy/embassy.svg" alt="ساختمان سفارت تاریخی" onerror="this.style.display=\'none\'"><div class="diplomacy-embassy-copy"><span>روابط خارجی · ۱۹۳۴</span><strong>تأسیس سفارت متقابل</strong><p>درخواست خود را برای کشور مقابل بفرستید. پس از پذیرش، از هر دو کشور ۵٬۰۰۰ دلار و ۵ واحد قدرت سیاسی کسر می‌شود.</p></div></div>'+
               (pending?'<div class="diplomacy-notice">درخواست سفارت برای این کشور ارسال شده و منتظر پاسخ فرمانرواست.</div>':pendingIncoming?'<div class="diplomacy-notice">این کشور برای شما درخواست سفارت فرستاده است؛ پاسخ آن را در بخش اعلانات صفحه خانه ثبت کنید.</div>':'<button class="btn btn-gold diplomacy-request-button" onclick="requestEmbassy(\''+selected.code+'\')">ارسال درخواست تأسیس سفارت</button>')+
               '</section>';
           }
         }
         const requests=(inbox||pactInbox||moneyInbox)?'<div class="diplomacy-inbox-section"><div class="diplomacy-section-caption">درخواست‌های دریافتی</div><div class="management-building-grid">'+inbox+pactInbox+moneyInbox+'</div></div>':'';
         const list='<div class="diplomacy-list-panel"><div class="diplomacy-list-heading"><div><strong>کشورهای فعال</strong><small>'+num(others.length)+' کشور در دسترس</small></div><input id="diplomacy-country-search" type="search" placeholder="جست‌وجوی کشور..." oninput="filterDiplomacyCountries(this.value)"></div><div class="management-country-list diplomacy-country-list">'+(cards||'<div class="management-empty">کشور فعال دیگری وجود ندارد.</div>')+'</div><div id="diplomacy-search-empty" class="management-empty" style="display:none">کشوری با این نام پیدا نشد.</div></div>';
-        body=back+sectionTitle('ارتباط میان کشورها','دیپلماسی')+requests+pactOutgoing+moneyOutgoing+(selected?detail:list);
+        body=back+sectionTitle('ارتباط میان کشورها','دیپلماسی')+warCard+requests+pactOutgoing+moneyOutgoing+(selected?detail:list);
         heading=selected?'دیپلماسی · '+countryName(selected):'دیپلماسی';
       }
       if(title)title.textContent=heading;
