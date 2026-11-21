@@ -337,7 +337,7 @@ REVOLUTION_FLAG_META = {
     "IR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_SUMKA.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_SUMKA.svg", "label": "پرچم حزب سومکا، حزب سوسیالیست ملی کارگران ایران (تأسیس ۱۹۵۲"},
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Persian_Socialist_Soviet_Republic.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Persian_Socialist_Soviet_Republic.svg", "label": "پرچم جمهوری شورایی سوسیالیستی ایران (۱۹۲۰ تا ۱۹۲۱"},
-        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/The_flag_of_Iran%27s_National_Front.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:The_flag_of_Iran%27s_National_Front.jpg", "label": "نشان جبهه ملی ایران"}
+        "democracy": {"url": "https://upload.wikimedia.org/wikipedia/commons/0/04/Civil_flag_of_Iran_%281964%E2%80%931980%29.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Civil_flag_of_Iran_(1964%E2%80%931980).svg", "label": "پرچم سه‌رنگ ایران"}
     },
     "EE": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/P%C3%B5llumeeste_Kogud_flag%2C_1934.svg", "source_url": "https://commons.wikimedia.org/wiki/File:P%C3%B5llumeeste_Kogud_flag%2C_1934.svg", "label": "پرچم تشکل سیاسی Põllumeeste Kogud"}
