@@ -28,7 +28,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121internal-revolution" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-layout-community-art" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -138,6 +138,10 @@ REVOLUTION_FLAG_META = {
     },
     "DK": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/DNSAP-FlagV1.svg", "source_url": "https://commons.wikimedia.org/wiki/File:DNSAP-FlagV1.svg", "label": "پرچم حزب کارگران ناسیونال‌سوسیالیست دانمارک"}
+    },
+    "CA": {
+        "communism": {"url": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/d39519e9-e132-472e-8dd2-328726f1b4e6/de70bs8-370c7d0e-67f2-49e6-b723-9f0d59bce9ed.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwib2JqIjpbeyJwYXRoIjoiL2YvZDM5NTE5ZTktZTEzMi00NzJlLThkZDItMzI4NzI2ZjFiNGU2L2RlNzBiczgtMzcwYzdkMGUtNjdmMi00OWU2LWI3MjMtOWYwZDU5YmNlOWVkLnBuZyJ9XSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.8Z3kcYybvVcItyoSjSOQc5cRhju8kEhxj7C0GX-brBk", "source_url": "https://www.deviantart.com/noblesseoblige52/art/Flag-of-the-Canadian-Socialist-Union-858299048", "label": "طرح غیررسمی اتحادیه سوسیالیستی کانادا", "source_kind": "community-art"},
+        "fascism": {"url": "https://www.alternatehistory.com/forum/attachments/fascist-canada-5-png.134545/", "source_url": "https://www.alternatehistory.com/forum/threads/tips-on-designing-fascist-flags.188259/page-3", "label": "طرح بازسازی‌شدهٔ کانادای اقتدارگرا در انجمن AlternateHistory", "source_kind": "community-art"}
     }
 }
 
