@@ -1181,6 +1181,29 @@
     .diplomacy-action-card img{display:block;width:100%;height:88px;align-self:stretch;object-fit:cover;object-position:center;border-radius:8px;margin:0 0 5px;background:#0a1422}
     .diplomacy-tool-head img{object-fit:cover;border-radius:8px;background:#0a1422}
     @media(max-width:520px){.diplomacy-action-card img{height:72px}}
+
+    .revolution-option-heading .revolution-title-line{display:flex;align-items:center;gap:9px;min-width:0}
+    .revolution-title-line>img{width:36px;height:36px;object-fit:contain;flex:0 0 36px;border:1px solid rgba(255,255,255,.14);border-radius:8px;background:#0a1422;padding:3px}
+    .revolution-description{font-size:10px;line-height:1.9;color:#c1cede;margin:9px 0 11px;min-height:56px}
+    .revolution-flag-comparison{display:grid;grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);align-items:center;gap:8px}
+    .revolution-flag-comparison>div{min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:5px}
+    .revolution-flag-comparison img{display:block;width:100%;height:auto;aspect-ratio:3/2;max-height:100px;object-fit:contain;object-position:center;background:#101827;border:1px solid rgba(255,255,255,.2);border-radius:7px;padding:2px}
+    .revolution-flag-caption{font-size:9px;line-height:1.7;color:#aebed1;min-height:28px;margin:2px 0 4px}
+    .revolution-source-link,.revolution-source-missing{display:inline-block;font-size:9px;line-height:1.7;margin:0 0 8px}
+    .revolution-source-link{color:#7dd3fc;text-decoration:underline}
+    .revolution-source-missing{color:#fbbf24}
+    .revolution-current-state>img{object-fit:contain;aspect-ratio:3/2;height:auto;max-height:70px;background:#101827;padding:2px}
+    @media (max-width:640px){
+      .revolution-options-grid{grid-template-columns:minmax(0,1fr)}
+      .revolution-option-card{padding:10px}
+      .revolution-description{min-height:0;font-size:11px}
+      .revolution-flag-comparison{gap:6px}
+      .revolution-flag-comparison img{height:auto;aspect-ratio:3/2;max-height:88px;object-fit:contain}
+      .revolution-flag-comparison small{font-size:9px;line-height:1.5}
+      .revolution-current-state{align-items:flex-start}
+      .revolution-current-state>img{width:30%;max-width:92px;max-height:62px;flex-shrink:0}
+      .revolution-option-heading>b{font-size:9px}
+    }
 </style>
 </head>
 <body>
@@ -3199,17 +3222,28 @@
         const built=Object.values(buildings).reduce((sum,v)=>sum+Math.max(0,Number(v)||0),0);
         const req=[['قدرت سیاسی',Number(r.power)||0,75,'واحد'],['خزانه',Number(r.money)||0,80000,'دلار'],['رضایت عمومی',Number(r.satisfaction)||0,65,'٪'],['ذخیره غذا',Number(r.food)||0,12000,'واحد'],['ذخیره نفت',Number(r.oil)||0,2500,'بشکه'],['ساختمان‌های اقتصادی',built,2,'ساختمان']];
         const requirements='<div class="revolution-requirements"><div class="revolution-requirements-head"><strong>شرایط لازم برای انقلاب</strong><small>تمام شرایط باید هم‌زمان برقرار باشند</small></div><div class="revolution-requirements-grid">'+req.map(([name,value,need,unit])=>'<div class="revolution-requirement '+(value>=need?'is-met':'is-missing')+'"><span><i>'+(value>=need?'✓':'×')+'</i>'+name+'</span><strong>'+num(value)+' / '+num(need)+' '+unit+'</strong></div>').join('')+'</div><p>هزینه قطعی پس از تأیید: ۳۵ قدرت سیاسی، ۵۰٬۰۰۰ دلار، ۵٬۰۰۰ واحد غذا، ۱٬۰۰۰ بشکه نفت و ۸٪ رضایت عمومی.</p></div>';
+        const movement={
+          communism:{party:'حزب کمونیست',description:'ائتلاف نیروهای چپ و حزب کمونیست قدرت را به دست می‌گیرد. سیاست‌های کشور به سمت اقتصاد سوسیالیستی، مالکیت عمومی و همکاری با جنبش جهانی کارگری تغییر می‌کند.',fallback:'پرچم تاریخی مستقل حزب در منابع معتبر پیدا نشد.'},
+          fascism:{party:'حزب ملی‌گرا و فاشیست',description:'جنبش ملی‌گرا با تأکید بر اقتدار دولت، تمرکز قدرت و وحدت ملی حکومت را در دست می‌گیرد. ساختار سیاسی و نهادهای کشور بر اساس برنامه حزب تازه بازآرایی می‌شوند.',fallback:'پرچم تاریخی مستقل حزب در منابع معتبر پیدا نشد.'},
+          democracy:{party:'حزب دموکراتیک',description:'ائتلاف نیروهای دموکراتیک و مشروطه‌خواه قدرت را به دست می‌گیرد. انتخابات، پارلمان، قانون اساسی و پاسخ‌گویی دولت محور اداره کشور قرار می‌گیرند.',fallback:'پرچم تاریخی مستقل حزب در منابع معتبر پیدا نشد.'}
+        };
         const options=targets.map(target=>{
-          const targetLabel=getRegimeCategory({government_type:target}).label;
-          const flag='/flag/'+encodeURIComponent(r.c)+'/'+target+'.svg';
+          const targetTag=getRegimeCategory({government_type:target});
+          const info=movement[target];
+          const flagMeta=country.revolution_flags?.[target]||null;
+          const flag=flagMeta?.url||country.base_flag_url||country.flag_url||FALLBACK_FLAG;
+          const fallbackFlag=country.base_flag_url||FALLBACK_FLAG;
           const ready=req.every(([,value,need])=>value>=need);
           const leaderName=leader[target]+' '+(country.name_fa||r.c);
-          return '<article class="revolution-option-card revolution-'+target+'"><div class="revolution-option-heading"><span><small>مسیر تغییر نظام</small><strong>'+labels[target]+'</strong></span><b>'+targetLabel+'</b></div><div class="revolution-flag-comparison"><div><img src="'+escapeHtml(country.flag_url||FALLBACK_FLAG)+'" alt="پرچم فعلی '+escapeHtml(country.name_fa||r.c)+'" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><small>پرچم فعلی</small></div><span class="revolution-flag-arrow">←</span><div><img src="'+flag+'" alt="پرچم پیشنهادی '+escapeHtml(country.name_fa||r.c)+' پس از انقلاب '+labels[target]+'" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><small>پرچم پس از انقلاب</small></div></div><div class="revolution-option-details"><div><small>حزب حاکم جدید</small><strong>'+party[target]+'</strong></div><div><small>حاکم جدید</small><strong>'+leaderName+'</strong></div></div><button class="btn btn-gold revolution-start" '+(!ready||country.revolution_used?'disabled':'')+' onclick="startRevolution(\''+target+'\')">'+(country.revolution_used?'انقلاب قبلاً انجام شده':ready?'آغاز انقلاب':'شرایط کافی نیست')+'</button></article>';
+          const sourceLink=flagMeta?.source_url
+            ? '<a class="revolution-source-link" href="'+escapeHtml(flagMeta.source_url)+'" target="_blank" rel="noopener">مشاهده منبع پرچم</a>'
+            : '<span class="revolution-source-missing">پرچم حزبی مستقلِ مستند برای این مسیر پیدا نشد؛ پرچم ملی فقط جهت شناسایی کشور نمایش داده می‌شود.</span>';
+          return '<article class="revolution-option-card revolution-'+target+'"><div class="revolution-option-heading"><span class="revolution-title-line"><img src="'+escapeHtml(targetTag.badge_url)+'" alt="نشان '+escapeHtml(labels[target])+'" loading="lazy"><span><small>مسیر تغییر نظام</small><strong>'+labels[target]+'</strong></span></span><b>'+targetTag.label+'</b></div><p class="revolution-description">'+info.description+'</p><div class="revolution-flag-comparison"><div><img src="'+escapeHtml(country.base_flag_url||country.flag_url||FALLBACK_FLAG)+'" alt="پرچم فعلی '+escapeHtml(country.name_fa||r.c)+'" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><small>پرچم فعلی کشور</small></div><span class="revolution-flag-arrow">←</span><div><img src="'+escapeHtml(flag)+'" alt="'+escapeHtml(flagMeta?.label||info.fallback)+'" loading="lazy" onerror="this.onerror=null;this.src=\''+escapeHtml(fallbackFlag)+'\'"><small>'+(flagMeta?'پرچم حزب / جنبش اپوزیسیون':'پرچم ملی؛ پرچم حزبی مستند نشده')+'</small></div></div><div class="revolution-flag-caption">'+escapeHtml(flagMeta?.label||info.fallback)+'</div>'+sourceLink+'<div class="revolution-option-details"><div><small>حزب حاکم جدید</small><strong>'+info.party+'</strong></div><div><small>حاکم جدید</small><strong>'+leaderName+'</strong></div></div><button class="btn btn-gold revolution-start" '+(!ready||country.revolution_used?'disabled':'')+' onclick="startRevolution(\''+target+'\')">'+(country.revolution_used?'انقلاب قبلاً انجام شده':ready?'آغاز انقلاب':'شرایط کافی نیست')+'</button></article>';
         }).join('');
         const currentTag=getRegimeCategory(country);
         const usedNotice=country.revolution_used?'<div class="revolution-used-notice"><strong>انقلاب این کشور قبلاً انجام شده است.</strong><span>طبق قوانین بازی، هر کشور فقط یک‌بار می‌تواند نظام حاکم خود را تغییر دهد.</span></div>':'';
         body=back+sectionTitle('تحول سیاسی','انقلاب و تغییر نظام حاکم')+
-          '<div class="revolution-current-state"><img src="'+escapeHtml(country.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.style.display=\'none\'"><div><small>وضعیت سیاسی فعلی · '+escapeHtml(country.name_fa||r.c)+'</small><strong>'+escapeHtml(currentTag.label)+'</strong><span>حزب حاکم: '+escapeHtml(country.ruling_party_fa||'بر اساس ساختار سیاسی فعلی')+'</span><span>رهبر فعلی: '+escapeHtml(country.leader_fa||country.leader||'ثبت نشده')+'</span></div></div>'+
+          '<div class="revolution-current-state"><img src="'+escapeHtml(country.flag_url||country.base_flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><div><small>وضعیت سیاسی فعلی · '+escapeHtml(country.name_fa||r.c)+'</small><strong>'+escapeHtml(currentTag.label)+'</strong><span>حزب حاکم: '+escapeHtml(country.ruling_party_fa||'بر اساس ساختار سیاسی فعلی')+'</span><span>رهبر فعلی: '+escapeHtml(country.leader_fa||country.leader||'ثبت نشده')+'</span></div></div>'+
           '<div class="revolution-rules-note">انقلاب فقط در سیزن فعال امکان‌پذیر است. پس از پیروزی، نوع حکومت، حزب حاکم، رهبر و پرچم کشور تغییر می‌کند؛ جناح دیپلماتیک فعلاً ثابت می‌ماند. هر کشور در تمام دوره بازی فقط یک‌بار می‌تواند انقلاب کند.</div>'+
           usedNotice+requirements+'<div class="revolution-options-grid">'+options+'</div>';
         heading='انقلاب و تغییر نظام حاکم';
