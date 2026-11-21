@@ -227,10 +227,20 @@ REVOLUTION_FLAG_META = {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_pgt.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_pgt.jpg", "label": "پرچم حزب کارگران گواتمالا؛ مربوط به دورهٔ بعدی و نه ۱۹۳۴"}
     },
     "UY": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_PCU.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_PCU.svg", "label": "پرچم حزب کمونیست اروگوئه"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_PCU.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_PCU.svg", "label": "پرچم حزب کمونیست اروگوئه"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Colorado_Party_(Uruguay).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Colorado_Party_(Uruguay).svg", "label": "پرچم حزب کلرادو اروگوئه"}
     },
     "PE": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "label": "پرچم حزب کمونیست پرو"}
+    },
+    "PH": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_the_Philippines.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_the_Philippines.svg", "label": "پرچم حزب کمونیست فیلیپین؛ این حزب در ۱۹۶۸ تأسیس شد و با دورهٔ آغازین ۱۹۳۴ هم‌زمان نیست"}
+    },
+    "BO": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_FSB.png", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_FSB.png", "label": "پرچم فالانژ سوسیالیست بولیوی؛ جنبش از ۱۹۳۷"}
+    },
+    "LR": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/True_Whig_Party_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:True_Whig_Party_flag.svg", "label": "پرچم حزب ویگ واقعی لیبریا"}
     }
 }
 # Preserve the scenario's original national flag, then overlay any persistent
