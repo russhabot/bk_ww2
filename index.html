@@ -826,7 +826,10 @@
       filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
     }
     .dossier-fascism-emblem { width:34px; height:34px; object-fit:contain; flex:0 0 34px; background:transparent; }
-    .regime-chip { display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:7px; font-size:11px; font-weight:800; border:1px solid currentColor; }
+    .regime-chip { display:inline-flex; align-items:center; justify-content:center; gap:5px; min-height:24px; padding:3px 8px; border-radius:7px; font-size:11px; line-height:1.35; font-weight:700; border:1px solid currentColor; white-space:nowrap; }
+    .card-badges .tactical-badge, .card-badges .regime-chip { min-height:24px; padding:3px 8px; font-size:11px; line-height:1.35; }
+    .card-badges .badge-icon-img, .card-badges .regime-chip .badge-icon-img { width:14px; height:14px; margin-left:0; }
+    .regime-chip .badge-icon-img { margin-left:0; }
     .regime-fascism { color:#d8b4fe; background:rgba(168,85,247,.14); }
     .regime-communism { color:#fca5a5; background:rgba(239,68,68,.14); }
     .regime-monarchy { color:#fde68a; background:rgba(245,158,11,.14); }
@@ -1068,11 +1071,13 @@
     .diplomacy-close-button{width:100%;margin-top:12px;min-height:42px}
     .diplomacy-country-tags{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;max-width:44%}
     .diplomacy-country-tags .tactical-badge{max-width:100%;white-space:nowrap}
-    .regime-badge{display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:8px;border:1px solid rgba(191,173,132,.34);background:rgba(128,108,70,.16);color:#e8d7b5;font-size:10px;line-height:1.5;white-space:normal;text-align:center;max-width:190px}
+    .diplomacy-country-tags .regime-chip{max-width:100%;white-space:nowrap;min-height:24px;padding:3px 7px;font-size:10px;line-height:1.35}
+    .diplomacy-country-tags .badge-icon-img{width:14px;height:14px;margin-left:0}
+    .diplomacy-profile-tags{max-width:none;justify-content:flex-start;gap:6px;flex-wrap:wrap}
     .diplomacy-embassy-hero>img{object-position:center 48%}
     .diplomacy-war-card>img{object-position:center 42%}
     .home-notice-row>img{width:84px;height:74px;object-fit:cover;object-position:center;border-radius:9px;flex:0 0 84px}
-    @media(max-width:520px){.diplomacy-country-tags{max-width:42%;gap:4px}.regime-badge{font-size:9px;padding:4px 6px;max-width:125px}}
+    @media(max-width:520px){.diplomacy-country-tags{max-width:48%;gap:4px}.diplomacy-country-tags .regime-chip{font-size:9px;padding:3px 6px}.diplomacy-profile-tags{max-width:none;gap:5px}}
     .diplomacy-war-card{min-height:132px;overflow:hidden}
     .diplomacy-war-card>img{width:126px;height:104px;flex:0 0 126px;object-fit:cover;object-position:center;border-radius:10px;border:1px solid rgba(245,158,11,.22);background:#0a1422}
     @media(max-width:520px){.diplomacy-war-card{align-items:flex-start;gap:9px;padding:9px}.diplomacy-war-card>img{width:92px;height:86px;flex-basis:92px}.diplomacy-war-card>div{padding-top:3px}.diplomacy-war-card small{line-height:1.8}}
@@ -3148,8 +3153,8 @@
         const cards=others.map(x=>{
           const info=COUNTRIES[x.code]||{},factionKey=info.faction||x.faction||'neutral',fx=FACTIONS[factionKey]||FACTIONS.neutral,relItem=relationFor(x),pending=(d.outgoing||[]).some(v=>v.to_country===x.code)||(d.incoming||[]).some(v=>v.from_country===x.code);
           const status=relItem?'سفارت برقرار':pending?'در انتظار پاسخ':'بدون سفارت';
-          const regime=getRegimeCategory({...info,...x}).label;
-          return '<button type="button" class="management-country-row diplomacy-country-option" data-country-search="'+(countryName(x)+' '+(x.ruler||'')+' '+x.code+' '+regime).toLowerCase()+'" onclick="openDiplomacyCountry(\''+x.code+'\')"><img class="management-mini-flag" src="'+(info.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+countryName(x)+'</strong><small>'+(x.ruler||'فرمانروا')+' · '+status+'</small></span><span class="diplomacy-country-tags"><span class="tactical-badge badge-'+factionKey+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="" onerror="this.onerror=null;this.src=\'static/badges/no-faction.svg\'">'+(fx.fa||'بدون جناح')+'</span><span class="regime-badge" title="نوع حکومت">'+escapeHtml(regime)+'</span></span><b class="diplomacy-row-arrow">‹</b></button>';
+          const regime=getRegimeCategory({...info,...x});
+          return '<button type="button" class="management-country-row diplomacy-country-option" data-country-search="'+(countryName(x)+' '+(x.ruler||'')+' '+x.code+' '+regime.label).toLowerCase()+'" onclick="openDiplomacyCountry(\''+x.code+'\')"><img class="management-mini-flag" src="'+(info.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+countryName(x)+'</strong><small>'+(x.ruler||'فرمانروا')+' · '+status+'</small></span><span class="diplomacy-country-tags"><span class="tactical-badge badge-'+factionKey+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="" onerror="this.onerror=null;this.src=\'static/badges/no-faction.svg\'">'+(fx.fa||'بدون جناح')+'</span><span class="tactical-badge regime-chip regime-'+regime.key+'" title="نوع حکومت"><img src="'+(regime.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="" onerror="this.onerror=null;this.src=\'static/badges/no-faction.svg\'">'+escapeHtml(regime.label)+'</span></span><b class="diplomacy-row-arrow">‹</b></button>';
         }).join('');
         const pactInbox=(d.pacts_incoming||[]).map(v=>{const c=COUNTRIES[v.from_country]||{};return '<article class="management-building-card"><div class="management-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Tanggu_Truce.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/pact.svg&quot;" loading="lazy" decoding="async" alt="پیمان عدم تجاوز" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/pact.svg&quot;;this.parentElement.classList.add(&quot;image-missing&quot;)"></div><div class="management-building-content"><strong>پیشنهاد پیمان عدم تجاوز از '+(c.name_fa||v.from_country)+'</strong><p>مدت پیشنهادی: '+v.years+' سال. فقط پس از تأیید شما فعال می‌شود.</p><div class="management-action-grid"><button class="btn btn-gold" onclick="respondPact('+v.from+',\'accept\')">پذیرش پیمان</button><button class="btn" onclick="respondPact('+v.from+',\'decline\')">رد پیشنهاد</button></div></div></article>';}).join('');
         const pactOutgoing=(d.pacts_outgoing||[]).map(v=>{const c=COUNTRIES[v.to_country]||{};return '<div class="management-empty">پیشنهاد پیمان '+v.years+' ساله برای '+(c.name_fa||v.to_country)+' ارسال شده و منتظر پاسخ است.</div>';}).join('');
@@ -3159,8 +3164,8 @@
         if(selected){
           const info=COUNTRIES[selected.code]||{},noWar=rel&&Number(rel.pact_until||0)>Date.now()/1000;
           const flag=info.flag_url||FALLBACK_FLAG;
-          const factionKey=info.faction||selected.faction||'neutral',factionInfo=FACTIONS[factionKey]||FACTIONS.neutral||{},regimeLabel=getRegimeCategory({...info,...selected}).label;
-          const identity = `<div class="diplomacy-profile-head"><img class="diplomacy-profile-flag" src="${escapeHtml(flag)}" alt="" onerror="this.remove()"><div><small>پرونده دیپلماتیک کشور</small><h3>${escapeHtml(countryName(selected))}</h3><p>${escapeHtml(selected.name_en||info.name_en||selected.code)} · فرمانروا: ${escapeHtml(selected.ruler||"نامشخص")}</p><div class="diplomacy-country-tags diplomacy-profile-tags"><span class="tactical-badge badge-${escapeHtml(factionKey)}"><img src="${escapeHtml(factionInfo.badge_url||"static/badges/no-faction.svg")}" class="badge-icon-img" alt="">${escapeHtml(factionInfo.fa||"بدون جناح")}</span><span class="regime-badge" title="نوع حکومت">${escapeHtml(regimeLabel)}</span></div></div></div>`;
+          const factionKey=info.faction||selected.faction||'neutral',factionInfo=FACTIONS[factionKey]||FACTIONS.neutral||{},regimeInfo=getRegimeCategory({...info,...selected});
+          const identity = `<div class="diplomacy-profile-head"><img class="diplomacy-profile-flag" src="${escapeHtml(flag)}" alt="" onerror="this.remove()"><div><small>پرونده دیپلماتیک کشور</small><h3>${escapeHtml(countryName(selected))}</h3><p>${escapeHtml(selected.name_en||info.name_en||selected.code)} · فرمانروا: ${escapeHtml(selected.ruler||"نامشخص")}</p><div class="diplomacy-country-tags diplomacy-profile-tags"><span class="tactical-badge badge-${escapeHtml(factionKey)}"><img src="${escapeHtml(factionInfo.badge_url||"static/badges/no-faction.svg")}" class="badge-icon-img" alt="" onerror="this.onerror=null;this.src='static/badges/no-faction.svg'">${escapeHtml(factionInfo.fa||"بدون جناح")}</span><span class="tactical-badge regime-chip regime-${regimeInfo.key}" title="نوع حکومت"><img src="${escapeHtml(regimeInfo.badge_url||"static/badges/no-faction.svg")}" class="badge-icon-img" alt="" onerror="this.onerror=null;this.src='static/badges/no-faction.svg'">${escapeHtml(regimeInfo.label)}</span></div></div></div>`;
           if(rel){
             detail='<section class="diplomacy-country-panel">'+
               '<div class="diplomacy-panel-top"><button class="management-back" type="button" onclick="closeDiplomacyCountry()">بازگشت به فهرست کشورها</button><span class="diplomacy-status-pill is-active">سفارت متقابل برقرار است</span></div>'+identity+
@@ -3401,7 +3406,7 @@
             <div class="dossier-field">
               <span class="dossier-label">نوع حکومت</span>
               <span class="dossier-value regime-chip regime-${regime.key}" style="color:${regime.color};">
-                ${regime.key === 'fascism' ? '<img src="' + regime.badge_url + '" class="dossier-fascism-emblem" alt="نشان تاریخی">' : ''}
+                <img src="${regime.badge_url || 'static/badges/no-faction.svg'}" class="badge-icon-img" alt="" onerror="this.onerror=null;this.src='static/badges/no-faction.svg'">
                 ${regime.label}
               </span>
             </div>
