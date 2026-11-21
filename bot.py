@@ -203,6 +203,21 @@ REVOLUTION_FLAG_META = {
     },
     "SK": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Hlinka_party_(1938%E2%80%931945)_variant_1.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Hlinka_party_(1938%E2%80%931945)_variant_1.svg", "label": "پرچم حزب مردم هlinka در اسلواکی (۱۹۳۸ تا ۱۹۴۵؛ متأخر نسبت به آغاز سناریو)"}
+    },
+    "LV": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Perkonkrusta_karogs.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Perkonkrusta_karogs.svg", "label": "پرچم سازمان ملی‌گرای پِرکُن‌کروستس لتونی؛ بازسازی بر پایهٔ توصیف تاریخی"}
+    },
+    "MZ": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Concordia_Association.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Concordia_Association.svg", "label": "پرچم انجمن کنکوردیا در منچوکوئو (۱۹۳۲ تا ۱۹۴۵)"}
+    },
+    "MN": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Mongolian_People%27s_Party_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Mongolian_People%27s_Party_flag.svg", "label": "پرچم حزب مردم مغولستان؛ حزب تاریخی بنیان‌گذاری‌شده در ۱۹۲۱"}
+    },
+    "VE": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Partido_liberal_de_Venezuela.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Partido_liberal_de_Venezuela.svg", "label": "پرچم حزب لیبرال ونزوئلا"}
+    },
+    "HN": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Liberal_Party_of_Honduras_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Liberal_Party_of_Honduras_flag.svg", "label": "پرچم حزب لیبرال هندوراس"}
     }
 }
 
