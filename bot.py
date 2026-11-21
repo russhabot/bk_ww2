@@ -921,6 +921,7 @@ def auth(init_data):
     # The old fallback let unauthenticated requests act as the shared test user (1001).
     if not init_data:
         if TOKEN:
+            print("[auth-debug] rejected: initData missing")
             return None
         return {"id": 1001, "first_name": "فرمانده آزمایشی", "username": "commander_dev"}
 
@@ -939,6 +940,7 @@ def auth(init_data):
         fields = dict(parse_qsl(init_data, keep_blank_values=True, max_num_fields=64))
         received_hash = fields.pop("hash", "")
         if not received_hash:
+            print(f"[auth-debug] rejected: hash missing; fields={sorted(fields.keys())}; init_len={len(init_data)}")
             return None
 
         secret = hmac.new(b"WebAppData", TOKEN.encode("utf-8"), hashlib.sha256).digest()
@@ -956,6 +958,7 @@ def auth(init_data):
         )
 
         if not valid_hash:
+            print(f"[auth-debug] rejected: hash mismatch; fields={sorted(fields.keys())}; signature_present={'signature' in fields}; user_present={'user' in fields}; init_len={len(init_data)}; hash_len={len(received_hash)}")
             return None
 
         if "user" in fields:
