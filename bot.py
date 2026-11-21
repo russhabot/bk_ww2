@@ -188,6 +188,21 @@ REVOLUTION_FLAG_META = {
     },
     "ES": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_FE_JONS.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_FE_JONS.svg", "label": "پرچم فالانژ اسپانیا؛ نسخهٔ بازسازی‌شدهٔ ویکی‌مدیا"}
+    },
+    "IQ": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Iraqi_Communist_Party_(old).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Iraqi_Communist_Party_(old).svg", "label": "نسخهٔ قدیمی پرچم حزب کمونیست عراق؛ حزب از ۱۹۳۴"}
+    },
+    "EG": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Wafd_Flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Wafd_Flag.svg", "label": "پرچم حزب وفد مصر؛ جنبش سیاسی مشروطه‌خواه و پارلمانی"}
+    },
+    "AU": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/A_de_facto_flag_used_by_the_CPA.svg", "source_url": "https://commons.wikimedia.org/wiki/File:A_de_facto_flag_used_by_the_CPA.svg", "label": "یکی از پرچم‌های مورد استفادهٔ حزب کمونیست استرالیا؛ حدود دهه‌های ۱۹۴۰ و ۱۹۵۰"}
+    },
+    "RO": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_PCR.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_PCR.svg", "label": "بازسازی پرچم حزب کمونیست رومانی؛ نسخهٔ شناخته‌شده مربوط به دورهٔ پس از جنگ است"}
+    },
+    "SK": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Hlinka_party_(1938%E2%80%931945)_variant_1.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Hlinka_party_(1938%E2%80%931945)_variant_1.svg", "label": "پرچم حزب مردم هlinka در اسلواکی (۱۹۳۸ تا ۱۹۴۵؛ متأخر نسبت به آغاز سناریو)"}
     }
 }
 
