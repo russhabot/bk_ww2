@@ -3139,9 +3139,9 @@
         menuCard('welfare','رفاهیات','خدمات شهری و رضایت عمومی',catalog.park?.image||'')+
         '</div>';
       const root='<div class="management-root-grid">'+
-        '<button class="management-root-card" type="button" onclick="setManagementSection(\\'economy\\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/1930-67B.png?width=1280','اقتصاد و رفاهیات')+'<span><small>مدیریت منابع کشور</small><strong>اقتصاد و رفاهیات</strong><em>بانک، معادن، مالیات، کشاورزی و خدمات عمومی</em></span><b>‹</b></button>'+
-        '<button class="management-root-card" type="button" onclick="setManagementSection(\\'diplomacy\\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/League_of_Nations_Session_Manchurian_Crisis_1932.jpeg?width=1280','دیپلماسی')+'<span><small>ارتباط با جهان</small><strong>دیپلماسی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
-        '<button class="management-root-card" type="button" onclick="setManagementSection(\\'internal\\')">'+image('static/diplomacy/pact.svg','تصمیمات داخلی')+'<span><small>سیاست داخلی کشور</small><strong>تصمیمات داخلی</strong><em>انقلاب، تغییر نظام حاکم و اصلاحات داخلی</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\'economy\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/1930-67B.png?width=1280','اقتصاد و رفاهیات')+'<span><small>مدیریت منابع کشور</small><strong>اقتصاد و رفاهیات</strong><em>بانک، معادن، مالیات، کشاورزی و خدمات عمومی</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\'diplomacy\')">'+image('https://commons.wikimedia.org/wiki/Special:FilePath/League_of_Nations_Session_Manchurian_Crisis_1932.jpeg?width=1280','دیپلماسی')+'<span><small>ارتباط با جهان</small><strong>دیپلماسی</strong><em>مشاهده کشورهای فعال و فرمانروایان</em></span><b>‹</b></button>'+
+        '<button class="management-root-card" type="button" onclick="setManagementSection(\'internal\')">'+image('static/diplomacy/pact.svg','تصمیمات داخلی')+'<span><small>سیاست داخلی کشور</small><strong>تصمیمات داخلی</strong><em>انقلاب، تغییر نظام حاکم و اصلاحات داخلی</em></span><b>‹</b></button>'+
         '</div>';
       const makeCards=(category)=>Object.entries(catalog).filter(([key,b])=>b.category===category && !(category==='mines' && key==='mine_oil')).map(([key,b])=>{
         const owned=Number(buildings[key]||0), locked=Boolean(b.unique&&owned>0);
