@@ -217,7 +217,30 @@ REVOLUTION_FLAG_META = {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Partido_liberal_de_Venezuela.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Partido_liberal_de_Venezuela.svg", "label": "پرچم حزب لیبرال ونزوئلا"}
     },
     "HN": {
-        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Liberal_Party_of_Honduras_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Liberal_Party_of_Honduras_flag.svg", "label": "پرچم حزب لیبرال هندوراس"}
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Liberal_Party_of_Honduras_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Liberal_Party_of_Honduras_flag.svg", "label": "پرچم حزب لیبرال هندوراس"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Partido_comunista_de_Honduras.png", "source_url": "https://commons.wikimedia.org/wiki/File:Partido_comunista_de_Honduras.png", "label": "نشان پرچمی حزب کمونیست هندوراس"}
+    },
+    "TR": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_CHF.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_CHF.jpg", "label": "پرچم حزب جمهوری‌خواه خلق ترکیه؛ سند تصویری مربوط به ۱۹۳۳"}
+    },
+    "CO": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Comunista_Colombiano.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Comunista_Colombiano.svg", "label": "پرچم حزب کمونیست کلمبیا"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Liberal_Colombiano.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Liberal_Colombiano.svg", "label": "پرچم حزب لیبرال کلمبیا"}
+    },
+    "CR": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_Partido_Vanguardia_Popular_Costa_Rica.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_Partido_Vanguardia_Popular_Costa_Rica.svg", "label": "پرچم حزب پیشتاز خلق کاستاریکا؛ اصل پرچم از ۱۹۳۱"}
+    },
+    "SV": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_pcs.gif", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_pcs.gif", "label": "پرچم حزب کمونیست السالوادور"}
+    },
+    "GT": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_pgt.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_pgt.jpg", "label": "پرچم حزب کارگران گواتمالا؛ مربوط به دورهٔ بعدی و نه ۱۹۳۴"}
+    },
+    "UY": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_PCU.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_PCU.svg", "label": "پرچم حزب کمونیست اروگوئه"}
+    },
+    "PE": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partit_Comunista_del_Per%C3%BA..png", "label": "پرچم حزب کمونیست پرو"}
     }
 }
 
