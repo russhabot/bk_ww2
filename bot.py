@@ -28,7 +28,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-flags-audit-4" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-flags-audit-5" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -99,10 +99,12 @@ REVOLUTION_FLAG_META = {
     "GB": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_British_Union_of_Fascists.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_British_Union_of_Fascists.svg", "label": "پرچم اتحادیه فاشیست‌های بریتانیا (۱۹۳۲ تا ۱۹۳۵)"},
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Communist_Party_of_Britain.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Communist_Party_of_Britain.svg", "label": "پرچم حزب کمونیست بریتانیا"}
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Labour_Party_(UK)_color.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Labour_Party_(UK)_color.svg", "label": "نشان حزب کارگر بریتانیا"},
     },
     "US": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_German_American_Bund.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_German_American_Bund.svg", "label": "پرچم اتحادیه آلمانی‌آمریکایی"},
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Communist_Party_USA_Flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Communist_Party_USA_Flag.svg", "label": "پرچم حزب کمونیست آمریکا"}
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Democratic_Disc.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Democratic_Disc.svg", "label": "نشان حزب دموکرات ایالات متحده"},
     },
     "FR": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Proposed_flag_of_the_French_Communist_Party_(1936).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Proposed_flag_of_the_French_Communist_Party_(1936).svg", "label": "طرح پیشنهادی پرچم حزب کمونیست فرانسه (۱۹۳۶"}
@@ -148,7 +150,7 @@ REVOLUTION_FLAG_META = {
     },
     "IE": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Irish_Blueshirts.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Irish_Blueshirts.svg", "label": "پرچم جنبش بلوز‌شرت‌های ایرلند در دههٔ ۱۹۳۰"},
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Ireland.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Ireland.svg", "label": "نسخهٔ معاصر پرچم حزب کمونیست ایرلند"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Ireland.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Ireland.svg", "label": "پرچم حزب کمونیست ایرلند"}
     },
     "NO": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Nasjonal_Samling.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Nasjonal_Samling.svg", "label": "پرچم حزب ناسیونال سام‌لینگ نروژ (۱۹۳۳ تا ۱۹۴۵)"},
@@ -204,6 +206,8 @@ REVOLUTION_FLAG_META = {
     },
     "CA": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Parti_National_Social_Chr%C3%A9tien.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Parti_National_Social_Chr%C3%A9tien.svg", "label": "پرچم حزب ملی‌سوسیالیست مسیحی کانادا"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Logo_del_Partido_Comunista_de_Canad%C3%A1.png", "source_url": "https://commons.wikimedia.org/wiki/File:Logo_del_Partido_Comunista_de_Canad%C3%A1.png", "label": "نشان حزب کمونیست کانادا"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Maple_leaf_--_Liberal.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Maple_leaf_--_Liberal.svg", "label": "نشان حزب لیبرال کانادا"},
     },
     "GR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Greek_National_Socialist_party_flag.png", "source_url": "https://commons.wikimedia.org/wiki/File:Greek_National_Socialist_party_flag.png", "label": "پرچم حزب ملی‌سوسیالیست یونان (۱۹۳۲ تا ۱۹۴۳)"},
@@ -316,6 +320,7 @@ REVOLUTION_FLAG_META = {
     },
     "MX": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_de_la_Uni%C3%B3n_Nacional_Sinarquista.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_de_la_Uni%C3%B3n_Nacional_Sinarquista.svg", "label": "پرچم اتحادیهٔ ملی سینارکیست مکزیک"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Emblema_PCM_Mexico.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Emblema_PCM_Mexico.svg", "label": "نشان حزب کمونیست مکزیک"},
     },
     "PY": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_Partido_Colorado_de_Paraguay.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_Partido_Colorado_de_Paraguay.svg", "label": "پرچم حزب کلرادو پاراگوئه"}
@@ -370,8 +375,6 @@ REVOLUTION_FLAG_META = {
     "AF": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Emblem_of_the_People%27s_Democratic_Party_of_Afghanistan.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Emblem_of_the_People%27s_Democratic_Party_of_Afghanistan.svg", "label": "نشان حزب دموکراتیک خلق افغانستان"},
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_National_Congress_of_Afghanistan.png", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_National_Congress_of_Afghanistan.png", "label": "پرچم حزب کنگره ملی افغانستان"}
-    },
-    "SA": {
     },
     "LT": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Logo_of_the_Lithuanian_Nationalist_Union.png", "source_url": "https://commons.wikimedia.org/wiki/File:Logo_of_the_Lithuanian_Nationalist_Union.png", "label": "نشان اتحادیه ملی‌گرایان لیتوانی"},
