@@ -92,6 +92,13 @@ def init_db() -> None:
             )
         """)
         _execute("""
+            CREATE TABLE IF NOT EXISTS country_politics (
+                country_code TEXT PRIMARY KEY,
+                data TEXT NOT NULL,
+                updated_at BIGINT NOT NULL
+            )
+        """)
+        _execute("""
             CREATE TABLE IF NOT EXISTS season_history (
                 id BIGSERIAL PRIMARY KEY,
                 season_number BIGINT NOT NULL,
@@ -151,6 +158,13 @@ def init_db() -> None:
         CREATE TABLE IF NOT EXISTS country_catalog (
             country_code TEXT PRIMARY KEY,
             government_type TEXT NOT NULL,
+            data TEXT NOT NULL,
+            updated_at INTEGER NOT NULL
+        )
+    """)
+    _execute("""
+        CREATE TABLE IF NOT EXISTS country_politics (
+            country_code TEXT PRIMARY KEY,
             data TEXT NOT NULL,
             updated_at INTEGER NOT NULL
         )
@@ -279,6 +293,32 @@ def sync_country_catalog(countries: dict[str, dict[str, Any]]) -> dict[str, dict
         raise RuntimeError(f"Country catalog sync mismatch: expected {len(country_codes)}, got {len(stored)}")
     print(f"[database] Country catalog synced; {len(stored)} countries across 4 government tags")
     return stored
+
+
+def load_country_politics() -> dict[str, dict[str, Any]]:
+    """Load persistent country-level political changes without touching player records."""
+    result: dict[str, dict[str, Any]] = {}
+    for row in _execute("SELECT country_code, data FROM country_politics").fetchall():
+        try:
+            payload = json.loads(row["data"])
+        except (ValueError, TypeError, json.JSONDecodeError):
+            continue
+        if isinstance(payload, dict):
+            result[str(row["country_code"]).strip().upper()] = payload
+    return result
+
+
+def save_country_politics(code: str, data: dict[str, Any]) -> None:
+    """Persist a country's political state; the country code is the unique key."""
+    normalized = str(code or "").strip().upper()
+    if not normalized or not isinstance(data, dict):
+        raise ValueError("A valid country code and political state are required.")
+    _execute(
+        "INSERT INTO country_politics(country_code, data, updated_at) VALUES(?, ?, ?) "
+        "ON CONFLICT(country_code) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at",
+        (normalized, json.dumps(data, ensure_ascii=False), int(time.time())),
+    )
+    db.commit()
 
 
 def pdel(uid: int) -> None:
