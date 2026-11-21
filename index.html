@@ -1132,6 +1132,11 @@
       #player-command-dossier .economy-stat-label { font-size: 9px; }
     }
 
+
+    /* Historical photo treatment for embassy service cards. */
+    .diplomacy-action-card img{display:block;width:100%;height:88px;align-self:stretch;object-fit:cover;object-position:center;border-radius:8px;margin:0 0 5px;background:#0a1422}
+    .diplomacy-tool-head img{object-fit:cover;border-radius:8px;background:#0a1422}
+    @media(max-width:520px){.diplomacy-action-card img{height:72px}}
 </style>
 </head>
 <body>
@@ -3143,28 +3148,28 @@
         const cards=others.map(x=>{
           const info=COUNTRIES[x.code]||{},factionKey=info.faction||x.faction||'neutral',fx=FACTIONS[factionKey]||FACTIONS.neutral,relItem=relationFor(x),pending=(d.outgoing||[]).some(v=>v.to_country===x.code)||(d.incoming||[]).some(v=>v.from_country===x.code);
           const status=relItem?'سفارت برقرار':pending?'در انتظار پاسخ':'بدون سفارت';
-          const regime=info.regime_fa||x.regime_fa||'نوع حکومت ثبت نشده';
+          const regime=getRegimeCategory({...info,...x}).label;
           return '<button type="button" class="management-country-row diplomacy-country-option" data-country-search="'+(countryName(x)+' '+(x.ruler||'')+' '+x.code+' '+regime).toLowerCase()+'" onclick="openDiplomacyCountry(\''+x.code+'\')"><img class="management-mini-flag" src="'+(info.flag_url||FALLBACK_FLAG)+'" alt="" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><span><strong>'+countryName(x)+'</strong><small>'+(x.ruler||'فرمانروا')+' · '+status+'</small></span><span class="diplomacy-country-tags"><span class="tactical-badge badge-'+factionKey+'"><img src="'+(fx.badge_url||'static/badges/no-faction.svg')+'" class="badge-icon-img" alt="" onerror="this.onerror=null;this.src=\'static/badges/no-faction.svg\'">'+(fx.fa||'بدون جناح')+'</span><span class="regime-badge" title="نوع حکومت">'+escapeHtml(regime)+'</span></span><b class="diplomacy-row-arrow">‹</b></button>';
         }).join('');
-        const pactInbox=(d.pacts_incoming||[]).map(v=>{const c=COUNTRIES[v.from_country]||{};return '<article class="management-building-card"><div class="management-photo"><img src="/static/diplomacy/pact.svg" alt="پیمان عدم تجاوز" onerror="this.parentElement.classList.add(\'image-missing\')"></div><div class="management-building-content"><strong>پیشنهاد پیمان عدم تجاوز از '+(c.name_fa||v.from_country)+'</strong><p>مدت پیشنهادی: '+v.years+' سال. فقط پس از تأیید شما فعال می‌شود.</p><div class="management-action-grid"><button class="btn btn-gold" onclick="respondPact('+v.from+',\'accept\')">پذیرش پیمان</button><button class="btn" onclick="respondPact('+v.from+',\'decline\')">رد پیشنهاد</button></div></div></article>';}).join('');
+        const pactInbox=(d.pacts_incoming||[]).map(v=>{const c=COUNTRIES[v.from_country]||{};return '<article class="management-building-card"><div class="management-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Tanggu_Truce.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/pact.svg&quot;" loading="lazy" decoding="async" alt="پیمان عدم تجاوز" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/pact.svg&quot;;this.parentElement.classList.add(&quot;image-missing&quot;)"></div><div class="management-building-content"><strong>پیشنهاد پیمان عدم تجاوز از '+(c.name_fa||v.from_country)+'</strong><p>مدت پیشنهادی: '+v.years+' سال. فقط پس از تأیید شما فعال می‌شود.</p><div class="management-action-grid"><button class="btn btn-gold" onclick="respondPact('+v.from+',\'accept\')">پذیرش پیمان</button><button class="btn" onclick="respondPact('+v.from+',\'decline\')">رد پیشنهاد</button></div></div></article>';}).join('');
         const pactOutgoing=(d.pacts_outgoing||[]).map(v=>{const c=COUNTRIES[v.to_country]||{};return '<div class="management-empty">پیشنهاد پیمان '+v.years+' ساله برای '+(c.name_fa||v.to_country)+' ارسال شده و منتظر پاسخ است.</div>';}).join('');
-        const moneyInbox=(d.money_incoming||[]).map(v=>{const c=COUNTRIES[v.from_country]||{};return '<article class="management-building-card"><div class="management-photo"><img src="/static/diplomacy/transfer.svg" alt="انتقال وجه"></div><div class="management-building-content"><strong>درخواست انتقال وجه از '+(c.name_fa||v.from_country)+'</strong><p>'+num(v.amount)+' دلار · '+escapeHtml(v.note||'')+'</p><div class="management-action-grid"><button class="btn btn-gold" onclick="respondMoneyTransfer('+v.from+',\'accept\')">تأیید</button><button class="btn" onclick="respondMoneyTransfer('+v.from+',\'decline\')">رد درخواست</button></div></div></article>';}).join('');
+        const moneyInbox=(d.money_incoming||[]).map(v=>{const c=COUNTRIES[v.from_country]||{};return '<article class="management-building-card"><div class="management-photo"><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Bundesarchiv_Bild_183-2007-0307-509%2C_Deutsche_Bank_Disconto_Gesellschaft%2C_Innenansicht.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/transfer.svg&quot;" loading="lazy" decoding="async" alt="انتقال وجه"></div><div class="management-building-content"><strong>درخواست انتقال وجه از '+(c.name_fa||v.from_country)+'</strong><p>'+num(v.amount)+' دلار · '+escapeHtml(v.note||'')+'</p><div class="management-action-grid"><button class="btn btn-gold" onclick="respondMoneyTransfer('+v.from+',\'accept\')">تأیید</button><button class="btn" onclick="respondMoneyTransfer('+v.from+',\'decline\')">رد درخواست</button></div></div></article>';}).join('');
         const moneyOutgoing=(d.money_outgoing||[]).map(v=>{const c=COUNTRIES[v.to_country]||{};return '<div class="management-empty">درخواست انتقال '+num(v.amount)+' دلار به '+(c.name_fa||v.to_country)+' ارسال شده و منتظر پاسخ است.</div>';}).join('');
         let detail='';
         if(selected){
           const info=COUNTRIES[selected.code]||{},noWar=rel&&Number(rel.pact_until||0)>Date.now()/1000;
           const flag=info.flag_url||FALLBACK_FLAG;
-          const factionKey=info.faction||selected.faction||'neutral',factionInfo=FACTIONS[factionKey]||FACTIONS.neutral||{},regimeLabel=info.regime_fa||selected.regime_fa||'نوع حکومت ثبت نشده';
+          const factionKey=info.faction||selected.faction||'neutral',factionInfo=FACTIONS[factionKey]||FACTIONS.neutral||{},regimeLabel=getRegimeCategory({...info,...selected}).label;
           const identity = `<div class="diplomacy-profile-head"><img class="diplomacy-profile-flag" src="${escapeHtml(flag)}" alt="" onerror="this.remove()"><div><small>پرونده دیپلماتیک کشور</small><h3>${escapeHtml(countryName(selected))}</h3><p>${escapeHtml(selected.name_en||info.name_en||selected.code)} · فرمانروا: ${escapeHtml(selected.ruler||"نامشخص")}</p><div class="diplomacy-country-tags diplomacy-profile-tags"><span class="tactical-badge badge-${escapeHtml(factionKey)}"><img src="${escapeHtml(factionInfo.badge_url||"static/badges/no-faction.svg")}" class="badge-icon-img" alt="">${escapeHtml(factionInfo.fa||"بدون جناح")}</span><span class="regime-badge" title="نوع حکومت">${escapeHtml(regimeLabel)}</span></div></div></div>`;
           if(rel){
             detail='<section class="diplomacy-country-panel">'+
               '<div class="diplomacy-panel-top"><button class="management-back" type="button" onclick="closeDiplomacyCountry()">بازگشت به فهرست کشورها</button><span class="diplomacy-status-pill is-active">سفارت متقابل برقرار است</span></div>'+identity+
               '<div class="diplomacy-section-caption">خدمات و توافق‌های دوجانبه</div>'+
               '<div class="diplomacy-actions-grid">'+
-              '<button class="diplomacy-action-card" onclick="openDiplomacyTool(\'transfer\')"><img src="/static/diplomacy/transfer.svg" alt=""><strong>انتقال پول</strong><small>ثبت مبلغ و توضیح؛ انتقال پس از تأیید کشور مقصد</small></button>'+
-              '<button class="diplomacy-action-card" onclick="openDiplomacyTool(\'pact\')"><img src="/static/diplomacy/pact.svg" alt=""><strong>پیمان عدم تجاوز</strong><small>تنظیم متن و مدت پیمان و ارسال برای تأیید</small></button>'+
-              '<article class="diplomacy-action-card is-disabled"><img src="/static/diplomacy/trade.svg" alt=""><strong>تجارت</strong><small>نیازمند بندر یا فرودگاه در هر دو کشور؛ جزئیات بعداً تکمیل می‌شود</small><span>به‌زودی</span></article>'+
-              '<article class="diplomacy-action-card is-disabled"><img src="/static/diplomacy/support.svg" alt=""><strong>درخواست پشتیبانی</strong><small>سامانه درخواست و زمان‌بندی هنوز در دست توسعه است</small><span>به‌زودی</span></article>'+
+              '<button class="diplomacy-action-card" onclick="openDiplomacyTool(\'transfer\')"><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Bundesarchiv_Bild_183-2007-0307-509%2C_Deutsche_Bank_Disconto_Gesellschaft%2C_Innenansicht.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/transfer.svg&quot;" loading="lazy" decoding="async" alt=""><strong>انتقال پول</strong><small>ثبت مبلغ و توضیح؛ انتقال پس از تأیید کشور مقصد</small></button>'+
+              '<button class="diplomacy-action-card" onclick="openDiplomacyTool(\'pact\')"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Tanggu_Truce.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/pact.svg&quot;" loading="lazy" decoding="async" alt=""><strong>پیمان عدم تجاوز</strong><small>تنظیم متن و مدت پیمان و ارسال برای تأیید</small></button>'+
+              '<article class="diplomacy-action-card is-disabled"><img src="https://www.victoriaquay.com.au/images/librariesprovider2/heritage/cargo-vessels-at-north-wharf-ca-1930.jpg?sfvrsn=9b7f8b5c_2" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/trade.svg&quot;" loading="lazy" decoding="async" alt=""><strong>تجارت</strong><small>نیازمند بندر یا فرودگاه در هر دو کشور؛ جزئیات بعداً تکمیل می‌شود</small><span>به‌زودی</span></article>'+
+              '<article class="diplomacy-action-card is-disabled"><img src="https://cdn.aaihs.org/2018/04/Wiki-Addis-Ababa-Medical-Supplies.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/support.svg&quot;" loading="lazy" decoding="async" alt=""><strong>درخواست پشتیبانی</strong><small>سامانه درخواست و زمان‌بندی هنوز در دست توسعه است</small><span>به‌زودی</span></article>'+
               '</div>'+
                '<div id="diplomacy-tool-panel" class="diplomacy-tool-panel" style="display:none"></div>'+
                (noWar?'<div class="diplomacy-notice">پیمان عدم تجاوز تا '+new Date(rel.pact_until*1000).toLocaleDateString('fa-IR')+' برقرار است؛ امکان اعلام نبرد در مدت پیمان غیرفعال است.</div>':'')+
@@ -3231,8 +3236,8 @@
     function openDiplomacyTool(kind){
       const box=document.getElementById('diplomacy-tool-panel');if(!box)return;
       box.style.display='block';
-      if(kind==='pact')box.innerHTML='<div class="diplomacy-tool-head"><img src="/static/diplomacy/pact.svg" alt=""><div><strong>پیشنهاد پیمان عدم تجاوز</strong><small>پیشنهاد پس از ارسال در اعلانات کشور مقابل قرار می‌گیرد.</small></div></div><label>مدت پیمان</label><select id="diplomacy-pact-years"><option value="1">۱ سال</option><option value="2">۲ سال</option><option value="3">۳ سال</option><option value="5">۵ سال</option></select><label>متن و شرایط پیشنهادی</label><textarea id="diplomacy-pact-note" rows="4" maxlength="500" placeholder="هدف از این پیمان و شرایط مورد توافق را بنویسید..."></textarea><button class="btn btn-gold" onclick="submitPactProposal('+Number((S.active_countries||[]).find(x=>x.code===diplomacyTarget)?.uid||0)+')">ارسال پیشنهاد پیمان</button><button class="btn" onclick="closeDiplomacyTool()">بستن</button>';
-      else box.innerHTML='<div class="diplomacy-tool-head"><img src="/static/diplomacy/transfer.svg" alt=""><div><strong>درخواست انتقال وجه</strong><small>کشور مقصد پس از بررسی درخواست می‌تواند آن را تأیید یا رد کند.</small></div></div><label>مبلغ (دلار)</label><input id="diplomacy-money-amount" type="number" min="1000" max="100000" step="1000" placeholder="مثلاً ۱۰۰۰۰"><label>توضیح انتقال</label><textarea id="diplomacy-money-note" rows="4" maxlength="300" placeholder="دلیل و توضیح انتقال وجه را بنویسید..."></textarea><button class="btn btn-gold" onclick="submitMoneyTransfer('+Number((S.active_countries||[]).find(x=>x.code===diplomacyTarget)?.uid||0)+')">ارسال درخواست انتقال</button><button class="btn" onclick="closeDiplomacyTool()">بستن</button>';
+      if(kind==='pact')box.innerHTML='<div class="diplomacy-tool-head"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Tanggu_Truce.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/pact.svg&quot;" loading="lazy" decoding="async" alt=""><div><strong>پیشنهاد پیمان عدم تجاوز</strong><small>پیشنهاد پس از ارسال در اعلانات کشور مقابل قرار می‌گیرد.</small></div></div><label>مدت پیمان</label><select id="diplomacy-pact-years"><option value="1">۱ سال</option><option value="2">۲ سال</option><option value="3">۳ سال</option><option value="5">۵ سال</option></select><label>متن و شرایط پیشنهادی</label><textarea id="diplomacy-pact-note" rows="4" maxlength="500" placeholder="هدف از این پیمان و شرایط مورد توافق را بنویسید..."></textarea><button class="btn btn-gold" onclick="submitPactProposal('+Number((S.active_countries||[]).find(x=>x.code===diplomacyTarget)?.uid||0)+')">ارسال پیشنهاد پیمان</button><button class="btn" onclick="closeDiplomacyTool()">بستن</button>';
+      else box.innerHTML='<div class="diplomacy-tool-head"><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Bundesarchiv_Bild_183-2007-0307-509%2C_Deutsche_Bank_Disconto_Gesellschaft%2C_Innenansicht.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/transfer.svg&quot;" loading="lazy" decoding="async" alt=""><div><strong>درخواست انتقال وجه</strong><small>کشور مقصد پس از بررسی درخواست می‌تواند آن را تأیید یا رد کند.</small></div></div><label>مبلغ (دلار)</label><input id="diplomacy-money-amount" type="number" min="1000" max="100000" step="1000" placeholder="مثلاً ۱۰۰۰۰"><label>توضیح انتقال</label><textarea id="diplomacy-money-note" rows="4" maxlength="300" placeholder="دلیل و توضیح انتقال وجه را بنویسید..."></textarea><button class="btn btn-gold" onclick="submitMoneyTransfer('+Number((S.active_countries||[]).find(x=>x.code===diplomacyTarget)?.uid||0)+')">ارسال درخواست انتقال</button><button class="btn" onclick="closeDiplomacyTool()">بستن</button>';
       box.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
     function closeDiplomacyTool(){const box=document.getElementById('diplomacy-tool-panel');if(box){box.style.display='none';box.innerHTML='';}}
@@ -3346,8 +3351,8 @@
       const countryName=code=>COUNTRIES[code]?.name_fa||code||'کشور ناشناس';
       const rows=[
         ...incoming.map(v=>'<article class="home-notice-row"><img src="https://search.showakan.go.jp/media_files/02/image/large/48/90016048/1730.jpg?v=20261121photos2" alt=""><div><strong>درخواست تأسیس سفارت</strong><small>'+countryName(v.from_country)+' برای برقراری سفارت درخواست فرستاده است.</small><div class="home-notice-actions"><button class="btn btn-gold" onclick="respondEmbassy('+v.from+',\'accept\')">پذیرش</button><button class="btn" onclick="respondEmbassy('+v.from+',\'decline\')">رد</button></div></div></article>'),
-        ...pacts.map(v=>'<article class="home-notice-row"><img src="/static/diplomacy/pact.svg" alt=""><div><strong>پیشنهاد پیمان عدم تجاوز</strong><small>'+countryName(v.from_country)+' · مدت '+v.years+' سال</small><p>'+escapeHtml(v.note||'بدون متن توضیحی')+'</p><div class="home-notice-actions"><button class="btn btn-gold" onclick="respondPact('+v.from+',\'accept\')">پذیرش</button><button class="btn" onclick="respondPact('+v.from+',\'decline\')">رد</button></div></div></article>'),
-        ...money.map(v=>'<article class="home-notice-row"><img src="/static/diplomacy/transfer.svg" alt=""><div><strong>درخواست انتقال وجه</strong><small>'+countryName(v.from_country)+' · '+new Intl.NumberFormat('fa-IR').format(v.amount)+' دلار</small><p>'+escapeHtml(v.note||'بدون توضیح')+'</p><div class="home-notice-actions"><button class="btn btn-gold" onclick="respondMoneyTransfer('+v.from+',\'accept\')">تأیید انتقال</button><button class="btn" onclick="respondMoneyTransfer('+v.from+',\'decline\')">رد</button></div></div></article>')
+        ...pacts.map(v=>'<article class="home-notice-row"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Tanggu_Truce.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/pact.svg&quot;" loading="lazy" decoding="async" alt=""><div><strong>پیشنهاد پیمان عدم تجاوز</strong><small>'+countryName(v.from_country)+' · مدت '+v.years+' سال</small><p>'+escapeHtml(v.note||'بدون متن توضیحی')+'</p><div class="home-notice-actions"><button class="btn btn-gold" onclick="respondPact('+v.from+',\'accept\')">پذیرش</button><button class="btn" onclick="respondPact('+v.from+',\'decline\')">رد</button></div></div></article>'),
+        ...money.map(v=>'<article class="home-notice-row"><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Bundesarchiv_Bild_183-2007-0307-509%2C_Deutsche_Bank_Disconto_Gesellschaft%2C_Innenansicht.jpg" onerror="this.onerror=null;this.src=&quot;/static/diplomacy/transfer.svg&quot;" loading="lazy" decoding="async" alt=""><div><strong>درخواست انتقال وجه</strong><small>'+countryName(v.from_country)+' · '+new Intl.NumberFormat('fa-IR').format(v.amount)+' دلار</small><p>'+escapeHtml(v.note||'بدون توضیح')+'</p><div class="home-notice-actions"><button class="btn btn-gold" onclick="respondMoneyTransfer('+v.from+',\'accept\')">تأیید انتقال</button><button class="btn" onclick="respondMoneyTransfer('+v.from+',\'decline\')">رد</button></div></div></article>')
       ].join('');
       return '<section class="home-announcements"><div class="home-announcements-head"><span><small>مرکز پیام‌های کشور</small><strong>اعلانات</strong></span><b>'+new Intl.NumberFormat('fa-IR').format(total)+' مورد جدید</b></div>'+(total?rows:'<div class="home-announcements-empty">اعلان تازه‌ای ندارید. درخواست‌های دیپلماتیک و پاسخ کشورها در این بخش نمایش داده می‌شوند.</div>')+'</section>';
     }
@@ -3469,18 +3474,23 @@
     }
 
     function getRegimeCategory(c) {
+      const key = String(c?.government_type || '').toLowerCase();
+      const tags = {
+        fascism: { key:'fascism', label:'فاشیسم', color:'#c084fc', badge_url:IDEOLOGIES.fascism?.badge_url || 'static/badges/no-faction.svg' },
+        communism: { key:'communism', label:'کمونیسم', color:'#f87171', badge_url:IDEOLOGIES.communism?.badge_url || 'static/badges/communism.svg' },
+        monarchy: { key:'monarchy', label:'سلطنت', color:'#fbbf24', badge_url:'static/badges/monarchy.svg' },
+        democracy: { key:'democracy', label:'دموکراسی', color:'#38bdf8', badge_url:IDEOLOGIES.democracy?.badge_url || 'static/badges/democracy.svg' }
+      };
+      if (tags[key]) return tags[key];
+
+      // Backward-compatible fallback for older cached catalog payloads.
       const ideology = String(c?.ideology || '').toLowerCase();
       const regimeType = String(c?.regime_type || '').toLowerCase();
       const regimeFa = String(c?.regime_fa || '').toLowerCase();
-      if (isMonarchy(c)) return { key:'monarchy', label:'پادشاهی', color:'#fbbf24', badge_url:'static/badges/monarchy.svg' };
-      if (ideology === 'fascism' || /fascis|فاشی/.test(regimeType + ' ' + regimeFa)) {
-        return { key:'fascism', label:'فاشیست', color:'#c084fc', badge_url:IDEOLOGIES.fascism?.badge_url || 'https://commons.wikimedia.org/wiki/Special:FilePath/Reichsadler_of_Nazi_Germany_%28eagle_only%29.svg' };
-      }
-      if (ideology === 'communism' || /communis|کمونی/.test(regimeType + ' ' + regimeFa)) {
-        return { key:'communism', label:'کمونیستی', color:'#f87171', badge_url:IDEOLOGIES.communism?.badge_url || 'static/badges/communism.svg' };
-      }
-      if (ideology === 'democracy' && !/monarchy|kingdom|empire|سلطنت|پادشاهی|امپراتوری/.test(regimeType + ' ' + regimeFa)) return { key:'democracy', label:'دموکراتیک', color:'#38bdf8', badge_url:IDEOLOGIES.democracy?.badge_url || 'static/badges/democracy.svg' };
-      return { key:'other', label:'سایر نظام‌ها', color:'#94a3b8', badge_url:'static/badges/no-faction.svg' };
+      if (isMonarchy(c)) return tags.monarchy;
+      if (ideology === 'communism' || /communis|کمونی/.test(regimeType + ' ' + regimeFa)) return tags.communism;
+      if (ideology === 'fascism' || /fascis|فاشی/.test(regimeType + ' ' + regimeFa)) return tags.fascism;
+      return tags.democracy;
     }
 
     function matchesFilter(c, code) {
