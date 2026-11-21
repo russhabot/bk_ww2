@@ -523,8 +523,8 @@ def diplomacy_state_for(uid):
     now = int(time.time())
     changed = False
     for item in state.get("embassies", []):
-        from_uid = embassy_endpoint_uid(item.get("from", item.get("from_country")))
-        to_uid = embassy_endpoint_uid(item.get("to", item.get("to_country")))
+        from_uid = embassy_endpoint_uid(item.get("from") or item.get("from_country"))
+        to_uid = embassy_endpoint_uid(item.get("to") or item.get("to_country"))
         status = str(item.get("status", "")).strip().lower()
         if to_uid == safe_int(uid) and status == "pending":
             sender = pget(from_uid) or {}
