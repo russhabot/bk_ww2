@@ -28,7 +28,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121wikimedia-only-flags" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121wikimedia-catalog-fix-2" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -300,7 +300,7 @@ for _code, _country in COUNTRIES.items():
     if _code == "DE":
         # The German scenario's original local artwork contains a prohibited-era
         # emblem; revolution variants use the neutral national tricolour instead.
-        _country["base_flag_url"] = "https://flagcdn.com/w320/de.png"
+        _country["base_flag_url"] = "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Germany.svg"
 
 for _code, _politics in load_country_politics().items():
     if _code not in COUNTRIES or not isinstance(_politics, dict):
@@ -1042,9 +1042,17 @@ async def geojson_handler(request):
 
 
 async def catalog_handler(request):
-    # Public, read-only game catalog. All UI surfaces use this single source of truth.
+    # Public, read-only game catalog. Include revolution metadata here as well as
+    # in active-country state: the revolution screen reads its country from this catalog.
+    catalog_countries = {
+        code: {
+            **country,
+            "revolution_flags": REVOLUTION_FLAG_META.get(code, {}),
+        }
+        for code, country in COUNTRIES.items()
+    }
     return web.json_response({
-        "countries": COUNTRIES,
+        "countries": catalog_countries,
         "factions": FACTIONS,
         "ideologies": IDEOLOGIES,
         "default_music": BACKGROUND_MUSIC_URL
