@@ -253,6 +253,9 @@ REVOLUTION_FLAG_META = {
     },
     "CU": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Cuba.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Cuba.svg", "label": "پرچم حزب کمونیست کوبا (تأسیس ۱۹۶۵؛ متأخر نسبت به سناریوی ۱۹۳۴)"}
+    },
+    "TU": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Tuvinian_Peoples_Revolutionary_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Tuvinian_Peoples_Revolutionary_Party.svg", "label": "پرچم حزب انقلابی خلق تووا؛ نسخهٔ تاریخی با ریشه در پرچم ۱۹۲۱"}
     }
 }
 # Preserve the scenario's original national flag, then overlay any persistent
