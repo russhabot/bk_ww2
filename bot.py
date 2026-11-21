@@ -125,8 +125,8 @@ def embassy_endpoint_uid(value):
 
 def same_embassy_pair(item, first_uid, second_uid):
     endpoints = {
-        embassy_endpoint_uid(item.get("from", item.get("from_country"))),
-        embassy_endpoint_uid(item.get("to", item.get("to_country"))),
+        embassy_endpoint_uid(item.get("from") or item.get("from_country")),
+        embassy_endpoint_uid(item.get("to") or item.get("to_country")),
     }
     return endpoints == {safe_int(first_uid), safe_int(second_uid)}
 
@@ -758,7 +758,7 @@ async def api_handler(request):
                     amount = safe_int(body.get("amount"))
                     note = str(body.get("note", "")).strip()[:300]
                     target = pget(target_uid)
-                    relation = any(e.get("status") == "active" and same_user_pair(e, uid, target_uid) for e in dstate["embassies"])
+                    relation = any(active_embassy(e) and same_embassy_pair(e, uid, target_uid) for e in dstate["embassies"])
                     if not target or target_uid == uid or target.get("alive", True) is False or safe_int(target.get("buildings", {}).get("bank")) < 1 or safe_int(player.get("buildings", {}).get("bank")) < 1:
                         error = "برای انتقال پول، هر دو کشور باید بانک فعال داشته باشند."
                     elif not relation:
@@ -812,7 +812,7 @@ async def api_handler(request):
                     target_uid = safe_int(body.get("target_uid"))
                     years = safe_int(body.get("years"))
                     note = str(body.get("note", "")).strip()[:500]
-                    relation = next((e for e in dstate["embassies"] if e.get("status") == "active" and same_user_pair(e, uid, target_uid)), None)
+                    relation = next((e for e in dstate["embassies"] if active_embassy(e) and same_embassy_pair(e, uid, target_uid)), None)
                     target = pget(target_uid)
                     if not relation or not target or target.get("alive", True) is False or target_uid == uid or years not in (1, 2, 3, 5) or len(note) < 5:
                         error = "ابتدا سفارت برقرار کنید و مدت معتبر انتخاب کنید."
