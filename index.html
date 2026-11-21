@@ -3016,6 +3016,36 @@
     let isAudioPlaying = false;
 
     const tg = window.Telegram?.WebApp;
+
+    // Telegram's WebApp object can appear before its signed initData is populated.
+    // Wait briefly for the signed payload and re-check the global object each time.
+    async function getTelegramInitData() {
+      const webApp = window.Telegram?.WebApp || tg;
+      if (!webApp) return '';
+      try { webApp.ready(); } catch (e) {}
+      for (let attempt = 0; attempt < 30; attempt++) {
+        const currentWebApp = window.Telegram?.WebApp || webApp;
+        const value = String(currentWebApp.initData || '').trim();
+        if (value) return value;
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      return '';
+    }
+
+    async function refreshPublicSeason() {
+      try {
+        const healthRes = await fetch('/health', { cache: 'no-store' });
+        const health = await healthRes.json();
+        if (healthRes.ok && health.season) {
+          S.season = health.season === 'alive' ? 'live' : health.season;
+          onStateUpdated();
+          return true;
+        }
+      } catch (e) {
+        console.warn('Could not read public season status:', e);
+      }
+      return false;
+    }
     if (tg) {
       try {
         tg.ready();
@@ -3062,37 +3092,58 @@
     // Fetch live state from backend
     async function fetchState() {
       try {
-        const initData = tg?.initData || '';
+        const initData = await getTelegramInitData();
+        if (!initData) {
+          console.warn('Telegram initData is unavailable; using public season status.');
+          await refreshPublicSeason();
+          return;
+        }
         const res = await fetch('/api/state', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ init: initData })
         });
         const data = await res.json();
-        if (!res.ok && data.must_join) {
-          S.membership = { ok:false, missing:data.missing || [], channels:data.channels || [] };
-          handleMembershipGate(S.membership);
-          return;
+
+        // Always apply a season included by the backend, even when access is blocked.
+        if (data.s && data.s.season) {
+          S.season = data.s.season === 'alive' ? 'live' : data.s.season;
         }
-        if (res.ok) {
+        if (!res.ok && data.must_join) {
           if (data.s) {
-            S.season = (data.s.season === 'alive' ? 'live' : (data.s.season || 'wait'));
             S.p = data.s.p || null;
             S.taken = data.s.taken || [];
             S.owners = data.s.owners || {};
             S.active_countries = data.s.active_countries || [];
-            S.economy_buildings = data.s.economy_buildings || {};
-            S.diplomacy = data.s.diplomacy || S.diplomacy;
-            if (data.s.bg_music) S.bg_music = data.s.bg_music;
-            if (data.s.membership) {
-              S.membership = data.s.membership;
-              handleMembershipGate(S.membership);
-            }
-            onStateUpdated();
           }
+          S.membership = { ok:false, missing:data.missing || [], channels:data.channels || [] };
+          handleMembershipGate(S.membership);
+          onStateUpdated();
+          return;
+        }
+        if (!res.ok) {
+          await refreshPublicSeason();
+          console.warn('Game state request was rejected:', res.status, data.err || data.error || '');
+          return;
+        }
+        if (data.s) {
+          S.season = data.s.season === 'alive' ? 'live' : (data.s.season || S.season || 'wait');
+          S.p = data.s.p || null;
+          S.taken = data.s.taken || [];
+          S.owners = data.s.owners || {};
+          S.active_countries = data.s.active_countries || [];
+          S.economy_buildings = data.s.economy_buildings || {};
+          S.diplomacy = data.s.diplomacy || S.diplomacy;
+          if (data.s.bg_music) S.bg_music = data.s.bg_music;
+          if (data.s.membership) {
+            S.membership = data.s.membership;
+            handleMembershipGate(S.membership);
+          }
+          onStateUpdated();
         }
       } catch(e) {
-        console.log('Using local client state');
+        console.warn('Could not fetch authenticated game state:', e);
+        await refreshPublicSeason();
       }
     }
 
@@ -3113,7 +3164,12 @@
       errBox.style.display = 'none';
 
       try {
-        const initData = tg?.initData || '';
+        const initData = await getTelegramInitData();
+        if (!initData) {
+          errBox.textContent = 'اطلاعات ورود تلگرام دریافت نشد. مینی‌اپ را با دکمهٔ ورود داخل ربات باز کنید و دوباره تلاش کنید.';
+          errBox.style.display = 'block';
+          return;
+        }
         const res = await fetch('/api/check_membership', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3389,7 +3445,9 @@
 
     async function gameAction(action, payload) {
       try {
-        const res=await fetch('/api/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({init:tg?.initData||'',...(payload||{})})});
+        const initData = await getTelegramInitData();
+        if (!initData) { showToast('اطلاعات ورود تلگرام دریافت نشد؛ مینی‌اپ را با دکمهٔ ورود داخل ربات باز کنید.'); return false; }
+        const res=await fetch('/api/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({init:initData,...(payload||{})})});
         const data=await res.json();
         if(data.s){S.p=data.s.p||S.p;S.active_countries=data.s.active_countries||S.active_countries;S.economy_buildings=data.s.economy_buildings||S.economy_buildings;S.diplomacy=data.s.diplomacy||S.diplomacy;(data.s.active_countries||[]).forEach(country=>{if(country.code&&COUNTRIES[country.code])Object.assign(COUNTRIES[country.code],country);});}
         if(!res.ok||!data.ok){showToast(data.err||'عملیات انجام نشد.');return false;}
@@ -3926,7 +3984,11 @@
       btn.innerHTML = ICONS.refresh + ' در حال مخابره به ستاد کل...';
 
       try {
-        const initData = tg?.initData || '';
+        const initData = await getTelegramInitData();
+        if (!initData) {
+          showToast('اطلاعات ورود تلگرام دریافت نشد؛ مینی‌اپ را با دکمهٔ ورود داخل ربات باز کنید.');
+          return;
+        }
         const res = await fetch('/api/claim', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
