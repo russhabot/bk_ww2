@@ -168,7 +168,8 @@ REVOLUTION_FLAG_META = {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Indian_National_Congress_(1931%E2%80%931971).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Indian_National_Congress_(1931%E2%80%931971).svg", "label": "پرچم کنگرهٔ ملی هند (از ۱۹۳۱)"}
     },
     "ZA": {
-        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_South_African_Communist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_South_African_Communist_Party.svg", "label": "پرچم حزب کمونیست آفریقای جنوبی"}
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_South_African_Communist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_South_African_Communist_Party.svg", "label": "پرچم حزب کمونیست آفریقای جنوبی"},
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_South_African_Gentile_National_Socialist_Movement.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_South_African_Gentile_National_Socialist_Movement.svg", "label": "پرچم جنبش ملی‌سوسیالیست آفریقای جنوبی (گری‌شرت‌ها؛ از ۱۹۳۳)"}
     },
     "AR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Fascist_Party_of_Argentina.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Fascist_Party_of_Argentina.svg", "label": "بازسازی پرچم حزب فاشیست آرژانتین؛ تصویر بازسازی‌شده در ویکی‌مدیا"}
@@ -268,6 +269,15 @@ REVOLUTION_FLAG_META = {
     },
     "TH": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Communist_Party_of_Thailand.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Communist_Party_of_Thailand.svg", "label": "پرچم حزب کمونیست تایلند؛ حزب از ۱۹۴۲، متأخر نسبت به سناریوی ۱۹۳۴"}
+    },
+    "IS": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Nationalist_Party_(Iceland).svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Nationalist_Party_(Iceland).svg", "label": "پرچم یکی از گونه‌های پرچم حزب ملی‌گرای ایسلند"}
+    },
+    "MX": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_de_la_Uni%C3%B3n_Nacional_Sinarquista.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_de_la_Uni%C3%B3n_Nacional_Sinarquista.svg", "label": "پرچم اتحادیهٔ ملی سینارکیست مکزیک؛ جنبش از ۱۹۳۷"}
+    },
+    "PY": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_Partido_Colorado_de_Paraguay.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_Partido_Colorado_de_Paraguay.svg", "label": "پرچم حزب کلرادو پاراگوئه؛ حزب محافظه‌کار تاریخی"}
     }
 }
 # Preserve the scenario's original national flag, then overlay any persistent
