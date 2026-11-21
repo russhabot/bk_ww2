@@ -3017,19 +3017,24 @@
 
     const tg = window.Telegram?.WebApp;
 
-    // Telegram's WebApp object can appear before its signed initData is populated.
-    // Wait briefly for the signed payload and re-check the global object each time.
+    // Keep the signed Telegram payload once it has been received.
+    // Telegram may temporarily expose an empty initData value on later interactions.
+    let cachedTelegramInitData = '';
     async function getTelegramInitData() {
+      if (cachedTelegramInitData) return cachedTelegramInitData;
       const webApp = window.Telegram?.WebApp || tg;
       if (!webApp) return '';
       try { webApp.ready(); } catch (e) {}
       for (let attempt = 0; attempt < 30; attempt++) {
         const currentWebApp = window.Telegram?.WebApp || webApp;
         const value = String(currentWebApp.initData || '').trim();
-        if (value) return value;
+        if (value) {
+          cachedTelegramInitData = value;
+          return cachedTelegramInitData;
+        }
         await new Promise(resolve => setTimeout(resolve, 100));
       }
-      return '';
+      return cachedTelegramInitData;
     }
 
     async function refreshPublicSeason() {
