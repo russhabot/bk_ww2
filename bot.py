@@ -256,6 +256,12 @@ REVOLUTION_FLAG_META = {
     },
     "TU": {
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Tuvinian_Peoples_Revolutionary_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Tuvinian_Peoples_Revolutionary_Party.svg", "label": "پرچم حزب انقلابی خلق تووا؛ نسخهٔ تاریخی با ریشه در پرچم ۱۹۲۱"}
+    },
+    "CH": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Schweiz-alt.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Schweiz-alt.svg", "label": "پرچم قدیمی سوئیس که جنبش جبههٔ ملی سوئیس در دههٔ ۱۹۳۰ نیز از آن استفاده می‌کرد"}
+    },
+    "EC": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Falange_Nacional_Garciana_Ecuatoriana.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Falange_Nacional_Garciana_Ecuatoriana.svg", "label": "پرچم فالانژ ملی گارسیا در اکوادور؛ تاریخ دقیق کاربرد این نسخه روشن نیست"}
     }
 }
 # Preserve the scenario's original national flag, then overlay any persistent
