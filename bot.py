@@ -351,8 +351,8 @@ REVOLUTION_TRANSITIONS = {
     "democracy": ("communism", "fascism")
 }
 REVOLUTION_REQUIREMENTS = {
-    "power": 75, "money": 80000, "satisfaction": 65,
-    "food": 12000, "oil": 2500, "buildings": 2
+    "power": 90, "money": 100000, "satisfaction": 70,
+    "food": 15000, "oil": 3000, "buildings": 3
 }
 
 
@@ -389,18 +389,18 @@ def perform_revolution(uid, player, body):
     ]
     if missing:
         return "شرایط انقلاب هنوز کامل نیست: " + "، ".join(missing)
-    if safe_float(player.get("money")) < 50000 or safe_float(player.get("power")) < 35:
+    if safe_float(player.get("money")) < 60000 or safe_float(player.get("power")) < 40:
         return "خزانه یا قدرت سیاسی برای تأمین هزینه انقلاب کافی نیست."
 
     rule = REVOLUTION_RULES[target]
     country_name = str(country.get("name_fa") or code)
     country_name_en = str(country.get("name_en") or code)
     previous = current
-    player["power"] = safe_float(player.get("power")) - 35
-    player["money"] = safe_int(player.get("money")) - 50000
-    player["food"] = safe_int(player.get("food")) - 5000
-    player["oil"] = safe_int(player.get("oil")) - 1000
-    player["satisfaction"] = max(0, safe_float(player.get("satisfaction")) - 8)
+    player["power"] = safe_float(player.get("power")) - 40
+    player["money"] = safe_int(player.get("money")) - 60000
+    player["food"] = safe_int(player.get("food")) - 6000
+    player["oil"] = safe_int(player.get("oil")) - 1200
+    player["satisfaction"] = max(0, safe_float(player.get("satisfaction")) - 10)
 
     new_leader = f"{rule['leader_prefix']} {country_name}"
     english_leaders = {"communism": "Chair of the People's Council", "fascism": "Leader of the National Council", "democracy": "President"}
@@ -1351,36 +1351,6 @@ async def api_handler(request):
                 error = "کشور شما از بازی خارج شده و امکان صدور بیانیه ندارد."
             else:
                 error = await publish_statement(uid, user, player, body)
-
-        elif action == "admin_switch_country":
-            if not is_admin(uid):
-                error = "این عملیات فقط برای مدیران بازی مجاز است."
-            else:
-                code = str(body.get("c", "") or body.get("country", "")).strip().upper()
-                target_country = COUNTRIES.get(code)
-                if not target_country or target_country.get("selectable") == "no":
-                    error = "کد کشور معتبر نیست یا این کشور در سناریوی فعلی قابل انتخاب نیست."
-                else:
-                    occupied_uid, _ = find_player_by_country(code)
-                    if occupied_uid and occupied_uid != uid:
-                        error = "این کشور در اختیار فرمانده دیگری است."
-                    else:
-                        if player is None:
-                            first_name = user.get("first_name", "")
-                            last_name = user.get("last_name", "")
-                            player = {
-                                "c": code,
-                                "name": f"{first_name} {last_name}".strip() or "مدیر آزمایشی",
-                                "username": str(user.get("username", "")).strip().lstrip("@"),
-                                "alive": True,
-                                "created_at": int(time.time())
-                            }
-                            ensure_economy(player)
-                        else:
-                            player["c"] = code
-                            player["alive"] = True
-                            player.pop("elimination_reason", None)
-                        pset(uid, player)
 
         elif action in ("pick", "claim"):
             if season != "pick":
