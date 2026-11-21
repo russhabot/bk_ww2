@@ -112,6 +112,29 @@ def same_user_pair(item, first, second):
     return {safe_int(item.get("from"), -1), safe_int(item.get("to"), -1)} == {safe_int(first, -2), safe_int(second, -2)}
 
 
+def embassy_endpoint_uid(value):
+    """Resolve both current numeric user IDs and legacy country-code endpoints."""
+    if isinstance(value, int) or (isinstance(value, str) and value.strip().isdigit()):
+        return safe_int(value)
+    code = str(value or "").strip().upper()
+    if not code:
+        return 0
+    found_uid, _ = find_player_by_country(code)
+    return safe_int(found_uid)
+
+
+def same_embassy_pair(item, first_uid, second_uid):
+    endpoints = {
+        embassy_endpoint_uid(item.get("from", item.get("from_country"))),
+        embassy_endpoint_uid(item.get("to", item.get("to_country"))),
+    }
+    return endpoints == {safe_int(first_uid), safe_int(second_uid)}
+
+
+def active_embassy(item):
+    return str(item.get("status", "")).strip().lower() in {"active", "accepted", "approved", "established"}
+
+
 def safe_float(value, default=0.0):
     try:
         if isinstance(value, bool):
@@ -241,7 +264,7 @@ def apply_daily_economy(player):
         player["money"] = safe_int(player.get("money")) + cash_income
         if safe_int(buildings.get("bank")) > 0:
             player["vault"] = safe_int(player.get("vault")) + int(safe_int(player.get("vault")) * 0.001)
-        daily_food_need = 100 + max(0, safe_int(player.get("infantry"))) // 5000
+        daily_food_need = 150 + max(0, safe_int(player.get("infantry"))) // 3000
         next_food = safe_int(player.get("food")) + food_output - daily_food_need
         if next_food < 0:
             player["food"] = 0
@@ -250,7 +273,8 @@ def apply_daily_economy(player):
         else:
             player["food"] = next_food
             player["famine_days"] = 0
-        player["satisfaction"] = max(0.0, min(100.0, safe_float(player.get("satisfaction")) + welfare * 0.5 - 2))
+        daily_welfare_need = 2 + max(0, safe_int(player.get("infantry"))) // 150000
+        player["satisfaction"] = max(0.0, min(100.0, safe_float(player.get("satisfaction")) + welfare * 0.5 - daily_welfare_need))
         if safe_float(player.get("satisfaction")) < 20:
             player["unrest_days"] = safe_int(player.get("unrest_days")) + 1
         else:
@@ -499,20 +523,24 @@ def diplomacy_state_for(uid):
     now = int(time.time())
     changed = False
     for item in state.get("embassies", []):
-        if safe_int(item.get("to")) == safe_int(uid) and item.get("status") == "pending":
-            sender = pget(safe_int(item.get("from"))) or {}
-            incoming.append({**item, "from_country": sender.get("c", "")})
-        elif safe_int(item.get("from")) == safe_int(uid) and item.get("status") == "pending":
-            receiver = pget(safe_int(item.get("to"))) or {}
-            outgoing.append({**item, "to_country": receiver.get("c", "")})
-        elif safe_int(uid) in (safe_int(item.get("from")), safe_int(item.get("to"))) and item.get("status") == "active":
-            other_uid = safe_int(item.get("to")) if safe_int(item.get("from")) == safe_int(uid) else safe_int(item.get("from"))
-            other = pget(safe_int(other_uid)) or {}
+        from_uid = embassy_endpoint_uid(item.get("from", item.get("from_country")))
+        to_uid = embassy_endpoint_uid(item.get("to", item.get("to_country")))
+        status = str(item.get("status", "")).strip().lower()
+        if to_uid == safe_int(uid) and status == "pending":
+            sender = pget(from_uid) or {}
+            incoming.append({**item, "from": from_uid, "to": to_uid, "from_country": sender.get("c", item.get("from_country", ""))})
+        elif from_uid == safe_int(uid) and status == "pending":
+            receiver = pget(to_uid) or {}
+            outgoing.append({**item, "from": from_uid, "to": to_uid, "to_country": receiver.get("c", item.get("to_country", ""))})
+        elif safe_int(uid) in (from_uid, to_uid) and active_embassy(item):
+            other_uid = to_uid if from_uid == safe_int(uid) else from_uid
+            other = pget(other_uid) or {}
+            other_code = str(other.get("c") or (item.get("to_country") if from_uid == safe_int(uid) else item.get("from_country")) or "").upper()
             if item.get("pact_until") and safe_int(item.get("pact_until")) <= now:
                 item.pop("pact_until", None)
                 item.pop("pact_years", None)
                 changed = True
-            relations.append({"uid": other_uid, "country": other.get("c", ""),
+            relations.append({"uid": other_uid, "country": other_code,
                 "name": other.get("name") or other.get("username") or "فرمانروا",
                 "pact_until": item.get("pact_until", 0), "pact_years": item.get("pact_years", 0)})
     for proposal in state.get("pacts", []):
@@ -681,9 +709,9 @@ async def api_handler(request):
                     target_uid, target = find_player_by_country(target_code)
                     if not target_uid or target_uid == uid or not target or target.get("alive", True) is False:
                         error = "کشور مقصد معتبر یا فعال نیست."
-                    elif any(e.get("status") == "active" and same_user_pair(e, uid, target_uid) for e in dstate["embassies"]):
+                    elif any(active_embassy(e) and same_embassy_pair(e, uid, target_uid) for e in dstate["embassies"]):
                         error = "سفارت متقابل با این کشور از قبل برقرار است."
-                    elif any(e.get("status") == "pending" and same_user_pair(e, uid, target_uid) for e in dstate["embassies"]):
+                    elif any(str(e.get("status", "")).strip().lower() == "pending" and same_embassy_pair(e, uid, target_uid) for e in dstate["embassies"]):
                         error = "درخواست سفارت با این کشور قبلاً ارسال شده یا از طرف آن کشور منتظر پاسخ شماست."
                     else:
                         dstate["embassies"].append({"from": uid, "to": target_uid, "status": "pending", "created": now})
@@ -696,7 +724,7 @@ async def api_handler(request):
                 elif action == "embassy_respond":
                     sender_uid = safe_int(body.get("from"))
                     decision = str(body.get("decision", ""))
-                    req = next((e for e in dstate["embassies"] if safe_int(e.get("from")) == safe_int(sender_uid) and safe_int(e.get("to")) == safe_int(uid) and e.get("status") == "pending"), None)
+                    req = next((e for e in dstate["embassies"] if embassy_endpoint_uid(e.get("from", e.get("from_country"))) == safe_int(sender_uid) and embassy_endpoint_uid(e.get("to", e.get("to_country"))) == safe_int(uid) and str(e.get("status", "")).strip().lower() == "pending"), None)
                     sender = pget(sender_uid) if req else None
                     if not req or decision not in ("accept", "decline"):
                         error = "درخواست سفارت معتبر نیست یا قبلاً پاسخ داده شده است."
