@@ -28,7 +28,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121restore-original-germany-current-flag" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-cards-admin-switch" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -1352,6 +1352,36 @@ async def api_handler(request):
             else:
                 error = await publish_statement(uid, user, player, body)
 
+        elif action == "admin_switch_country":
+            if not is_admin(uid):
+                error = "این عملیات فقط برای مدیران بازی مجاز است."
+            else:
+                code = str(body.get("c", "") or body.get("country", "")).strip().upper()
+                target_country = COUNTRIES.get(code)
+                if not target_country or target_country.get("selectable") == "no":
+                    error = "کد کشور معتبر نیست یا این کشور در سناریوی فعلی قابل انتخاب نیست."
+                else:
+                    occupied_uid, _ = find_player_by_country(code)
+                    if occupied_uid and occupied_uid != uid:
+                        error = "این کشور در اختیار فرمانده دیگری است."
+                    else:
+                        if player is None:
+                            first_name = user.get("first_name", "")
+                            last_name = user.get("last_name", "")
+                            player = {
+                                "c": code,
+                                "name": f"{first_name} {last_name}".strip() or "مدیر آزمایشی",
+                                "username": str(user.get("username", "")).strip().lstrip("@"),
+                                "alive": True,
+                                "created_at": int(time.time())
+                            }
+                            ensure_economy(player)
+                        else:
+                            player["c"] = code
+                            player["alive"] = True
+                            player.pop("elimination_reason", None)
+                        pset(uid, player)
+
         elif action in ("pick", "claim"):
             if season != "pick":
                 phase_text = "سیزن در حالت انتظار است؛ انتخاب کشور هنوز فعال نشده." if season == "wait" else "سیزن شروع شده و انتخاب کشور بسته است."
@@ -1515,6 +1545,57 @@ if dp:
             "وضعیت: اتاق انتظار. پروفایل بازیکنان حفظ شد."
         )
 
+
+    @dp.message(Command("switchcountry"))
+    async def cmd_switchcountry(msg: Message):
+        if not is_admin(msg.from_user.id):
+            return await msg.answer("این دستور فقط برای مدیران بازی در دسترس است.")
+
+        parts = (msg.text or "").split()
+        if len(parts) != 2:
+            return await msg.answer(
+                "روش استفاده: /switchcountry CODE\n"
+                "نمونه: /switchcountry DE\n"
+                "کد کشور را از فهرست کشورهای بازی وارد کنید."
+            )
+
+        code = parts[1].strip().upper()
+        country = COUNTRIES.get(code)
+        if not country or country.get("selectable") == "no":
+            return await msg.answer("کد کشور معتبر نیست یا این کشور در سناریوی فعلی قابل انتخاب نیست.")
+
+        uid = msg.from_user.id
+        async with ACTION_LOCK:
+            occupied_uid, _occupied_player = find_player_by_country(code)
+            if occupied_uid and occupied_uid != uid:
+                return await msg.answer("این کشور در حال حاضر در اختیار فرمانده دیگری است؛ برای جلوگیری از تداخل، تغییر انجام نشد.")
+
+            player = pget(uid)
+            if player is None:
+                first_name = msg.from_user.first_name or ""
+                last_name = msg.from_user.last_name or ""
+                player = {
+                    "c": code,
+                    "name": f"{first_name} {last_name}".strip() or "مدیر آزمایشی",
+                    "username": (msg.from_user.username or "").lstrip("@"),
+                    "alive": True,
+                    "created_at": int(time.time())
+                }
+                ensure_economy(player)
+            else:
+                player["c"] = code
+                player["alive"] = True
+                player.pop("elimination_reason", None)
+
+            pset(uid, player)
+
+        await msg.answer(
+            f"کشور آزمایشی شما با موفقیت تغییر کرد.\n"
+            f"کشور جدید: <b>{html_escape(country.get('name_fa', code))}</b> ({code})\n"
+            "اطلاعات و منابع پروفایل فعلی حفظ شده‌اند؛ کشور قبلی آزاد شد. "
+            "این دستور محدودیت مرحلهٔ انتخاب کشور را برای مدیر نادیده می‌گیرد و هیچ اعلان عمومی منتشر نمی‌کند.",
+            parse_mode="HTML"
+        )
 
     @dp.message(Command("war"))
     async def cmd_war(msg: Message):
