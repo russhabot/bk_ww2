@@ -179,6 +179,15 @@ REVOLUTION_FLAG_META = {
     },
     "PL": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Oboz_Narodowo_Radykalny.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Oboz_Narodowo_Radykalny.svg", "label": "نماد پرچمی اردوگاه ملی رادیکال لهستان؛ نسخهٔ ویکی‌مدیا، نه سند پرچم رسمی ۱۹۳۴"}
+    },
+    "CA": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_Parti_National_Social_Chr%C3%A9tien.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_Parti_National_Social_Chr%C3%A9tien.svg", "label": "پرچم حزب ملی‌سوسیالیست مسیحی کانادا؛ گروه سیاسی دههٔ ۱۹۳۰"}
+    },
+    "GR": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Greek_National_Socialist_party_flag.png", "source_url": "https://commons.wikimedia.org/wiki/File:Greek_National_Socialist_party_flag.png", "label": "پرچم حزب ملی‌سوسیالیست یونان (۱۹۳۲ تا ۱۹۴۳)"}
+    },
+    "ES": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_FE_JONS.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_FE_JONS.svg", "label": "پرچم فالانژ اسپانیا؛ نسخهٔ بازسازی‌شدهٔ ویکی‌مدیا"}
     }
 }
 
