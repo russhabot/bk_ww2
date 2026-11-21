@@ -1,91 +1,101 @@
-# ⚔️ Burnt Kingdoms: World War 2 (1934)
+# ⚔️ Burnt Kingdoms: World War II (1934)
 
-ربات و مینی‌اپ تلگرام استراتژیک جنگ جهانی دوم (سال ۱۹۳۴).
-این نسخه اختصاصی بر پایه نسخه Burnt Kingdoms توسعه یافته و شامل تمامی تغییرات، نقشه‌ها، پرچم‌های تاریخی، رهبران و ائتلاف‌های دوران جنگ جهانی دوم می‌باشد.
+ربات و مینی‌اپ تلگرام استراتژیک با سناریوی آغاز در سال ۱۹۳۴.
 
----
+این پروژه شامل انتخاب کشور از طریق کارت و نقشهٔ تعاملی، اطلاعات تاریخی کشورها و رهبران، دسته‌بندی حکومت‌ها، ائتلاف‌ها، بخش سیاست داخلی و مدیریت فصل‌های بازی است.
 
-## 🌟 ویژگی‌های کلیدی
+## ویژگی‌ها
 
-- 🗺️ **انتخاب دوگانه (کارت و نقشه تعاملی):**
-  - امکان انتخاب کشور هم از طریق فهرست کارت‌های تاکتیکی با جستجوی زنده و فیلترها.
-  - و هم از روی **نقشه تاکتیکی جهان (Interactive Map)** با کلیک مستقیم روی قلمرو کشورها.
-- 🏛️ **پرچم‌ها و تصاویر تاریخی سال‌های ۱۹۳۴ و جنگ جهانی دوم:**
-  - استفاده از پرچم‌های دوره ۱۹۳۴–۱۹۴۵ (آلمان رایش، بریتانیا، شوروی سوسیالیستی، ایتالیای پادشاهی، امپراتوری ژاپن، ایران دوره پهلوی و...).
-  - تصاویر و پرتره‌های باکیفیت رهبران تاریخی (چرچیل، استالین، روزولت، دوگل، هیتلر، موسولینی، هیروهیتو، رضاشاه و...).
-- ⚔️ **ائتلاف‌ها و احزاب سیاسی:**
-  - **محور (Axis):** نشان فالکه و علامت ائتلاف محور
-  - **متفقین (Allies):** نشان ستاره متفقین و ائتلاف آزادی
-  - **کمینترن (Comintern):** داس و چکش سوسیالیسم بین‌الملل
-  - **بدون جناح (Neutral):** نماد موازنه و بی‌طرفی
-  - نشان‌های چهارگانه ایدئولوژی: فاشیسم / نازیسم، کمونیسم، دموکراسی پارلمانی، سلطنت و بدون جناح.
-- 👤 **نمایش مشخصات تصاحب‌کننده و مالک:**
-  - نمایش بلادرنگ نام و آیدی تلگرام بازیکنی که هر کشور را انتخاب کرده است، هم روی کارت و هم در پاپ‌آپ نقشه.
-- ⏳ **اتاق آماده‌باش سیزن (Season Waiting Room):**
-  - پنل وضعیت سیزن، وضعیت آمادگی ناوگان‌ها و شمارش معکوس آغاز درگیری‌ها.
-- 🎵 **پخش‌کننده موسیقی نظامی و پس‌زمینه:**
-  - موسیقی مارش ارکسترال با دکمه کنترل صدا، قطع/وصل و حفظ وضعیت کاربر.
-- 📱 **واکنش‌گرا و سازگار کامل با Telegram Mini App:**
-  - رابط کاربری مدرن تیره، نظامی و راست‌چین (RTL فارسی) با انیمیشن‌های روان و بدون نیاز به نصب نرم‌افزار جانبی.
+- انتخاب کشور از فهرست جست‌وجوپذیر یا نقشهٔ تعاملی جهان
+- اطلاعات کشورها، رهبران، پرچم‌ها و نشان‌های تاریخی
+- چهار دستهٔ حکومتی: فاشیسم، کمونیسم، سلطنت و دموکراسی
+- دسته‌بندی ائتلاف‌ها: محور، متفقین، کمینترن و بدون جناح
+- نمایش مالک کشور و اطلاعات بازیکن
+- اتاق انتظار فصل و مراحل انتخاب کشور و شروع بازی
+- پنل سیاست داخلی و انقلاب کشورها
+- رابط فارسی راست‌چین و سازگار با Telegram Mini App
 
----
+## ساختار اصلی پروژه
 
-## 📂 ساختار فایل‌ها
+- `bot.py`: ربات تلگرام، وب‌سرور aiohttp، API و اعتبارسنجی دادهٔ ورود Telegram Mini App
+- `database.py`: لایهٔ پایگاه داده؛ PostgreSQL در صورت تنظیم `DATABASE_URL` و SQLite برای اجرای محلی
+- `game_data.py`: اطلاعات کشورها، حکومت‌ها، ائتلاف‌ها و داده‌های تاریخی
+- `index.html`: رابط کاربری مینی‌اپ
+- `world_geo.json`: داده‌های جغرافیایی نقشه
+- `static/`: فایل‌های تصویری و منابع ثابت رابط کاربری
+- `requirements.txt`: وابستگی‌های Python
+- `.env.example`: نمونهٔ متغیرهای محیطی
 
-- `bot.py`: سرور اصلی ربات تلگرام (Aiogram 3) و وب‌سرور REST API (aiohttp) به همراه اعتبارسنجی ورود تلگرام.
-- `database.py`: پایگاه داده SQLite با جدول‌های تنظیمات، بازیکنان، تاریخچهٔ سیزن و گزارش مدیریتی؛ در Railway از Volume دائمی `/data/bk_ww2.db` استفاده می‌کند.
-- `game_data.py`: دیتابیس جامع بیش از ۴۰ کشور جنگ جهانی دوم، پرچم‌ها، پرتره رهبران، پایتخت‌ها، ائتلاف‌ها و ایدئولوژی‌ها.
-- `index.html`: رابط کاربری تک‌صفحه‌ای غنی، نقشه تعاملی لایف‌لت، جستجوی زنده، پخش‌کننده موسیقی و استایل‌های نظامی تاکتیکی.
-- `world_geo.json`: داده‌های جغرافیایی برای رندر نقشه جهانی.
-- `requirements.txt`: نیازمندی‌های پایتون.
-- `.env.example`: نمونه تنظیمات توکن، وب‌اپ و ادمین‌ها.
-
----
-
-## 🚀 راهنمای راه‌اندازی
+## راه‌اندازی محلی
 
 ### ۱. نصب وابستگی‌ها
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### ۲. تنظیم متغیرهای محیطی
-یک فایل `.env` بسازید:
+
+از فایل نمونه یک فایل `.env` بسازید و مقادیر واقعی را وارد کنید:
+
 ```bash
 cp .env.example .env
 ```
-و مقادیر زیر را در آن پر کنید:
-```env
-BOT_TOKEN=توکن_ربات_از_بات_فادر
-WEBAPP_URL=https://your-domain.com
-ADMINS=شناسه_عددی_ادمین
-PORT=8080
-```
+
+متغیرهای اصلی:
+
+| متغیر | کاربرد |
+|---|---|
+| `BOT_TOKEN` | توکن ربات دریافت‌شده از BotFather |
+| `WEBAPP_URL` | نشانی HTTPS مینی‌اپ |
+| `ADMINS` | شناسه‌های عددی مدیران، جداشده با کاما |
+| `PORT` | پورت وب‌سرور؛ مقدار پیش‌فرض 8080 |
+| `ANNOUNCE_CHANNEL` | کانال اطلاع‌رسانی اختیاری |
+| `BACKGROUND_MUSIC_URL` | نشانی موسیقی پس‌زمینه؛ اختیاری |
+| `DATABASE_URL` | نشانی اتصال PostgreSQL؛ در محیط تولید توصیه می‌شود |
+
+اگر `DATABASE_URL` تنظیم شده باشد، برنامه از PostgreSQL استفاده می‌کند. در غیر این صورت، برای توسعهٔ محلی از SQLite استفاده می‌شود. در Railway، برای نگهداری پایدار اطلاعات، PostgreSQL را متصل و `DATABASE_URL` را تنظیم کنید.
 
 ### ۳. اجرا
+
 ```bash
 python bot.py
 ```
 
----
+## کانال‌های عضویت
 
-## 🛠️ دستورات مدیریتی ربات تلگرام
+برای استفاده از مینی‌اپ، عضویت در کانال و گروه زیر الزامی است:
 
-- `/start`: ارسال دکمه ورود به Mini App جنگ جهانی دوم
-- `/season wait`: تغییر وضعیت سیزن به «اتاق انتظار»
-- `/season pick`: باز کردن مرحله «انتخاب کشور»
-- `/season live`: فعال‌سازی رسمی «نبرد سیزن»
-- `/season reset` یا `/resetseason`: ریست سیزن، آزادسازی همه کشورها، بازگشت به اتاق انتظار و افزایش شماره سیزن؛ پروفایل بازیکنان باقی می‌ماند.
-- `/status`: مشاهده فهرست کشورهای تصاحب شده و حاکمان آن‌ها
-- `/reset <COUNTRY_CODE>`: آزادسازی یک کشور (مثال: `/reset DE`)
+- [کانال Burnt Kingdoms](https://t.me/burnt_kingdoms)
+- [گروه گفت‌وگو](https://t.me/bk_chatt)
 
+## دستورات ربات
 
+| دستور | کاربرد |
+|---|---|
+| `/start` | نمایش دکمهٔ ورود به مینی‌اپ |
+| `/season wait` | قرار دادن فصل در اتاق انتظار |
+| `/season pick` | فعال‌کردن مرحلهٔ انتخاب کشور |
+| `/season live` | شروع رسمی فصل |
+| `/season reset` یا `/resetseason` | شروع فصل جدید و آزادسازی کشورها؛ پروفایل بازیکنان حفظ می‌شود |
+| `/status` | نمایش وضعیت تصاحب کشورها |
+| `/reset <COUNTRY_CODE>` | آزادسازی یک کشور مشخص؛ مانند `/reset DE` |
 
-### Historical faction icon sources
-- Fascism ideology icon: [National Fascist Party logo (Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:National_Fascist_Party_logo.svg), historical Italian National Fascist Party emblem; the Commons page records a public-domain dedication by the uploader.
-- Allied faction icon: [Insignia of the South East Asia Command (Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:Insignia_of_the_South_East_Asia_Command.svg). This is a real Allied command insignia, not a universal logo for all Allied countries; there was no single universal Allied logo.
+> دستورهای تغییر وضعیت فصل و آزادسازی کشورها مدیریتی هستند و باید فقط توسط مدیر مجاز اجرا شوند.
 
+## استقرار
 
-### Historical Italian Fascist Party emblem source
-- Axis/fascism icon uses the Wikimedia Commons file [Flag of the PNF (National Fascist Party)](https://commons.wikimedia.org/wiki/File:Flag_of_the_PNF_(National_Fascist_Party).svg), a historical 1927–1943 Italian National Fascist Party design. It is used only as a historical faction/ideology identifier in the game.
-- The world map data is bundled locally in `world_geo.json` and loaded only when the map view is opened; Leaflet Canvas and simplified geometry are used to improve mobile performance.
+برنامه با پورت محیطی `PORT` اجرا می‌شود. برای استقرار روی Railway:
+
+1. مخزن GitHub را به یک سرویس متصل کنید.
+2. متغیرهای محیطی موردنیاز را در سرویس تنظیم کنید.
+3. یک پایگاه دادهٔ PostgreSQL متصل کنید و مطمئن شوید `DATABASE_URL` در دسترس برنامه است.
+4. سرویس را با دستور اجرای `python bot.py` اجرا کنید.
+5. نشانی HTTPS سرویس را در `WEBAPP_URL` قرار دهید و آن را در تنظیمات مینی‌اپ ربات ثبت کنید.
+
+## منابع نشان‌های تاریخی
+
+- [نشان حزب ملی فاشیست ایتالیا در Wikimedia Commons](https://commons.wikimedia.org/wiki/File:National_Fascist_Party_logo.svg)
+- [نشان فرماندهی جنوب شرق آسیا متفقین در Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Insignia_of_the_South_East_Asia_Command.svg)
+
+نشان فرماندهی جنوب شرق آسیا یک نشان تاریخی واقعی از ساختار فرماندهی متفقین است و به‌عنوان نشان واحد همهٔ کشورهای متفقین معرفی نمی‌شود.
