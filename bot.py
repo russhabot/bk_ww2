@@ -28,7 +28,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-cards-admin-switch" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-flags-audit-2" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -298,7 +298,7 @@ REVOLUTION_FLAG_META = {
     "IR": {
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_SUMKA.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_SUMKA.svg", "label": "پرچم حزب سومکا، حزب سوسیالیست ملی کارگران ایران (تأسیس ۱۹۵۲؛ خارج از دورهٔ آغازین ۱۹۳۴)"},
         "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Persian_Socialist_Soviet_Republic.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Persian_Socialist_Soviet_Republic.svg", "label": "پرچم جمهوری شورایی سوسیالیستی ایران (۱۹۲۰ تا ۱۹۲۱؛ جنبش تاریخی پیش از سناریوی ۱۹۳۴)"},
-        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Persian_Azadistan.gif", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Persian_Azadistan.gif", "label": "پرچم حکومت کوتاه‌عمر آزادستان (۱۹۲۰؛ جنبش خودگردانی و مشروطه‌خواهانه در آذربایجان ایران)"}
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/The_flag_of_Iran%27s_National_Front.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:The_flag_of_Iran%27s_National_Front.jpg", "label": "نشان جبهه ملی ایران؛ نماد جریان ملی‌گرای دموکراتیک (از ۱۹۴۹؛ نشان حزبی، خارج از دورهٔ ۱۹۳۴ و نه پرچم رسمی)"}
     },
     "EE": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/P%C3%B5llumeeste_Kogud_flag%2C_1934.svg", "source_url": "https://commons.wikimedia.org/wiki/Category:Flags_of_political_parties_in_Estonia", "label": "پرچم تشکل سیاسی Põllumeeste Kogud؛ نسخهٔ ثبت‌شده در ۱۹۳۴"}
@@ -327,6 +327,31 @@ REVOLUTION_FLAG_META = {
     },
     "NI": {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_del_Partido_Liberal_Nacionalista_de_Nicaragua_%281912-1979%29.png", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_del_Partido_Liberal_Nacionalista_de_Nicaragua_(1912-1979).png", "label": "پرچم حزب لیبرال ملی نیکاراگوئه (۱۹۱۲ تا ۱۹۷۹؛ حزب سیاسی دورهٔ موردنظر)"}
+    },
+    "NZ": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/First_NZ_Labour_Logo.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:First_NZ_Labour_Logo.jpg", "label": "نشان تاریخی حزب کارگر نیوزیلند؛ مورد استفاده تا میانهٔ دههٔ ۱۹۶۰"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/CPNZ_logo.jpg", "source_url": "https://commons.wikimedia.org/wiki/File:CPNZ_logo.jpg", "label": "نشان حزب کمونیست نیوزیلند؛ حزب تأسیس‌شده در ۱۹۲۴"}
+    },
+    "LU": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Logo_of_the_Luxembourg_Socialist_Workers%27_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Logo_of_the_Luxembourg_Socialist_Workers%27_Party.svg", "label": "نشان حزب کارگران سوسیالیست لوکزامبورگ؛ حزبی با ریشه در ۱۹۰۲"},
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Kommunistesch_Partei_Letzzebuerg_Logo.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Kommunistesch_Partei_Letzzebuerg_Logo.svg", "label": "نشان حزب کمونیست لوکزامبورگ"}
+    },
+    "AF": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Emblem_of_the_People%27s_Democratic_Party_of_Afghanistan.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Emblem_of_the_People%27s_Democratic_Party_of_Afghanistan.svg", "label": "نشان حزب دموکراتیک خلق افغانستان؛ حزب تأسیس‌شده در ۱۹۶۵ و خارج از دورهٔ ۱۹۳۴"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_National_Congress_of_Afghanistan.png", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_National_Congress_of_Afghanistan.png", "label": "پرچم حزب کنگره ملی افغانستان؛ جریان سیاسی معاصر و خارج از دورهٔ ۱۹۳۴"}
+    },
+    "SA": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_South_African_Communist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_South_African_Communist_Party.svg", "label": "پرچم حزب کمونیست آفریقای جنوبی؛ تأسیس ۱۹۲۱"}
+    },
+    "LT": {
+        "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Logo_of_the_Lithuanian_Nationalist_Union.png", "source_url": "https://commons.wikimedia.org/wiki/File:Logo_of_the_Lithuanian_Nationalist_Union.png", "label": "نشان اتحادیه ملی‌گرایان لیتوانی؛ حزب فعال در دورهٔ میان‌دو‌جنگ، بازسازی معاصر"},
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/LSDP_Logo.svg", "source_url": "https://commons.wikimedia.org/wiki/File:LSDP_Logo.svg", "label": "نشان حزب سوسیال‌دموکرات لیتوانی؛ حزبی با ریشه در ۱۸۹۶"}
+    },
+    "TB": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_the_National_Democratic_Party_of_Tibet.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_the_National_Democratic_Party_of_Tibet.svg", "label": "پرچم حزب ملی‌دموکراتیک تبت؛ حزب معاصر و خارج از دورهٔ ۱۹۳۴"}
+    },
+    "HT": {
+        "communism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Haitian_Communist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Haitian_Communist_Party.svg", "label": "نشان حزب کمونیست هائیتی؛ نماد حزبی ثبت‌شده در ۱۹۴۶ تا ۱۹۴۷، حزب تأسیس‌شده در ۱۹۳۴"}
     },
 }
 # Preserve the scenario's original national flag, then overlay any persistent
