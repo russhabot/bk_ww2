@@ -1082,6 +1082,46 @@
     .economy-demand-grid .is-positive strong{color:#86efac}.economy-demand-grid .is-negative strong{color:#fca5a5}
     .economy-demand-panel>p{margin:10px 1px 0;color:var(--text-muted);font-size:10px;line-height:1.8}
     @media(max-width:620px){.diplomacy-embassy-hero{grid-template-columns:1fr}.diplomacy-embassy-hero>img{height:150px;min-height:0;max-height:150px}.diplomacy-embassy-copy{padding:13px}.diplomacy-war-standalone{align-items:flex-start;flex-wrap:wrap}.diplomacy-war-standalone button{width:100%}.economy-demand-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.economy-demand-heading{flex-direction:column;gap:3px}}
+
+    /* Mobile-only typography refinements for the home / command room screen */
+    @media (max-width: 520px) {
+      #section-waiting-room .waiting-room-panel { text-align: center; padding: 15px 11px; gap: 13px; }
+      #season-screen-title { font-size: 18px !important; line-height: 1.65 !important; overflow-wrap: anywhere; }
+      #season-screen-message { font-size: 12px !important; line-height: 1.85 !important; }
+      #player-command-dossier { padding: 11px; line-height: 1.85; }
+      #player-command-dossier .dossier-title-block { flex: 1 1 0; min-width: 0; }
+      #player-command-dossier .dossier-title-block > div { font-size: 10px !important; line-height: 1.75; overflow-wrap: anywhere; }
+      #player-command-dossier .dossier-title-block h3 { font-size: 16px !important; line-height: 1.55; overflow-wrap: anywhere; }
+      #player-command-dossier .dossier-header { gap: 8px; align-items: flex-start; }
+      #player-command-dossier .dossier-grid { gap: 7px; }
+      #player-command-dossier .dossier-field { padding: 9px 10px; }
+      #player-command-dossier .dossier-label { font-size: 10px; line-height: 1.7; }
+      #player-command-dossier .dossier-value { font-size: 12px; line-height: 1.8; align-items: flex-start; }
+      #player-command-dossier .country-economy-panel { padding: 10px; }
+      #player-command-dossier .economy-title { font-size: 12px; line-height: 1.7; }
+      #player-command-dossier .economy-title span { font-size: 10px; }
+      #player-command-dossier .economy-stat { padding: 8px 7px; gap: 4px; }
+      #player-command-dossier .economy-stat-label { font-size: 10px; line-height: 1.65; }
+      #player-command-dossier .economy-stat-label img { width: 23px; height: 23px; flex-basis: 23px; }
+      #player-command-dossier .economy-stat strong { font-size: 12px; line-height: 1.7; }
+      #player-command-dossier .home-announcements { padding: 10px; }
+      #player-command-dossier .home-announcements-head { align-items: flex-start; flex-wrap: wrap; }
+      #player-command-dossier .home-announcements-head strong { font-size: 15px; line-height: 1.6; }
+      #player-command-dossier .home-announcements-head > b { font-size: 10px; line-height: 1.7; }
+      #player-command-dossier .home-announcements-empty { font-size: 11px; line-height: 1.9; }
+      #player-command-dossier .home-notice-row { gap: 8px; padding: 9px 0; }
+      #player-command-dossier .home-notice-row > img { width: 44px; height: 40px; flex-basis: 44px; }
+      #player-command-dossier .home-notice-row strong { font-size: 11px; line-height: 1.75; }
+      #player-command-dossier .home-notice-row small,
+      #player-command-dossier .home-notice-row p { font-size: 10px; line-height: 1.85; }
+    }
+    @media (max-width: 380px) {
+      #season-screen-title { font-size: 17px !important; }
+      #player-command-dossier .dossier-title-block h3 { font-size: 15px !important; }
+      #player-command-dossier .dossier-value { font-size: 11px; }
+      #player-command-dossier .economy-stat-label { font-size: 9px; }
+    }
+
 </style>
 </head>
 <body>
