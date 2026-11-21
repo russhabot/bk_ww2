@@ -277,6 +277,7 @@ REVOLUTION_FLAG_META = {
         "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bandera_Partido_Colorado_de_Paraguay.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Bandera_Partido_Colorado_de_Paraguay.svg", "label": "پرچم حزب کلرادو پاراگوئه؛ حزب محافظه‌کار تاریخی"}
     },
     "SU": {
+        "democracy": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Socialist-Revolutionary_Party_flag.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Socialist-Revolutionary_Party_flag.svg", "label": "پرچم حزب سوسیالیست‌های انقلابی روسیه؛ رقیب بلشویک‌ها در انقلاب ۱۹۱۷ و جریان سوسیالیست دموکراتِ پیشاسویتی"},
         "fascism": {"url": "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Russian_Fascist_Party.svg", "source_url": "https://commons.wikimedia.org/wiki/File:Flag_of_Russian_Fascist_Party.svg", "label": "پرچم حزب فاشیست روسیه؛ جریان ضدکمونیستِ مهاجر مستقر در هاربین (۱۹۳۱ تا ۱۹۴۳؛ نه اپوزیسیون داخلی شوروی)"}
     },
     "IR": {
