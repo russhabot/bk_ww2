@@ -1,4 +1,4 @@
-/* Burnt Kingdoms WW2 - Telegram initData recovery */
+/* Burnt Kingdoms WW2 - Telegram initData recovery (put this file in static/bk_fix.js) */
 (function () {
   'use strict';
   var KEY = 'bk_tg_init';
@@ -10,27 +10,21 @@
     } catch (e) { return ''; }
   }
   function fromSearch() {
-    try { return new URLSearchParams(location.search).get('tgWebAppData') || ''; }
-    catch (e) { return ''; }
+    try { return new URLSearchParams(location.search).get('tgWebAppData') || ''; } catch (e) { return ''; }
   }
-  function stored() {
-    try { return sessionStorage.getItem(KEY) || ''; } catch (e) { return ''; }
-  }
-  function save(v) {
-    try { if (v) sessionStorage.setItem(KEY, v); } catch (e) {}
-  }
+  function stored() { try { return sessionStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
+  function save(v) { try { if (v) sessionStorage.setItem(KEY, v); } catch (e) {} }
+
   function getInitData() {
     var v = '';
-    try {
-      v = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) || '';
-    } catch (e) {}
+    try { v = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) || ''; } catch (e) {}
     if (!v) v = fromHash();
     if (!v) v = fromSearch();
     if (v) { save(v); return v; }
     return stored();
   }
   window.__bkInitData = getInitData;
-  getInitData();
+  getInitData(); // capture as early as possible
 
   var box = null;
   function showProblem() {
@@ -45,10 +39,7 @@
     var b = document.getElementById('bk-retry');
     if (b) b.onclick = function () { location.reload(); };
   }
-  function hideProblem() {
-    if (box && box.parentNode) box.parentNode.removeChild(box);
-    box = null;
-  }
+  function hideProblem() { if (box && box.parentNode) box.parentNode.removeChild(box); box = null; }
 
   var origFetch = window.fetch;
   window.fetch = function (input, init) {
@@ -68,8 +59,7 @@
     return p.then(function (res) {
       try {
         if (res.status === 401) {
-          if (document.body) showProblem();
-          else document.addEventListener('DOMContentLoaded', showProblem);
+          if (document.body) showProblem(); else document.addEventListener('DOMContentLoaded', showProblem);
         } else if (res.ok) {
           hideProblem();
         }
