@@ -973,7 +973,7 @@
     .management-building-card strong{color:#fff;font-size:12px}.management-building-card span,.management-building-card small{color:var(--text-muted);font-size:10px;line-height:1.6}.management-building-card .btn{font-size:11px;padding:7px}
     .management-bank-actions{margin-top:10px;display:flex;flex-direction:column;gap:8px}.management-bank-actions input{width:100%;padding:11px;border-radius:9px;border:1px solid var(--border-bright);background:#09111e;color:#fff;font:inherit}.management-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
     .revolution-current-state{display:flex;align-items:center;gap:13px;padding:12px;border:1px solid var(--border-bright);border-radius:13px;background:linear-gradient(120deg,#13243b,#0a1422);margin:12px 0}
-    .revolution-current-state>img{width:94px;height:62px;object-fit:cover;border:1px solid #64748b;border-radius:7px;flex-shrink:0}
+    .revolution-current-state>img{width:94px;height:62px;object-fit:contain;padding:3px;box-sizing:border-box;border:1px solid #64748b;border-radius:7px;background:#101827;flex-shrink:0}
     .revolution-current-state>div{display:flex;flex-direction:column;gap:3px;min-width:0}
     .revolution-current-state small,.revolution-current-state span{font-size:10px;color:var(--text-muted)}
     .revolution-current-state strong{font-size:15px;color:#fff}
@@ -1003,7 +1003,7 @@
     .revolution-option-heading>b{font-size:10px;padding:4px 7px;border:1px solid var(--border);border-radius:7px;color:#dbeafe;white-space:nowrap}
     .revolution-flag-comparison{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
     .revolution-flag-comparison>div{display:flex;flex:1;flex-direction:column;gap:5px;min-width:0;text-align:center}
-    .revolution-flag-comparison img{width:100%;height:76px;object-fit:cover;border:1px solid rgba(255,255,255,.22);border-radius:7px;background:#101827}
+    .revolution-flag-comparison img{width:100%;height:76px;object-fit:contain;padding:4px;border:1px solid rgba(255,255,255,.22);border-radius:7px;background:#101827;box-sizing:border-box}
     .revolution-flag-comparison small{font-size:9px;color:var(--text-muted)}
     .revolution-flag-arrow{font-size:19px;color:var(--gold);flex-shrink:0}
     .revolution-option-details{display:grid;gap:6px;margin:9px 0}
@@ -3309,8 +3309,8 @@
           const flagMeta=country.revolution_flags?.[target]||null;
           const flag=flagMeta?.url||'';
           const revolutionFlagMarkup=flag
-            ? '<img src="'+escapeHtml(flag)+'" alt="پرچم مسیر انتخابی" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'"><span class="revolution-flag-unavailable" style="display:none">پرچم تاریخی مستند در دسترس نیست</span>'
-            : '<span class="revolution-flag-unavailable">پرچم تاریخی مستند برای این مسیر ثبت نشده</span>';
+            ? '<img src="'+escapeHtml(flag)+'" alt="نماد جریان سیاسی" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'"><span class="revolution-flag-unavailable" style="display:none">نماد تاریخی یا حزبی مستند در دسترس نیست</span>'
+            : '<span class="revolution-flag-unavailable">نماد تاریخی یا حزبی مستند برای این مسیر ثبت نشده</span>';
           const ready=req.every(([,value,need])=>value>=need);
           const leaderName=leader[target]+' '+(country.name_fa||r.c);
           return '<article class="revolution-option-card revolution-'+target+'"><div class="revolution-option-heading"><span class="revolution-title-line"><img src="'+escapeHtml(targetTag.badge_url)+'" alt="" loading="lazy"><span><small>مسیر دگرگونی حکومت</small><strong>'+labels[target]+'</strong></span></span><b>'+targetTag.label+'</b></div><p class="revolution-description">'+info.description+'</p><div class="revolution-flag-comparison"><div><img src="'+escapeHtml(country.base_flag_url||country.flag_url||FALLBACK_FLAG)+'" alt="پرچم فعلی کشور" onerror="this.onerror=null;this.src=\''+FALLBACK_FLAG+'\'"><small>وضعیت کنونی</small></div><span class="revolution-flag-arrow">←</span><div>'+revolutionFlagMarkup+'<small>نماد این جریان</small></div></div><div class="revolution-option-details"><div><small>جریان سیاسی حاکم</small><strong>'+info.party+'</strong></div><div><small>ساختار رهبری</small><strong>'+info.leadership+'</strong></div><div><small>عنوان رهبر جدید</small><strong>'+leaderName+'</strong></div></div><button class="btn btn-gold revolution-start" '+(!ready||country.revolution_used?'disabled':'')+' onclick="startRevolution(\''+target+'\')">'+(country.revolution_used?'این کشور پیش‌تر انقلاب کرده':ready?'بررسی و آغاز انقلاب':'پیش‌نیازها تکمیل نشده')+'</button></article>';
