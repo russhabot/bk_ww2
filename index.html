@@ -3085,6 +3085,17 @@
       try {
         const initData = await getTelegramInitData();
         if (!initData) {
+          // Season phase is public; keep it synchronized even before Telegram auth is ready.
+          try {
+            const healthRes = await fetch('/health', { cache: 'no-store' });
+            const health = await healthRes.json();
+            if (healthRes.ok && health.season) {
+              S.season = health.season === 'alive' ? 'live' : health.season;
+              onStateUpdated();
+            }
+          } catch (healthError) {
+            console.warn('Could not read public season status:', healthError);
+          }
           console.warn('Telegram signed initData is not available yet; skipping authenticated state request.');
           return;
         }
