@@ -3342,7 +3342,6 @@
       }
       const back='<button type="button" class="management-back" onclick="setManagementSection(\'overview\')">بازگشت به مدیریت کشور</button>';
       const economyBack='<button type="button" class="management-back" onclick="setManagementSection(\'economy\')">بازگشت به اقتصاد و رفاهیات</button>';
-      const sectionTitle=(eyebrow,heading)=>
       const managementHero=(title,eyebrow,description,imageUrl,alt)=>'<div class="intelligence-cover management-section-hero"><img src="'+imageUrl+'" alt="'+alt+'" loading="eager" decoding="async" onerror="this.onerror=null;this.parentElement.classList.add(\'image-missing\');this.remove()"><div class="intelligence-cover-copy"><small>'+eyebrow+'</small><strong>'+title+'</strong><span>'+description+'</span></div></div>';
       const sectionTitle=(eyebrow,heading)=>'<div class="management-section-title"><div><small>'+eyebrow+'</small><h3>'+heading+'</h3></div></div>';
       const image=(url,alt)=>'<div class="management-photo"><img src="'+(url||'/static/diplomacy/economy.svg')+'" alt="'+alt+'" loading="lazy" onerror="this.onerror=null;this.src=\'/static/diplomacy/economy.svg\'"></div>';
