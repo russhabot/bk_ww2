@@ -3365,7 +3365,7 @@
         return '<article class="management-building-card">'+image(b.image||'',b.fa)+'<div class="management-building-content"><strong>'+b.fa+'</strong><div class="building-fact"><span>هزینه ساخت</span><strong>'+num(b.cost)+' دلار</strong></div>'+yieldText+'<div class="building-fact"><span>ساخته‌شده</span><strong>'+num(owned)+'</strong></div><button class="btn btn-gold" '+(locked?'disabled':'')+' onclick="buyEconomyBuilding(\''+key+'\')">'+(locked?'بانک ساخته شده':'ساخت')+'</button></div></article>';
       }).join('');
       let body=root, heading='مدیریت کشور';
-      if(managementSection==='economy'){body=back+sectionTitle('بخش اصلی','اقتصاد و رفاهیات')+managementHero('اقتصاد و رفاهیات','مدیریت منابع کشور','سامان‌دهی خزانه، تولید، زیرساخت و خدمات عمومی برای پایداری اقتصادی و بهبود زندگی شهروندان.','https://upload.wikimedia.org/wikipedia/commons/8/83/Bundesarchiv_Bild_183-2007-0307-509%2C_Deutsche_Bank_Disconto_Gesellschaft%2C_Innenansicht.jpg','ساختمان بانک در دهه ۱۹۳۰')+economyMenu;heading='اقتصاد و رفاهیات';}
+      if(managementSection==='economy'){body=back+sectionTitle('بخش اصلی','اقتصاد و رفاهیات')+managementHero('اقتصاد و رفاهیات','مدیریت منابع کشور','سامان‌دهی خزانه، تولید، زیرساخت و خدمات عمومی برای پایداری اقتصادی و بهبود زندگی شهروندان.','https://commons.wikimedia.org/wiki/Special:FilePath/1930-67B.png?width=1280','تصویر اقتصاد و رفاهیات')+economyMenu;heading='اقتصاد و رفاهیات';}
       if(managementSection==='bank'){
         const owned=Number(buildings.bank||0)>0, bank=catalog.bank;
         body=economyBack+sectionTitle('خدمات مالی','بانک ملی')+
