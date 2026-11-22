@@ -3342,7 +3342,7 @@
       }
       const back='<button type="button" class="management-back" onclick="setManagementSection(\'overview\')">بازگشت به مدیریت کشور</button>';
       const economyBack='<button type="button" class="management-back" onclick="setManagementSection(\'economy\')">بازگشت به اقتصاد و رفاهیات</button>';
-      const managementHero=(title,eyebrow,description,imageUrl,alt)=>'<div class="intelligence-cover management-section-hero"><img src="'+imageUrl+'" alt="'+alt+'" loading="eager" decoding="async" onerror="this.onerror=null;this.parentElement.classList.add(\'image-missing\');this.remove()"><div class="intelligence-cover-copy"><small>'+eyebrow+'</small><strong>'+title+'</strong><span>'+description+'</span></div></div>';
+      const managementHero=(title,eyebrow,description,imageUrl,alt)=>'<div class="intelligence-cover management-section-hero"><img src="'+imageUrl+'" alt="'+alt+'" loading="eager" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='/static/diplomacy/economy.svg'}else{this.onerror=null;this.parentElement.classList.add(\'image-missing\');this.remove()}"><div class="intelligence-cover-copy"><small>'+eyebrow+'</small><strong>'+title+'</strong><span>'+description+'</span></div></div>';
       const sectionTitle=(eyebrow,heading)=>'<div class="management-section-title"><div><small>'+eyebrow+'</small><h3>'+heading+'</h3></div></div>';
       const image=(url,alt)=>'<div class="management-photo"><img src="'+(url||'/static/diplomacy/economy.svg')+'" alt="'+alt+'" loading="lazy" onerror="this.onerror=null;this.src=\'/static/diplomacy/economy.svg\'"></div>';
       const menuCard=(id,name,desc,img)=>'<button class="management-feature-card" type="button" onclick="setManagementSection(\''+id+'\')">'+image(img,name)+'<span class="management-feature-copy"><strong>'+name+'</strong><small>'+desc+'</small></span><b>‹</b></button>';
@@ -3365,7 +3365,7 @@
         return '<article class="management-building-card">'+image(b.image||'',b.fa)+'<div class="management-building-content"><strong>'+b.fa+'</strong><div class="building-fact"><span>هزینه ساخت</span><strong>'+num(b.cost)+' دلار</strong></div>'+yieldText+'<div class="building-fact"><span>ساخته‌شده</span><strong>'+num(owned)+'</strong></div><button class="btn btn-gold" '+(locked?'disabled':'')+' onclick="buyEconomyBuilding(\''+key+'\')">'+(locked?'بانک ساخته شده':'ساخت')+'</button></div></article>';
       }).join('');
       let body=root, heading='مدیریت کشور';
-      if(managementSection==='economy'){body=back+sectionTitle('بخش اصلی','اقتصاد و رفاهیات')+managementHero('اقتصاد و رفاهیات','مدیریت منابع کشور','سامان‌دهی خزانه، تولید، زیرساخت و خدمات عمومی برای پایداری اقتصادی و بهبود زندگی شهروندان.','https://commons.wikimedia.org/wiki/Special:FilePath/Deutsche_Bank_Disconto-Gesellschaft_Berlin_1930.jpg?width=1600','ساختمان بانک در دهه ۱۹۳۰')+economyMenu;heading='اقتصاد و رفاهیات';}
+      if(managementSection==='economy'){body=back+sectionTitle('بخش اصلی','اقتصاد و رفاهیات')+managementHero('اقتصاد و رفاهیات','مدیریت منابع کشور','سامان‌دهی خزانه، تولید، زیرساخت و خدمات عمومی برای پایداری اقتصادی و بهبود زندگی شهروندان.','https://upload.wikimedia.org/wikipedia/commons/8/83/Bundesarchiv_Bild_183-2007-0307-509%2C_Deutsche_Bank_Disconto_Gesellschaft%2C_Innenansicht.jpg','ساختمان بانک در دهه ۱۹۳۰')+economyMenu;heading='اقتصاد و رفاهیات';}
       if(managementSection==='bank'){
         const owned=Number(buildings.bank||0)>0, bank=catalog.bank;
         body=economyBack+sectionTitle('خدمات مالی','بانک ملی')+
