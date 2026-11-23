@@ -29,7 +29,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261123-intelligence-persistent-4" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261123-intelligence-persistent-5" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
