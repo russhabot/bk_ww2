@@ -3432,8 +3432,9 @@
         const agencyImage=agency[1]||(COUNTRIES[r.c]&&COUNTRIES[r.c].flag_url)||FALLBACK_FLAG;
         const agencyPhoto='<div class="intelligence-agency-photo"><img src="'+agencyImage+'" alt="نشان یا نماد '+agency[0]+'" loading="eager" decoding="async" onerror="this.onerror=null;this.src=\''+((COUNTRIES[r.c]&&COUNTRIES[r.c].flag_url)||FALLBACK_FLAG)+'\';this.parentElement.classList.add(\'image-missing\')"></div>';
         const intel=r.intelligence||{},level=Math.max(1,Math.min(10,Number(intel.level)||1)),spies=Number(intel.spies)||0;
-        const recruiting=(intel.recruiting||[]).filter(x=>x.status==='training'),missions=(intel.missions||[]).filter(x=>x.status==='active'),completed=(intel.missions||[]).filter(x=>x.status==='completed').slice(-5).reverse();
-        const reserved=missions.reduce((sum,m)=>sum+Math.max(1,Number(m.spies_used)||1),0),available=Math.max(0,spies-reserved),capacity=Math.min(10,level);
+        const recruiting=(intel.recruiting||[]).filter(x=>x.status==='training'),missions=(intel.missions||[]).filter(x=>x.status==='active'),completed=(intel.missions||[]).filter(x=>x.status==='completed'&&x.kind!=='influence').slice(-5).reverse();
+        const spyRoster=intel.spy_roster||[],available=spyRoster.filter(x=>x.status==='available').length,detainedSpies=spyRoster.filter(x=>x.status==='detained').length,capacity=Math.min(10,level);
+        const infiltrations=(intel.infiltrations||[]).filter(x=>x.status==='active');
         const upgradeCosts={2:15000,3:25000,4:40000,5:60000,6:85000,7:115000,8:150000,9:190000,10:240000};
         const levelNotes=['شبکهٔ پایه؛ ظرفیت یک جاسوس و اثر نفوذ سیاسی تا ۵ واحد محبوبیت.','ظرفیت دو جاسوس و اثر نفوذ سیاسی تا ۶ واحد محبوبیت.','ظرفیت سه جاسوس و اثر نفوذ سیاسی تا ۷ واحد محبوبیت.','ظرفیت چهار جاسوس و اثر نفوذ سیاسی تا ۸ واحد محبوبیت.','ظرفیت پنج جاسوس و اثر نفوذ سیاسی تا ۹ واحد محبوبیت.','ظرفیت شش جاسوس و اثر نفوذ سیاسی تا ۱۰ واحد محبوبیت.','ظرفیت هفت جاسوس و اثر نفوذ سیاسی تا ۱۱ واحد محبوبیت.','ظرفیت هشت جاسوس و اثر نفوذ سیاسی تا ۱۲ واحد محبوبیت.','ظرفیت نه جاسوس و اثر نفوذ سیاسی تا ۱۳ واحد محبوبیت.','شبکهٔ کامل با ظرفیت ده جاسوس و اثر نفوذ سیاسی تا ۱۴ واحد محبوبیت.'];
         const ideologyNames={democracy:'جریان دموکراتیک',fascism:'جریان فاشیستی',communism:'جریان کمونیستی'};
