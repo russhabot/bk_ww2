@@ -1172,6 +1172,9 @@ def refresh_intelligence(uid, player):
                 failure_limit = round(risk * 0.80)
                 mission["target_security_index"] = security
                 mission["risk_score"] = risk
+                mission["capture_chance"] = capture_limit
+                mission["failure_chance"] = max(0, failure_limit - capture_limit)
+                mission["success_chance"] = max(0, 100 - failure_limit)
                 if roll <= capture_limit:
                     captured = min(deployed, max(1, round(deployed * max(0.25, risk / 100))))
                     intel["spies"] = max(0, safe_int(intel.get("spies")) - captured)
