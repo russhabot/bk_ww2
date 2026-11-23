@@ -1279,8 +1279,10 @@ def refresh_intelligence(uid, player):
                             spy["status"] = "available"
                             spy.pop("mission_id", None)
                     mission["result"] = f"شبکه اطلاعاتی کشور هدف {captured} جاسوس را شناسایی و دستگیر کرد."
-                    attacker_name = str(player.get("c") or "کشور ناشناس")
-                    defender_name = str(target.get("c") or mission.get("target_code") or "کشور هدف")
+                    attacker_code = str(player.get("c") or "")
+                    defender_code = str(target.get("c") or mission.get("target_code") or "")
+                    attacker_name = COUNTRIES.get(attacker_code, {}).get("name_fa") or attacker_code or "کشور ناشناس"
+                    defender_name = COUNTRIES.get(defender_code, {}).get("name_fa") or defender_code or "کشور هدف"
                     if bot:
                         try:
                             asyncio.create_task(bot.send_message(target_uid, f"🚨 یک جاسوس از طرف کشور {attacker_name} در خاک شما شناسایی و دستگیر شد."))
