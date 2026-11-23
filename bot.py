@@ -1142,7 +1142,7 @@ def intelligence_security_decay_rate(player, now):
     elif isinstance(civil_record, str):
         civil = civil or civil_record.lower() in ("active", "ongoing", "in_progress")
     if civil:
-        return 4
+        return 9
 
     at_war = any(bool(player.get(key)) for key in ("at_war", "in_war", "war_active", "under_attack", "is_attacked"))
     attacked_until = safe_int(player.get("attacked_until"))
@@ -1165,7 +1165,7 @@ def intelligence_security_decay_rate(player, now):
             for war in records
         ):
             at_war = True
-    return 3 if at_war else 1
+    return 6 if at_war else 3
 
 
 def refresh_intelligence(uid, player):
@@ -1177,8 +1177,8 @@ def refresh_intelligence(uid, player):
     now = int(time.time())
     changed = bool(intel.pop("_roster_migrated", False))
 
-    # Counter-intelligence slowly erodes over time. Peace: 1 point/day,
-    # active war or being attacked: 3 points/day, civil war: 4 points/day.
+    # Counter-intelligence slowly erodes over time. Peace: 3 points/day,
+    # active war or being attacked: 6 points/day, civil war: 9 points/day.
     # Store the tick on the existing player intelligence object; no DB migration.
     last_decay = safe_int(intel.get("security_last_decay_at"), now)
     if last_decay <= 0:
@@ -1253,8 +1253,8 @@ def refresh_intelligence(uid, player):
                     infiltration["party_popularity"] = save_party_popularity(target_code, values)
             # Infiltrating spies also face an abstract hourly capture risk.
             # A captured spy remains in the total roster/capacity but leaves the network.
-            risk = max(0, min(100, safe_int((target.get("intelligence") or {}).get("security_index")) - 6 * (spy_count - 1) - 2 * (safe_int(intel.get("level"), 1) - 1)))
-            hourly_capture_chance = min(15, round(risk * 0.15))
+            risk = max(0, min(100, safe_int((target.get("intelligence") or {}).get("security_index")) - 3 * (spy_count - 1) - 1 * (safe_int(intel.get("level"), 1) - 1)))
+            hourly_capture_chance = min(25, round(risk * 0.25))
             captured_spy = None
             if hourly_capture_chance > 0:
                 for _hour in range(elapsed_hours):
@@ -1341,8 +1341,8 @@ def refresh_intelligence(uid, player):
                 player["stability_bonus_until"] = now + 12 * 3600
                 mission["result"] = "ثبات داخلی بهبود یافت و شاخص ناآرامی کاهش پیدا کرد."
             elif kind == "counterintel":
-                intel["security_index"] = min(100, safe_int(intel.get("security_index")) + 15)
-                mission["result"] = f"شاخص امنیت ضد اطلاعاتی کشور به {intel['security_index']} از ۱۰۰ رسید."
+                intel["security_index"] = min(100, safe_int(intel.get("security_index")) + 6)
+                mission["result"] = f"شاخص امنیت ضد اطلاعاتی کشور ۶ واحد افزایش یافت و به {intel['security_index']} از ۱۰۰ رسید."
             elif kind in ("influence", "sources"):
                 target_uid = safe_int(mission.get("target_uid"))
                 target = pget(target_uid) or {}
@@ -1359,10 +1359,10 @@ def refresh_intelligence(uid, player):
                     security = min(100, security + 15)
                 deployed = max(1, min(10, safe_int(mission.get("spies_used"), 1)))
                 attacker_level = max(1, min(10, safe_int(mission.get("agency_level"), 1)))
-                risk = max(0, min(100, security - 6 * (deployed - 1) - 2 * (attacker_level - 1)))
+                risk = max(0, min(100, security - 3 * (deployed - 1) - 1 * (attacker_level - 1)))
                 roll = random.randint(1, 100)
-                capture_limit = round(risk * 0.45)
-                failure_limit = round(risk * 0.80)
+                capture_limit = round(risk * 0.55)
+                failure_limit = round(risk * 0.90)
                 mission["target_security_index"] = security
                 mission["risk_score"] = risk
                 mission["capture_chance"] = capture_limit
