@@ -1188,11 +1188,13 @@ def refresh_intelligence(uid, player):
         if not isinstance(mission, dict):
             continue
         if mission.get("status") == "active" and mission.get("kind") == "influence":
+            legacy_ids = mission.get("spy_ids") or [spy.get("id") for spy in intel.get("spy_roster", []) if spy.get("status") == "available"][:max(1, safe_int(mission.get("spies_used"), 1))]
+            mission["spy_ids"] = legacy_ids
             infiltration = {
                 "id": "inf-legacy-" + str(uid) + "-" + str(now),
                 "status": "active", "target_code": mission.get("target_code"),
                 "target_uid": mission.get("target_uid"), "ideology": mission.get("ideology"),
-                "spy_ids": mission.get("spy_ids", []), "spies_used": mission.get("spies_used", 1),
+                "spy_ids": legacy_ids, "spies_used": mission.get("spies_used", 1),
                 "started_at": mission.get("started_at", now), "last_tick": now
             }
             intel.setdefault("infiltrations", []).append(infiltration)
