@@ -1187,6 +1187,14 @@ def refresh_intelligence(uid, player):
     for mission in intel.get("missions", []):
         if not isinstance(mission, dict):
             continue
+        if mission.get("status") == "active" and not mission.get("spy_ids"):
+            need = max(1, safe_int(mission.get("spies_used"), 1))
+            free = [spy for spy in intel.get("spy_roster", []) if spy.get("status") == "available"][:need]
+            mission["spy_ids"] = [spy.get("id") for spy in free]
+            for spy in free:
+                spy["status"] = "mission"
+                spy["mission_id"] = mission.get("id") or "legacy-mission"
+            changed = True
         if mission.get("status") == "active" and safe_int(mission.get("finish_at")) <= now:
             kind = str(mission.get("kind") or "")
             mission["status"] = "completed"
@@ -1204,6 +1212,10 @@ def refresh_intelligence(uid, player):
                 target_uid = safe_int(mission.get("target_uid"))
                 target = pget(target_uid) or {}
                 if not target or target.get("alive", True) is False:
+                    for spy in intel.get("spy_roster", []):
+                        if spy.get("id") in mission.get("spy_ids", []):
+                            spy["status"] = "available"
+                            spy.pop("mission_id", None)
                     mission["result"] = "کشور هدف دیگر در بازی فعال نیست؛ مأموریت ناموفق بود."
                     continue
                 target_intel = target.get("intelligence") if isinstance(target.get("intelligence"), dict) else {}
