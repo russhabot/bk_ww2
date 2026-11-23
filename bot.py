@@ -1142,7 +1142,7 @@ def refresh_intelligence(uid, player):
         if recruit.get("status") == "training" and safe_int(recruit.get("finish_at")) <= now:
             intel["spies"] = min(10, safe_int(intel.get("spies")) + 1)
             roster = intel.setdefault("spy_roster", [])
-            roster.append({"id": "spy-" + str(now) + "-" + str(len(roster)+1), "portrait": (len(roster)+now) % 8, "status": "available", "recruited_at": now})
+            roster.append({"id": "spy-" + str(now) + "-" + str(len(roster)+1), "portrait": (len(roster)+now) % 10, "status": "available", "recruited_at": now})
             recruit["status"] = "ready"
             recruit["completed_at"] = now
             changed = True
@@ -1187,6 +1187,22 @@ def refresh_intelligence(uid, player):
     for mission in intel.get("missions", []):
         if not isinstance(mission, dict):
             continue
+        if mission.get("status") == "active" and mission.get("kind") == "influence":
+            infiltration = {
+                "id": "inf-legacy-" + str(uid) + "-" + str(now),
+                "status": "active", "target_code": mission.get("target_code"),
+                "target_uid": mission.get("target_uid"), "ideology": mission.get("ideology"),
+                "spy_ids": mission.get("spy_ids", []), "spies_used": mission.get("spies_used", 1),
+                "started_at": mission.get("started_at", now), "last_tick": now
+            }
+            intel.setdefault("infiltrations", []).append(infiltration)
+            for spy in intel.get("spy_roster", []):
+                if spy.get("id") in infiltration.get("spy_ids", []):
+                    spy["status"] = "infiltrating"
+                    spy["infiltration_id"] = infiltration["id"]
+            mission["status"] = "converted"
+            mission["result"] = "شبکه نفوذ سیاسی به حالت مستمر تبدیل شد."
+            changed = True
         if mission.get("status") == "active" and not mission.get("spy_ids"):
             need = max(1, safe_int(mission.get("spies_used"), 1))
             free = [spy for spy in intel.get("spy_roster", []) if spy.get("status") == "available"][:need]
