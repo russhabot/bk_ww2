@@ -1060,7 +1060,219 @@ def diplomacy_state_for(uid):
         "war_open": kget("diplomacy_war_open", "0") == "1"}
 
 
+
+INTELLIGENCE_ESTABLISH_COST = 25_000
+INTELLIGENCE_UPGRADE_COSTS = {2: 15_000, 3: 25_000, 4: 40_000, 5: 60_000, 6: 85_000, 7: 115_000, 8: 150_000, 9: 190_000, 10: 240_000}
+INTELLIGENCE_IDEOLOGIES = {"monarchy", "democracy", "fascism", "communism"}
+INTELLIGENCE_OPERATIONS = {
+    "protest": {"cost": 4_000, "duration": 1800},
+    "counterintel": {"cost": 6_000, "duration": 3600},
+    "influence": {"cost": 10_000, "duration": 7200},
+    "sources": {"cost": 7_000, "duration": 1800},
+}
+
+
+def intelligence_data(player):
+    data = player.get("intelligence")
+    if not isinstance(data, dict):
+        data = {}
+        player["intelligence"] = data
+    data.setdefault("level", 1)
+    data.setdefault("spies", 0)
+    data.setdefault("recruiting", [])
+    data.setdefault("missions", [])
+    data.setdefault("reports", [])
+    return data
+
+
+def party_popularity_for(code):
+    country = COUNTRIES.get(code, {})
+    current = str(country.get("ideology") or country.get("government_type") or "democracy").lower()
+    if current not in INTELLIGENCE_IDEOLOGIES:
+        current = "democracy"
+    existing = country.get("party_popularity")
+    if isinstance(existing, dict):
+        values = {key: max(0, min(100, safe_int(existing.get(key)))) for key in INTELLIGENCE_IDEOLOGIES}
+        total = sum(values.values())
+        if total > 0:
+            return {key: round(values[key] * 100 / total) for key in INTELLIGENCE_IDEOLOGIES}
+    values = {key: 20 for key in INTELLIGENCE_IDEOLOGIES}
+    values[current] = 40
+    return values
+
+
+def save_party_popularity(code, values):
+    normalized = {key: max(0, min(100, safe_int(values.get(key)))) for key in INTELLIGENCE_IDEOLOGIES}
+    total = sum(normalized.values()) or 1
+    normalized = {key: round(value * 100 / total) for key, value in normalized.items()}
+    drift = 100 - sum(normalized.values())
+    if drift:
+        dominant = max(normalized, key=normalized.get)
+        normalized[dominant] = max(0, min(100, normalized[dominant] + drift))
+    politics = load_country_politics().get(code, {})
+    politics["party_popularity"] = normalized
+    save_country_politics(code, politics)
+    if code in COUNTRIES:
+        COUNTRIES[code]["party_popularity"] = normalized
+    return normalized
+
+
+def refresh_intelligence(uid, player):
+    if not isinstance(player, dict) or not player.get("c"):
+        return False
+    intel = intelligence_data(player)
+    if not player.get("intelligence_agency_established"):
+        return False
+    now = int(time.time())
+    changed = False
+    recruiting = []
+    for recruit in intel.get("recruiting", []):
+        if not isinstance(recruit, dict):
+            continue
+        if recruit.get("status") == "training" and safe_int(recruit.get("finish_at")) <= now:
+            intel["spies"] = min(10, safe_int(intel.get("spies")) + 1)
+            recruit["status"] = "ready"
+            recruit["completed_at"] = now
+            changed = True
+        recruiting.append(recruit)
+    intel["recruiting"] = recruiting[-12:]
+    for mission in intel.get("missions", []):
+        if not isinstance(mission, dict):
+            continue
+        if mission.get("status") == "active" and safe_int(mission.get("finish_at")) <= now:
+            kind = str(mission.get("kind") or "")
+            mission["status"] = "completed"
+            mission["completed_at"] = now
+            changed = True
+            if kind == "protest":
+                player["satisfaction"] = min(100, safe_int(player.get("satisfaction")) + 6)
+                player["unrest_days"] = 0
+                player["stability_bonus_until"] = now + 12 * 3600
+                mission["result"] = "ثبات داخلی بهبود یافت و شاخص ناآرامی کاهش پیدا کرد."
+            elif kind == "counterintel":
+                intel["counterintel_until"] = now + 24 * 3600
+                mission["result"] = "پوشش ضد اطلاعاتی کشور برای ۲۴ ساعت فعال شد."
+            elif kind == "influence":
+                code = str(mission.get("target_code") or "").upper()
+                ideology = str(mission.get("ideology") or "").lower()
+                if code in COUNTRIES and ideology in INTELLIGENCE_IDEOLOGIES:
+                    values = party_popularity_for(code)
+                    shift = min(15, 4 + safe_int(intel.get("level")))
+                    values[ideology] = min(75, values[ideology] + shift)
+                    remaining = [key for key in INTELLIGENCE_IDEOLOGIES if key != ideology]
+                    reduction = shift / len(remaining)
+                    for key in remaining:
+                        values[key] = max(0, values[key] - reduction)
+                    mission["result"] = "توازن محبوبیت جریان‌های سیاسی کشور هدف تغییر کرد."
+                    mission["party_popularity"] = save_party_popularity(code, values)
+                else:
+                    mission["result"] = "گزارش عملیات ناقص بود؛ کشور هدف دیگر در دسترس نیست."
+            elif kind == "sources":
+                target_uid = safe_int(mission.get("target_uid"))
+                target = pget(target_uid) or {}
+                if target and target.get("alive", True) is not False:
+                    target_code = str(target.get("c") or mission.get("target_code") or "")
+                    country_info = COUNTRIES.get(target_code, {})
+                    report = {
+                        "country": target_code,
+                        "money": safe_int(target.get("money")),
+                        "power": safe_int(target.get("power")),
+                        "satisfaction": safe_int(target.get("satisfaction")),
+                        "oil": safe_int(target.get("oil")),
+                        "food": safe_int(target.get("food")),
+                        "infantry": safe_int(target.get("infantry")),
+                        "government": country_info.get("regime_fa") or country_info.get("government_type", "نامشخص"),
+                        "created_at": now,
+                    }
+                    intel["reports"].append(report)
+                    intel["reports"] = intel["reports"][-10:]
+                    mission["result"] = "گزارش منابع و وضعیت سیاسی کشور هدف دریافت شد."
+                    mission["report"] = report
+                else:
+                    mission["result"] = "کشور هدف دیگر در بازی فعال نیست؛ گزارشی دریافت نشد."
+    intel["missions"] = intel.get("missions", [])[-30:]
+    return changed
+
+
+def intelligence_action(uid, player, action, body):
+    now = int(time.time())
+    intel = intelligence_data(player)
+    if action == "intelligence_establish":
+        if player.get("intelligence_agency_established"):
+            return "سازمان اطلاعاتی کشور از قبل تأسیس شده است."
+        if safe_int(player.get("money")) < INTELLIGENCE_ESTABLISH_COST:
+            return f"برای تأسیس سازمان اطلاعاتی به {INTELLIGENCE_ESTABLISH_COST:,} دلار نیاز دارید."
+        player["money"] = safe_int(player.get("money")) - INTELLIGENCE_ESTABLISH_COST
+        player["intelligence_agency_established"] = True
+        intel.update({"level": 1, "spies": 0, "recruiting": [], "missions": [], "reports": []})
+        return None
+
+    if not player.get("intelligence_agency_established"):
+        return "ابتدا باید سازمان اطلاعاتی کشور را تأسیس کنید."
+
+    refresh_intelligence(uid, player)
+    if action == "intelligence_upgrade":
+        level = max(1, min(10, safe_int(intel.get("level"), 1)))
+        next_level = level + 1
+        if next_level > 10:
+            return "سازمان اطلاعاتی به حداکثر سطح خود رسیده است."
+        cost = INTELLIGENCE_UPGRADE_COSTS[next_level]
+        if safe_int(player.get("money")) < cost:
+            return f"برای ارتقای سطح {next_level} به {cost:,} دلار نیاز دارید."
+        player["money"] = safe_int(player.get("money")) - cost
+        intel["level"] = next_level
+        return None
+
+    if action == "intelligence_recruit":
+        level = max(1, min(10, safe_int(intel.get("level"), 1)))
+        pending = sum(1 for item in intel.get("recruiting", []) if item.get("status") == "training")
+        if safe_int(intel.get("spies")) + pending >= min(10, level):
+            return f"ظرفیت سطح فعلی پر است؛ سطح {level} حداکثر {level} جاسوس را پشتیبانی می‌کند."
+        if safe_int(player.get("money")) < 3_000:
+            return "برای استخدام جاسوس به ۳٬۰۰۰ دلار نیاز دارید."
+        player["money"] = safe_int(player.get("money")) - 3_000
+        intel.setdefault("recruiting", []).append({"status": "training", "started_at": now, "finish_at": now + 3600})
+        return None
+
+    operation = {
+        "intelligence_protest": "protest",
+        "intelligence_counterintel": "counterintel",
+        "intelligence_influence": "influence",
+        "intelligence_sources": "sources",
+    }.get(action)
+    if not operation:
+        return "عملیات سازمان اطلاعاتی معتبر نیست."
+    active_missions = [item for item in intel.get("missions", []) if item.get("status") == "active"]
+    available = safe_int(intel.get("spies")) - len(active_missions)
+    if available < 1:
+        return "جاسوس آزاد برای انجام این مأموریت ندارید."
+    config = INTELLIGENCE_OPERATIONS[operation]
+    if safe_int(player.get("money")) < config["cost"]:
+        return f"برای این عملیات به {config['cost']:,} دلار نیاز دارید."
+    mission = {"kind": operation, "status": "active", "started_at": now, "finish_at": now + config["duration"]}
+    if operation in ("influence", "sources"):
+        code = str(body.get("target_code") or "").strip().upper()
+        target_uid, target = find_player_by_country(code)
+        if not code or code == str(player.get("c") or "").upper() or not target_uid or not target:
+            return "کشور هدف باید یک کشور فعال و متعلق به فرمانده دیگری باشد."
+        target_intel = target.get("intelligence") if isinstance(target.get("intelligence"), dict) else {}
+        if safe_int(target_intel.get("counterintel_until")) > now:
+            return "ضد اطلاعات کشور هدف فعال است؛ فعلاً امکان اجرای این عملیات وجود ندارد."
+        mission["target_code"] = code
+        mission["target_uid"] = target_uid
+        if operation == "influence":
+            ideology = str(body.get("ideology") or "").strip().lower()
+            if ideology not in INTELLIGENCE_IDEOLOGIES:
+                return "جریان سیاسی انتخاب‌شده معتبر نیست."
+            mission["ideology"] = ideology
+    player["money"] = safe_int(player.get("money")) - config["cost"]
+    intel.setdefault("missions", []).append(mission)
+    return None
+
+
 def get_api_state(uid, player, season, membership_info=None):
+    if player and refresh_intelligence(uid, player):
+        pset(uid, player)
     players = all_players()
     active_countries = []
     taken_codes = []
@@ -1095,7 +1307,8 @@ def get_api_state(uid, player, season, membership_info=None):
                 "ideology": COUNTRIES[c].get("ideology", ""),
                 "revolution_used": bool(COUNTRIES[c].get("revolution_used", False)),
                 "revolution_path": COUNTRIES[c].get("revolution_path", ""),
-                "ruling_party_fa": COUNTRIES[c].get("ruling_party_fa", "")
+                "ruling_party_fa": COUNTRIES[c].get("ruling_party_fa", ""),
+                "party_popularity": party_popularity_for(c)
             })
 
     return {
@@ -1263,6 +1476,18 @@ async def api_handler(request):
                 if error is None or changed:
                     pset(uid, player)
 
+
+        elif action.startswith("intelligence_"):
+            if not player or not player.get("c"):
+                error = "ابتدا باید یک کشور انتخاب کنید."
+            elif player.get("alive", True) is False:
+                error = "کشور شما از بازی خارج شده است."
+            elif season != "live":
+                error = "سازمان اطلاعاتی پس از آغاز رسمی سیزن قابل استفاده است."
+            else:
+                error = intelligence_action(uid, player, action, body)
+                if error is None:
+                    pset(uid, player)
 
         elif action == "revolution":
             if not player or not player.get("c"):
