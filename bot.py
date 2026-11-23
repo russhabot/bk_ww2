@@ -1084,6 +1084,13 @@ def intelligence_data(player):
     data.setdefault("missions", [])
     data.setdefault("reports", [])
     data.setdefault("security_index", 0)
+    data.setdefault("infiltrations", [])
+    data.setdefault("spy_roster", [])
+    if not data["spy_roster"] and safe_int(data.get("spies")) > 0:
+        data["spy_roster"] = [
+            {"id": "legacy-" + str(index + 1), "portrait": index % 8, "status": "available"}
+            for index in range(safe_int(data.get("spies")))
+        ]
     return data
 
 
