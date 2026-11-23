@@ -29,7 +29,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261123-intelligence-system-2" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261123-intelligence-system-3" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -1187,12 +1187,14 @@ def refresh_intelligence(uid, player):
                     if code in COUNTRIES and ideology in INTELLIGENCE_IDEOLOGIES:
                         values = party_popularity_for(code)
                         shift = min(14, 4 + attacker_level)
-                        values[ideology] = min(75, values[ideology] + shift)
+                        before = values[ideology]
+                        values[ideology] = min(75, before + shift)
+                        actual_gain = max(0, values[ideology] - before)
                         remaining = [key for key in INTELLIGENCE_IDEOLOGIES if key != ideology]
-                        reduction = shift / len(remaining)
+                        reduction = actual_gain / len(remaining)
                         for key in remaining:
                             values[key] = max(0, values[key] - reduction)
-                        mission["result"] = f"نفوذ سیاسی موفق بود؛ محبوبیت جریان منتخب {shift} واحد درصد افزایش یافت و از دو جریان دیگر به‌طور مساوی کاسته شد."
+                        mission["result"] = f"نفوذ سیاسی موفق بود؛ محبوبیت جریان منتخب {actual_gain} واحد درصد افزایش یافت و از دو جریان دیگر به‌طور مساوی کاسته شد."
                         mission["party_popularity"] = save_party_popularity(code, values)
                     else:
                         mission["result"] = "اطلاعات سیاسی کشور هدف در دسترس نبود؛ مأموریت ناموفق شد."
@@ -1213,7 +1215,7 @@ def refresh_intelligence(uid, player):
                     intel["reports"].append(report)
                     intel["reports"] = intel["reports"][-10:]
                     mission["result"] = "شبکه منابع موفق شد؛ گزارش وضعیت کشور هدف دریافت شد."
-                    mission["report"] = report"
+                    mission["report"] = report
     intel["missions"] = intel.get("missions", [])[-30:]
     return changed
 
@@ -1335,7 +1337,7 @@ def get_api_state(uid, player, season, membership_info=None):
                 "revolution_path": COUNTRIES[c].get("revolution_path", ""),
                 "ruling_party_fa": COUNTRIES[c].get("ruling_party_fa", ""),
                 "party_popularity": party_popularity_for(c),
-                "security_index": max(0, min(100, safe_int((p.get("intelligence") or {}).get("security_index"))))
+                "security_index": max(0, min(100, safe_int((p.get("intelligence") if isinstance(p.get("intelligence"), dict) else {}).get("security_index"))))
             })
 
     return {
