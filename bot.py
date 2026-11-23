@@ -1222,13 +1222,37 @@ def refresh_intelligence(uid, player):
                 mission["success_chance"] = max(0, 100 - failure_limit)
                 if roll <= capture_limit:
                     captured = min(deployed, max(1, round(deployed * max(0.25, risk / 100))))
-                    intel["spies"] = max(0, safe_int(intel.get("spies")) - captured)
                     mission["captured_spies"] = captured
+                    captured_ids = list(mission.get("spy_ids", []))[:captured]
+                    for spy in intel.get("spy_roster", []):
+                        if spy.get("id") in captured_ids:
+                            spy["status"] = "detained"
+                            spy["captured_by"] = target.get("c")
+                            spy["captured_at"] = now
+                        elif spy.get("id") in mission.get("spy_ids", []):
+                            spy["status"] = "available"
+                            spy.pop("mission_id", None)
                     mission["result"] = f"شبکه اطلاعاتی کشور هدف {captured} جاسوس را شناسایی و دستگیر کرد."
+                    attacker_name = str(player.get("c") or "کشور ناشناس")
+                    defender_name = str(target.get("c") or mission.get("target_code") or "کشور هدف")
+                    if bot:
+                        try:
+                            asyncio.create_task(bot.send_message(target_uid, f"🚨 یک جاسوس از طرف کشور {attacker_name} در خاک شما شناسایی و دستگیر شد."))
+                            asyncio.create_task(bot.send_message(uid, f"🚨 جاسوس شما در کشور {defender_name} شناسایی و دستگیر شد. تعداد دستگیرشده: {captured}"))
+                        except Exception as exc:
+                            print(f"[intelligence-capture-notification-error] {exc}")
                     continue
                 if roll <= failure_limit:
-                    mission["result"] = "مأموریت شکست خورد؛ جاسوسان باقی‌مانده به کشور بازگشتند."
+                    for spy in intel.get("spy_roster", []):
+                        if spy.get("id") in mission.get("spy_ids", []):
+                            spy["status"] = "available"
+                            spy.pop("mission_id", None)
+                    mission["result"] = "مأموریت شکست خورد؛ جاسوسان بازگشتند."
                     continue
+                for spy in intel.get("spy_roster", []):
+                    if spy.get("id") in mission.get("spy_ids", []):
+                        spy["status"] = "available"
+                        spy.pop("mission_id", None)
                 code = str(mission.get("target_code") or target.get("c") or "").upper()
                 if kind == "influence":
                     ideology = str(mission.get("ideology") or "").lower()
