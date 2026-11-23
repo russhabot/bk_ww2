@@ -1068,7 +1068,7 @@ INTELLIGENCE_IDEOLOGIES = {"democracy", "fascism", "communism"}
 INTELLIGENCE_OPERATIONS = {
     "protest": {"cost": 4_000, "duration": 1800},
     "counterintel": {"cost": 6_000, "duration": 3600},
-    "influence": {"cost": 10_000, "duration": 7200},
+    "influence": {"cost": 10_000},
     "sources": {"cost": 7_000, "duration": 1800},
 }
 
@@ -1088,9 +1088,10 @@ def intelligence_data(player):
     data.setdefault("spy_roster", [])
     if not data["spy_roster"] and safe_int(data.get("spies")) > 0:
         data["spy_roster"] = [
-            {"id": "legacy-" + str(index + 1), "portrait": index % 8, "status": "available"}
+            {"id": "legacy-" + str(index + 1), "portrait": index % 10, "status": "available"}
             for index in range(safe_int(data.get("spies")))
         ]
+        data["_roster_migrated"] = True
     return data
 
 
@@ -1133,7 +1134,7 @@ def refresh_intelligence(uid, player):
     if not player.get("intelligence_agency_established"):
         return False
     now = int(time.time())
-    changed = False
+    changed = bool(intel.pop("_roster_migrated", False))
     recruiting = []
     for recruit in intel.get("recruiting", []):
         if not isinstance(recruit, dict):
