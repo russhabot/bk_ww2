@@ -1218,6 +1218,12 @@ def refresh_intelligence(uid, player):
             mission["status"] = "completed"
             mission["completed_at"] = now
             changed = True
+            # Timed operations return all assigned spies unless the capture result
+            # below explicitly changes some of them to detained.
+            for spy in intel.get("spy_roster", []):
+                if spy.get("id") in mission.get("spy_ids", []):
+                    spy["status"] = "available"
+                    spy.pop("mission_id", None)
             if kind == "protest":
                 player["satisfaction"] = min(100, safe_int(player.get("satisfaction")) + 6)
                 player["unrest_days"] = 0
