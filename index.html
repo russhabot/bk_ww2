@@ -3081,6 +3081,8 @@
     let intelligencePage = 'overview';
     let intelTargetSelections = { influence: '', sources: '' };
     let intelSelectedIdeology = 'democracy';
+    let intelInfluenceCount = 1;
+    let intelSourcesCount = 1;
     let diplomacyTarget = null;
     let currentFilter = 'all';
     let searchQuery = '';
@@ -3349,7 +3351,7 @@
     }
 
 
-    function setManagementSection(section) { managementSection = section || 'overview'; showManagementView(); }
+    function setManagementSection(section) { managementSection = section || 'overview'; if(managementSection==='intelligence') intelligencePage='overview'; showManagementView(); }
     function startRevolution(target){
       if(!['communism','fascism','democracy'].includes(target))return;
       if(!confirm('این تصمیم برگشت‌ناپذیر است و هر کشور فقط یک‌بار می‌تواند انقلاب کند. آیا از آغاز انقلاب مطمئن هستید؟'))return;
@@ -3456,9 +3458,9 @@
           'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=360&q=80',
           'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=360&q=80',
           'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=360&q=80',
-          'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=361&q=80',
-          'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=361&q=80',
-          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=361&q=80'
+          'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=360&q=80',
+          'https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&w=360&q=80',
+          'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=360&q=80'
         ];
         const spyStatus={available:'آماده',mission:'در مأموریت',infiltrating:'در شبکه نفوذ',detained:'دستگیرشده'};
         const spyMarkup=spyRoster.map((spy,index)=>'<article class="spy-card"><div class="spy-portrait '+(spy.status==='detained'?'is-detained':'')+'"><img src="'+spyPortraits[Math.abs(Number(spy.portrait)||index)%spyPortraits.length]+'" alt="تصویر جاسوس '+(index+1)+'" loading="lazy"></div><strong>جاسوس شماره '+num(index+1)+'</strong><small>'+(spyStatus[spy.status]||'وضعیت نامشخص')+'</small></article>').join('');
@@ -3622,6 +3624,8 @@
     function openIntelligencePage(page){intelligencePage=page||'overview';showManagementView();}
     function selectIntelCountry(page,code){intelTargetSelections[page]=code;showManagementView();}
     function selectIntelIdeology(ideology){intelSelectedIdeology=ideology;showManagementView();}
+    function updateIntelInfluenceRate(){const count=Math.max(1,Number(document.getElementById('intel-influence-spies')?.value||1));intelInfluenceCount=count;const rate=document.getElementById('intel-influence-rate');if(rate)rate.textContent=(count*0.25).toFixed(2)+' واحد درصد';}
+    function updateIntelSourcesRisk(){const count=Math.max(1,Number(document.getElementById('intel-sources-spies')?.value||1));intelSourcesCount=count;const target=(S.active_countries||[]).find(x=>x.code===intelTargetSelections.sources);const box=document.getElementById('intel-sources-risk-preview');if(!box||!target)return;const security=Math.max(0,Math.min(100,Number(target.security_index)||0)),level=Math.max(1,Number(S.p?.intelligence?.level)||1),risk=Math.max(0,Math.min(100,security-6*(count-1)-2*(level-1))),capture=Math.round(risk*.45),failure=Math.max(0,Math.round(risk*.8)-capture),success=Math.max(0,100-capture-failure);box.innerHTML='<span><b>'+success+'٪</b>موفقیت</span><span><b>'+failure+'٪</b>شکست</span><span><b>'+capture+'٪</b>دستگیری</span>';}
     function filterIntelCountries(page){const q=String(document.getElementById('intel-country-search-'+page)?.value||'').trim().toLowerCase();document.querySelectorAll('[data-intel-country-page="'+page+'"]').forEach(row=>{row.style.display=(!q||row.dataset.search.includes(q))?'flex':'none';});}
     function startIntelligenceInfluence(){const target_code=intelTargetSelections.influence||'',ideology=intelSelectedIdeology,spy_count=Number(document.getElementById('intel-influence-spies')?.value||1);if(!target_code){showToast('کشور هدف را از فهرست انتخاب کنید.');return;}gameAction('intelligence_influence',{target_code,ideology,spy_count});}
     function renderIntelPopularity(code){
@@ -3973,6 +3977,7 @@
             </div>
           </section>
           ${renderPoliticalSupport(c)}
+          <section class="intel-home-security"><div><small>شاخص ضد اطلاعات کشور</small><strong>${new Intl.NumberFormat('fa-IR').format(Math.max(0,Math.min(100,Number(S.p.intelligence?.security_index)||0)))} / ۱۰۰</strong><i><b style="width:${Math.max(0,Math.min(100,Number(S.p.intelligence?.security_index)||0))}%"></b></i></div><button class="management-back" onclick="setLiveTab('manage');setManagementSection('intelligence')">سازمان اطلاعات</button></section>
           ${renderHomeAnnouncements()}
           <div style="margin-top: 14px; background: rgba(30, 41, 59, 0.5); padding: 10px; border-radius: 8px; font-size: 12px; color: var(--text-muted);">
             <b>وضعیت آمادگی:</b> تمامی لشکرهای پیاده و زرهی سازماندهی شده‌اند. با دستور ستاد کل در لحظه آغاز سیزن، نبرد در سراسر جبهه‌ها آغاز خواهد شد.
