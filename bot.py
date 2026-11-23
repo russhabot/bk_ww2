@@ -1140,6 +1140,8 @@ def refresh_intelligence(uid, player):
             continue
         if recruit.get("status") == "training" and safe_int(recruit.get("finish_at")) <= now:
             intel["spies"] = min(10, safe_int(intel.get("spies")) + 1)
+            roster = intel.setdefault("spy_roster", [])
+            roster.append({"id": "spy-" + str(now) + "-" + str(len(roster)+1), "portrait": (len(roster)+now) % 8, "status": "available", "recruited_at": now})
             recruit["status"] = "ready"
             recruit["completed_at"] = now
             changed = True
@@ -1240,7 +1242,7 @@ def intelligence_action(uid, player, action, body):
             return f"برای تأسیس سازمان اطلاعاتی به {INTELLIGENCE_ESTABLISH_COST:,} دلار نیاز دارید."
         player["money"] = safe_int(player.get("money")) - INTELLIGENCE_ESTABLISH_COST
         player["intelligence_agency_established"] = True
-        intel.update({"level": 1, "spies": 0, "recruiting": [], "missions": [], "reports": []})
+        intel.update({"level": 1, "spies": 0, "recruiting": [], "missions": [], "reports": [], "infiltrations": [], "spy_roster": []})
         return None
 
     if not player.get("intelligence_agency_established"):
