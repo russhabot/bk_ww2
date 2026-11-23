@@ -1142,7 +1142,9 @@ def refresh_intelligence(uid, player):
         if recruit.get("status") == "training" and safe_int(recruit.get("finish_at")) <= now:
             intel["spies"] = min(10, safe_int(intel.get("spies")) + 1)
             roster = intel.setdefault("spy_roster", [])
-            roster.append({"id": "spy-" + str(now) + "-" + str(len(roster)+1), "portrait": (len(roster)+now) % 10, "status": "available", "recruited_at": now})
+            used_portraits = {safe_int(spy.get("portrait")) for spy in roster if isinstance(spy, dict)}
+            portrait = next((index for index in range(10) if index not in used_portraits), len(roster) % 10)
+            roster.append({"id": "spy-" + str(now) + "-" + str(len(roster)+1), "portrait": portrait, "status": "available", "recruited_at": now})
             recruit["status"] = "ready"
             recruit["completed_at"] = now
             changed = True
