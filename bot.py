@@ -1332,39 +1332,71 @@ def intelligence_action(uid, player, action, body):
         intel.setdefault("recruiting", []).append({"status": "training", "started_at": now, "finish_at": now + 3600})
         return None
 
+    if action == "intelligence_cancel_influence":
+        infiltration_id = str(body.get("infiltration_id") or "")
+        infiltration = next((item for item in intel.get("infiltrations", []) if item.get("id") == infiltration_id and item.get("status") == "active"), None)
+        if not infiltration:
+            return "شبکه نفوذ فعالی با این شناسه پیدا نشد."
+        for spy in intel.get("spy_roster", []):
+            if spy.get("id") in infiltration.get("spy_ids", []):
+                spy["status"] = "available"
+                spy.pop("infiltration_id", None)
+        infiltration["status"] = "cancelled"
+        infiltration["ended_at"] = now
+        infiltration["result"] = "شبکه نفوذ به درخواست شما لغو شد و جاسوسان بازگشتند."
+        return None
+
     operation = {
         "intelligence_protest": "protest",
         "intelligence_counterintel": "counterintel",
-        "intelligence_influence": "influence",
         "intelligence_sources": "sources",
+        "intelligence_influence": "influence",
     }.get(action)
     if not operation:
         return "عملیات سازمان اطلاعاتی معتبر نیست."
-    active_missions = [item for item in intel.get("missions", []) if item.get("status") == "active"]
-    reserved = sum(max(1, safe_int(item.get("spies_used"), 1)) for item in active_missions)
-    available = max(0, safe_int(intel.get("spies")) - reserved)
+    roster = intel.setdefault("spy_roster", [])
+    available_spies = [spy for spy in roster if spy.get("status") == "available"]
+    available = len(available_spies)
     if available < 1:
-        return "جاسوس آزاد برای انجام این مأموریت ندارید."
-    deployed = 1
-    if operation in ("influence", "sources"):
-        deployed = max(1, min(available, safe_int(body.get("spy_count"), 1)))
+        return "جاسوس آزاد برای انجام این عملیات ندارید."
+    deployed = 1 if operation in ("protest", "counterintel") else max(1, min(available, safe_int(body.get("spy_count"), 1)))
     config = INTELLIGENCE_OPERATIONS[operation]
     if safe_int(player.get("money")) < config["cost"]:
         return f"برای این عملیات به {config['cost']:,} دلار نیاز دارید."
-    mission = {"kind": operation, "status": "active", "started_at": now, "finish_at": now + config["duration"],
-               "spies_used": deployed, "agency_level": max(1, safe_int(intel.get("level"), 1))}
+    selected_spies = available_spies[:deployed]
+    selected_ids = [spy.get("id") for spy in selected_spies]
     if operation in ("influence", "sources"):
         code = str(body.get("target_code") or "").strip().upper()
         target_uid, target = find_player_by_country(code)
-        if not code or code == str(player.get("c") or "").upper() or not target_uid or not target:
+        if not code or code == str(player.get("c") or "").upper() or not target_uid or not target or target.get("alive", True) is False:
             return "کشور هدف باید یک کشور فعال و متعلق به فرمانده دیگری باشد."
-        mission["target_code"] = code
-        mission["target_uid"] = target_uid
         if operation == "influence":
             ideology = str(body.get("ideology") or "").strip().lower()
             if ideology not in INTELLIGENCE_IDEOLOGIES:
                 return "جریان سیاسی انتخاب‌شده معتبر نیست."
-            mission["ideology"] = ideology
+            if any(item.get("status") == "active" and item.get("target_code") == code and item.get("ideology") == ideology for item in intel.get("infiltrations", [])):
+                return "در این کشور از این جریان سیاسی شبکه نفوذ فعالی دارید."
+            infiltration = {
+                "id": "inf-" + str(uid) + "-" + str(now) + "-" + str(len(intel.get("infiltrations", []))+1),
+                "status": "active", "target_code": code, "target_uid": target_uid,
+                "ideology": ideology, "spy_ids": selected_ids, "spies_used": deployed,
+                "started_at": now, "last_tick": now
+            }
+            intel.setdefault("infiltrations", []).append(infiltration)
+            for spy in selected_spies:
+                spy["status"] = "infiltrating"
+                spy["infiltration_id"] = infiltration["id"]
+            player["money"] = safe_int(player.get("money")) - config["cost"]
+            return None
+    for spy in selected_spies:
+        spy["status"] = "mission"
+        spy["mission_id"] = "mission-" + str(uid) + "-" + str(now)
+    mission = {"kind": operation, "status": "active", "started_at": now,
+               "finish_at": now + config["duration"], "spies_used": deployed,
+               "spy_ids": selected_ids, "agency_level": max(1, safe_int(intel.get("level"), 1))}
+    if operation == "sources":
+        mission["target_code"] = code
+        mission["target_uid"] = target_uid
     player["money"] = safe_int(player.get("money")) - config["cost"]
     intel.setdefault("missions", []).append(mission)
     return None
