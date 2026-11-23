@@ -1147,6 +1147,42 @@ def refresh_intelligence(uid, player):
             changed = True
         recruiting.append(recruit)
     intel["recruiting"] = recruiting[-12:]
+    # Political influence is a persistent network: each spy adds 0.25 percentage
+    # points per elapsed hour until the owner explicitly cancels the operation.
+    for infiltration in intel.get("infiltrations", []):
+        if not isinstance(infiltration, dict) or infiltration.get("status") != "active":
+            continue
+        target_uid = safe_int(infiltration.get("target_uid"))
+        target = pget(target_uid) or {}
+        if not target or target.get("alive", True) is False:
+            for spy in intel.get("spy_roster", []):
+                if spy.get("id") in infiltration.get("spy_ids", []):
+                    spy["status"] = "available"
+                    spy.pop("infiltration_id", None)
+            infiltration["status"] = "ended"
+            infiltration["ended_at"] = now
+            infiltration["result"] = "کشور هدف از بازی خارج شد؛ جاسوسان بازگشتند."
+            changed = True
+            continue
+        last_tick = safe_int(infiltration.get("last_tick"), now)
+        elapsed_hours = max(0, (now - last_tick) // 3600)
+        if elapsed_hours:
+            target_code = str(infiltration.get("target_code") or target.get("c") or "").upper()
+            ideology = str(infiltration.get("ideology") or "")
+            if target_code in COUNTRIES and ideology in INTELLIGENCE_IDEOLOGIES:
+                values = party_popularity_for(target_code)
+                spy_count = max(1, safe_int(infiltration.get("spies_used"), 1))
+                gain = min(75 - values[ideology], round(0.25 * spy_count * elapsed_hours, 2))
+                if gain > 0:
+                    values[ideology] += gain
+                    other = [key for key in INTELLIGENCE_IDEOLOGIES if key != ideology]
+                    for key in other:
+                        values[key] = max(0, values[key] - gain / len(other))
+                    infiltration["last_gain"] = gain
+                    infiltration["party_popularity"] = save_party_popularity(target_code, values)
+            infiltration["last_tick"] = last_tick + elapsed_hours * 3600
+            changed = True
+
     for mission in intel.get("missions", []):
         if not isinstance(mission, dict):
             continue
