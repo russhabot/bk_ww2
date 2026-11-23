@@ -1403,9 +1403,12 @@ def intelligence_action(uid, player, action, body):
 
 
 def get_api_state(uid, player, season, membership_info=None):
-    if player and refresh_intelligence(uid, player):
-        pset(uid, player)
+    # Advance all timed missions and hourly political influence networks.
     players = all_players()
+    for owner_uid, owner_player in players:
+        if owner_player and refresh_intelligence(owner_uid, owner_player):
+            pset(owner_uid, owner_player)
+    player = pget(uid) or player
     active_countries = []
     taken_codes = []
     owners = {}
