@@ -7,6 +7,7 @@ from html import escape as html_escape
 import json
 import os
 import re
+import random
 import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -1063,7 +1064,7 @@ def diplomacy_state_for(uid):
 
 INTELLIGENCE_ESTABLISH_COST = 25_000
 INTELLIGENCE_UPGRADE_COSTS = {2: 15_000, 3: 25_000, 4: 40_000, 5: 60_000, 6: 85_000, 7: 115_000, 8: 150_000, 9: 190_000, 10: 240_000}
-INTELLIGENCE_IDEOLOGIES = {"monarchy", "democracy", "fascism", "communism"}
+INTELLIGENCE_IDEOLOGIES = {"democracy", "fascism", "communism"}
 INTELLIGENCE_OPERATIONS = {
     "protest": {"cost": 4_000, "duration": 1800},
     "counterintel": {"cost": 6_000, "duration": 3600},
@@ -1082,6 +1083,7 @@ def intelligence_data(player):
     data.setdefault("recruiting", [])
     data.setdefault("missions", [])
     data.setdefault("reports", [])
+    data.setdefault("security_index", 0)
     return data
 
 
@@ -1096,7 +1098,7 @@ def party_popularity_for(code):
         total = sum(values.values())
         if total > 0:
             return {key: round(values[key] * 100 / total) for key in INTELLIGENCE_IDEOLOGIES}
-    values = {key: 20 for key in INTELLIGENCE_IDEOLOGIES}
+    values = {key: 30 for key in INTELLIGENCE_IDEOLOGIES}
     values[current] = 40
     return values
 
@@ -1150,27 +1152,51 @@ def refresh_intelligence(uid, player):
                 player["stability_bonus_until"] = now + 12 * 3600
                 mission["result"] = "ثبات داخلی بهبود یافت و شاخص ناآرامی کاهش پیدا کرد."
             elif kind == "counterintel":
-                intel["counterintel_until"] = now + 24 * 3600
-                mission["result"] = "پوشش ضد اطلاعاتی کشور برای ۲۴ ساعت فعال شد."
-            elif kind == "influence":
-                code = str(mission.get("target_code") or "").upper()
-                ideology = str(mission.get("ideology") or "").lower()
-                if code in COUNTRIES and ideology in INTELLIGENCE_IDEOLOGIES:
-                    values = party_popularity_for(code)
-                    shift = min(15, 4 + safe_int(intel.get("level")))
-                    values[ideology] = min(75, values[ideology] + shift)
-                    remaining = [key for key in INTELLIGENCE_IDEOLOGIES if key != ideology]
-                    reduction = shift / len(remaining)
-                    for key in remaining:
-                        values[key] = max(0, values[key] - reduction)
-                    mission["result"] = "توازن محبوبیت جریان‌های سیاسی کشور هدف تغییر کرد."
-                    mission["party_popularity"] = save_party_popularity(code, values)
-                else:
-                    mission["result"] = "گزارش عملیات ناقص بود؛ کشور هدف دیگر در دسترس نیست."
-            elif kind == "sources":
+                intel["security_index"] = min(100, safe_int(intel.get("security_index")) + 15)
+                mission["result"] = f"شاخص امنیت ضد اطلاعاتی کشور به {intel['security_index']} از ۱۰۰ رسید."
+            elif kind in ("influence", "sources"):
                 target_uid = safe_int(mission.get("target_uid"))
                 target = pget(target_uid) or {}
-                if target and target.get("alive", True) is not False:
+                if not target or target.get("alive", True) is False:
+                    mission["result"] = "کشور هدف دیگر در بازی فعال نیست؛ مأموریت ناموفق بود."
+                    continue
+                target_intel = target.get("intelligence") if isinstance(target.get("intelligence"), dict) else {}
+                security = max(0, min(100, safe_int(target_intel.get("security_index"))))
+                if safe_int(target_intel.get("counterintel_until")) > now:
+                    security = min(100, security + 15)
+                deployed = max(1, min(10, safe_int(mission.get("spies_used"), 1)))
+                attacker_level = max(1, min(10, safe_int(mission.get("agency_level"), 1)))
+                risk = max(0, min(100, security - 6 * (deployed - 1) - 2 * (attacker_level - 1)))
+                roll = random.randint(1, 100)
+                capture_limit = round(risk * 0.45)
+                failure_limit = round(risk * 0.80)
+                mission["target_security_index"] = security
+                mission["risk_score"] = risk
+                if roll <= capture_limit:
+                    captured = min(deployed, max(1, round(deployed * max(0.25, risk / 100))))
+                    intel["spies"] = max(0, safe_int(intel.get("spies")) - captured)
+                    mission["captured_spies"] = captured
+                    mission["result"] = f"شبکه اطلاعاتی کشور هدف {captured} جاسوس را شناسایی و دستگیر کرد."
+                    continue
+                if roll <= failure_limit:
+                    mission["result"] = "مأموریت شکست خورد؛ جاسوسان باقی‌مانده به کشور بازگشتند."
+                    continue
+                code = str(mission.get("target_code") or target.get("c") or "").upper()
+                if kind == "influence":
+                    ideology = str(mission.get("ideology") or "").lower()
+                    if code in COUNTRIES and ideology in INTELLIGENCE_IDEOLOGIES:
+                        values = party_popularity_for(code)
+                        shift = min(14, 4 + attacker_level)
+                        values[ideology] = min(75, values[ideology] + shift)
+                        remaining = [key for key in INTELLIGENCE_IDEOLOGIES if key != ideology]
+                        reduction = shift / len(remaining)
+                        for key in remaining:
+                            values[key] = max(0, values[key] - reduction)
+                        mission["result"] = f"نفوذ سیاسی موفق بود؛ محبوبیت جریان منتخب {shift} واحد درصد افزایش یافت و از دو جریان دیگر به‌طور مساوی کاسته شد."
+                        mission["party_popularity"] = save_party_popularity(code, values)
+                    else:
+                        mission["result"] = "اطلاعات سیاسی کشور هدف در دسترس نبود؛ مأموریت ناموفق شد."
+                elif kind == "sources":
                     target_code = str(target.get("c") or mission.get("target_code") or "")
                     country_info = COUNTRIES.get(target_code, {})
                     report = {
@@ -1186,10 +1212,8 @@ def refresh_intelligence(uid, player):
                     }
                     intel["reports"].append(report)
                     intel["reports"] = intel["reports"][-10:]
-                    mission["result"] = "گزارش منابع و وضعیت سیاسی کشور هدف دریافت شد."
-                    mission["report"] = report
-                else:
-                    mission["result"] = "کشور هدف دیگر در بازی فعال نیست؛ گزارشی دریافت نشد."
+                    mission["result"] = "شبکه منابع موفق شد؛ گزارش وضعیت کشور هدف دریافت شد."
+                    mission["report"] = report"
     intel["missions"] = intel.get("missions", [])[-30:]
     return changed
 
@@ -1243,21 +1267,23 @@ def intelligence_action(uid, player, action, body):
     if not operation:
         return "عملیات سازمان اطلاعاتی معتبر نیست."
     active_missions = [item for item in intel.get("missions", []) if item.get("status") == "active"]
-    available = safe_int(intel.get("spies")) - len(active_missions)
+    reserved = sum(max(1, safe_int(item.get("spies_used"), 1)) for item in active_missions)
+    available = max(0, safe_int(intel.get("spies")) - reserved)
     if available < 1:
         return "جاسوس آزاد برای انجام این مأموریت ندارید."
+    deployed = 1
+    if operation in ("influence", "sources"):
+        deployed = max(1, min(available, safe_int(body.get("spy_count"), 1)))
     config = INTELLIGENCE_OPERATIONS[operation]
     if safe_int(player.get("money")) < config["cost"]:
         return f"برای این عملیات به {config['cost']:,} دلار نیاز دارید."
-    mission = {"kind": operation, "status": "active", "started_at": now, "finish_at": now + config["duration"]}
+    mission = {"kind": operation, "status": "active", "started_at": now, "finish_at": now + config["duration"],
+               "spies_used": deployed, "agency_level": max(1, safe_int(intel.get("level"), 1))}
     if operation in ("influence", "sources"):
         code = str(body.get("target_code") or "").strip().upper()
         target_uid, target = find_player_by_country(code)
         if not code or code == str(player.get("c") or "").upper() or not target_uid or not target:
             return "کشور هدف باید یک کشور فعال و متعلق به فرمانده دیگری باشد."
-        target_intel = target.get("intelligence") if isinstance(target.get("intelligence"), dict) else {}
-        if safe_int(target_intel.get("counterintel_until")) > now:
-            return "ضد اطلاعات کشور هدف فعال است؛ فعلاً امکان اجرای این عملیات وجود ندارد."
         mission["target_code"] = code
         mission["target_uid"] = target_uid
         if operation == "influence":
@@ -1308,7 +1334,8 @@ def get_api_state(uid, player, season, membership_info=None):
                 "revolution_used": bool(COUNTRIES[c].get("revolution_used", False)),
                 "revolution_path": COUNTRIES[c].get("revolution_path", ""),
                 "ruling_party_fa": COUNTRIES[c].get("ruling_party_fa", ""),
-                "party_popularity": party_popularity_for(c)
+                "party_popularity": party_popularity_for(c),
+                "security_index": max(0, min(100, safe_int((p.get("intelligence") or {}).get("security_index"))))
             })
 
     return {
