@@ -1192,6 +1192,47 @@ def refresh_intelligence(uid, player):
                         values[other[1]] -= loss_b
                     infiltration["last_gain"] = gain
                     infiltration["party_popularity"] = save_party_popularity(target_code, values)
+            # Infiltrating spies also face an abstract hourly capture risk.
+            # A captured spy remains in the total roster/capacity but leaves the network.
+            risk = max(0, min(100, safe_int((target.get("intelligence") or {}).get("security_index")) - 6 * (spy_count - 1) - 2 * (safe_int(intel.get("level"), 1) - 1)))
+            hourly_capture_chance = min(8, round(risk * 0.08))
+            captured_spy = None
+            if hourly_capture_chance > 0:
+                for _hour in range(elapsed_hours):
+                    if random.randint(1, 100) <= hourly_capture_chance:
+                        candidates = [spy for spy in intel.get("spy_roster", []) if spy.get("id") in infiltration.get("spy_ids", []) and spy.get("status") == "infiltrating"]
+                        if candidates:
+                            captured_spy = random.choice(candidates)
+                        break
+            if captured_spy:
+                captured_spy["status"] = "detained"
+                captured_spy["captured_by"] = target.get("c")
+                captured_spy["captured_at"] = now
+                captured_spy.pop("infiltration_id", None)
+                for spy in intel.get("spy_roster", []):
+                    if spy.get("id") in infiltration.get("spy_ids", []) and spy.get("id") != captured_spy.get("id"):
+                        spy["status"] = "available"
+                        spy.pop("infiltration_id", None)
+                infiltration["status"] = "captured"
+                infiltration["ended_at"] = now
+                infiltration["captured_spy_id"] = captured_spy.get("id")
+                infiltration["result"] = "ضد اطلاعات کشور هدف یکی از جاسوسان شبکه نفوذ را شناسایی و دستگیر کرد؛ سایر جاسوسان بازگشتند."
+                intel.setdefault("reports", []).append({
+                    "type": "capture", "country": target_code, "created_at": now,
+                    "captured_spy": captured_spy.get("id"), "ideology": ideology,
+                    "spies_used": spy_count, "security_index": risk
+                })
+                intel["reports"] = intel["reports"][-10:]
+                attacker_code = str(player.get("c") or "")
+                defender_code = str(target.get("c") or target_code or "")
+                attacker_name = COUNTRIES.get(attacker_code, {}).get("name_fa") or attacker_code or "کشور ناشناس"
+                defender_name = COUNTRIES.get(defender_code, {}).get("name_fa") or defender_code or "کشور هدف"
+                if bot:
+                    try:
+                        asyncio.create_task(bot.send_message(target_uid, f"🚨 ضد اطلاعات کشور شما یکی از جاسوسان نفوذی کشور {attacker_name} را شناسایی و دستگیر کرد."))
+                        asyncio.create_task(bot.send_message(uid, f"🚨 یکی از جاسوسان شبکه نفوذ شما در کشور {defender_name} دستگیر شد. جاسوس دستگیرشده همچنان ظرفیت سازمان را اشغال می‌کند."))
+                    except Exception as exc:
+                        print(f"[intelligence-infiltration-capture-notification-error] {exc}")
             infiltration["last_tick"] = last_tick + elapsed_hours * 3600
             changed = True
 
