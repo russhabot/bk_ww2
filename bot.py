@@ -28,7 +28,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261121revolution-flags-audit-6" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261123-intelligence-system-1" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -407,7 +407,7 @@ for _code, _politics in load_country_politics().items():
         "government_type", "ideology", "regime_type", "regime_fa", "leader",
         "leader_fa", "leader_en", "leader_title", "leader_img", "leader_url",
         "revolution_used", "revolution_path", "revolution_previous_government", "ruling_party_fa", "desc",
-        "revolution_at"
+        "revolution_at", "party_popularity"
     ):
         if _key in _politics:
             COUNTRIES[_code][_key] = _politics[_key]
