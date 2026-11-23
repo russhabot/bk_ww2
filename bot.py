@@ -1148,7 +1148,7 @@ def refresh_intelligence(uid, player):
             changed = True
         recruiting.append(recruit)
     intel["recruiting"] = recruiting[-12:]
-    # Political influence is a persistent network: each spy adds 0.25 percentage
+    # Political influence is a persistent network: each spy adds 2 percentage
     # points per elapsed hour until the owner explicitly cancels the operation.
     for infiltration in intel.get("infiltrations", []):
         if not isinstance(infiltration, dict) or infiltration.get("status") != "active":
@@ -1173,12 +1173,13 @@ def refresh_intelligence(uid, player):
             if target_code in COUNTRIES and ideology in INTELLIGENCE_IDEOLOGIES:
                 values = party_popularity_for(target_code)
                 spy_count = max(1, safe_int(infiltration.get("spies_used"), 1))
-                gain = min(75 - values[ideology], round(0.25 * spy_count * elapsed_hours, 2))
+                gain = min(75 - values[ideology], 2 * spy_count * elapsed_hours)
                 if gain > 0:
                     values[ideology] += gain
                     other = [key for key in INTELLIGENCE_IDEOLOGIES if key != ideology]
-                    for key in other:
-                        values[key] = max(0, values[key] - gain / len(other))
+                    if len(other) == 2:
+                        values[other[0]] = max(0, values[other[0]] - ((gain + 1) // 2))
+                        values[other[1]] = max(0, values[other[1]] - (gain // 2))
                     infiltration["last_gain"] = gain
                     infiltration["party_popularity"] = save_party_popularity(target_code, values)
             infiltration["last_tick"] = last_tick + elapsed_hours * 3600
