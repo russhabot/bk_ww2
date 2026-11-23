@@ -1127,6 +1127,47 @@ def save_party_popularity(code, values):
     return normalized
 
 
+def intelligence_security_decay_rate(player, now):
+    """Return the daily counter-intelligence decay for the country's current conflict state.
+
+    The war system is not yet exposed by the current game build, so this reads
+    the canonical player flags/records when that system supplies them.
+    """
+    if not isinstance(player, dict):
+        return 1
+    civil = player.get("civil_war_active") or player.get("in_civil_war")
+    civil_record = player.get("civil_war")
+    if isinstance(civil_record, dict):
+        civil = civil or civil_record.get("active") or str(civil_record.get("status", "")).lower() in ("active", "ongoing", "in_progress")
+    elif isinstance(civil_record, str):
+        civil = civil or civil_record.lower() in ("active", "ongoing", "in_progress")
+    if civil:
+        return 4
+
+    at_war = any(bool(player.get(key)) for key in ("at_war", "in_war", "war_active", "under_attack", "is_attacked"))
+    attacked_until = safe_int(player.get("attacked_until"))
+    if attacked_until > now:
+        at_war = True
+    war_record = player.get("war")
+    if isinstance(war_record, dict):
+        at_war = at_war or bool(war_record.get("active")) or str(war_record.get("status", "")).lower() in ("active", "ongoing", "in_progress", "under_attack")
+    elif isinstance(war_record, str):
+        at_war = at_war or war_record.lower() in ("active", "ongoing", "in_progress", "under_attack")
+    for key in ("wars", "active_wars"):
+        records = player.get(key)
+        if isinstance(records, dict):
+            records = list(records.values())
+        if isinstance(records, list) and any(
+            isinstance(war, dict) and (
+                bool(war.get("active")) or
+                str(war.get("status", "")).lower() in ("active", "ongoing", "in_progress", "under_attack")
+            )
+            for war in records
+        ):
+            at_war = True
+    return 3 if at_war else 1
+
+
 def refresh_intelligence(uid, player):
     if not isinstance(player, dict) or not player.get("c"):
         return False
@@ -1135,6 +1176,24 @@ def refresh_intelligence(uid, player):
         return False
     now = int(time.time())
     changed = bool(intel.pop("_roster_migrated", False))
+
+    # Counter-intelligence slowly erodes over time. Peace: 1 point/day,
+    # active war or being attacked: 3 points/day, civil war: 4 points/day.
+    # Store the tick on the existing player intelligence object; no DB migration.
+    last_decay = safe_int(intel.get("security_last_decay_at"), now)
+    if last_decay <= 0:
+        last_decay = now
+    elapsed_days = max(0, (now - last_decay) // 86400)
+    if elapsed_days:
+        decay_per_day = intelligence_security_decay_rate(player, now)
+        previous_security = max(0, min(100, safe_int(intel.get("security_index"))))
+        intel["security_index"] = max(0, previous_security - decay_per_day * elapsed_days)
+        intel["security_last_decay_at"] = last_decay + elapsed_days * 86400
+        changed = True
+    elif "security_last_decay_at" not in intel:
+        intel["security_last_decay_at"] = now
+        changed = True
+
     recruiting = []
     for recruit in intel.get("recruiting", []):
         if not isinstance(recruit, dict):
@@ -1195,7 +1254,7 @@ def refresh_intelligence(uid, player):
             # Infiltrating spies also face an abstract hourly capture risk.
             # A captured spy remains in the total roster/capacity but leaves the network.
             risk = max(0, min(100, safe_int((target.get("intelligence") or {}).get("security_index")) - 6 * (spy_count - 1) - 2 * (safe_int(intel.get("level"), 1) - 1)))
-            hourly_capture_chance = min(8, round(risk * 0.08))
+            hourly_capture_chance = min(15, round(risk * 0.15))
             captured_spy = None
             if hourly_capture_chance > 0:
                 for _hour in range(elapsed_hours):
