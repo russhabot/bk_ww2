@@ -1178,8 +1178,16 @@ def refresh_intelligence(uid, player):
                     values[ideology] += gain
                     other = [key for key in INTELLIGENCE_IDEOLOGIES if key != ideology]
                     if len(other) == 2:
-                        values[other[0]] = max(0, values[other[0]] - ((gain + 1) // 2))
-                        values[other[1]] = max(0, values[other[1]] - (gain // 2))
+                        loss_a = min(values[other[0]], (gain + 1) // 2)
+                        loss_b = min(values[other[1]], gain - loss_a)
+                        leftover = gain - loss_a - loss_b
+                        if leftover:
+                            extra_a = min(values[other[0]] - loss_a, leftover)
+                            loss_a += extra_a
+                            leftover -= extra_a
+                            loss_b += min(values[other[1]] - loss_b, leftover)
+                        values[other[0]] -= loss_a
+                        values[other[1]] -= loss_b
                     infiltration["last_gain"] = gain
                     infiltration["party_popularity"] = save_party_popularity(target_code, values)
             infiltration["last_tick"] = last_tick + elapsed_hours * 3600
