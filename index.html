@@ -1054,7 +1054,7 @@
     .revolution-start{width:100%;margin-top:5px}
     .intelligence-agency-card{display:flex;flex-direction:row-reverse;align-items:flex-start;gap:12px;overflow:hidden;margin-top:12px;padding:13px;border:1px solid var(--border-bright);border-radius:14px;background:linear-gradient(145deg,#111e33,#0b1322)}
     .intelligence-agency-photo{flex:0 0 68px;width:68px;height:68px;min-width:68px;min-height:68px;aspect-ratio:1;overflow:hidden;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:7px;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:#f8fafc}
-    .intelligence-agency-photo img{display:block;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;min-width:0!important;min-height:0!important;object-fit:contain!important;object-position:center}.intelligence-agency-photo.mi6-agency-photo{overflow:hidden}.intelligence-agency-photo.mi6-agency-photo img{width:500%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:left center!important}
+    .intelligence-agency-photo img{display:block;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;min-width:0!important;min-height:0!important;object-fit:contain!important;object-position:center;filter:grayscale(100%) contrast(1.08) brightness(.88)}.intelligence-agency-photo.mi6-agency-photo{overflow:hidden}.intelligence-agency-photo.mi6-agency-photo img{width:500%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:left center!important}
     .intelligence-agency-photo.image-missing{display:flex;background:linear-gradient(145deg,#e8edf4,#cbd5e1)}.intelligence-agency-photo.image-missing:after{content:'نشان سازمان';display:block;color:#334155;font-size:9px;font-weight:700;text-align:center}
     .intelligence-agency-info{display:flex;flex:1;min-width:0;flex-direction:column;align-items:flex-start;gap:7px;padding:0}
     .intelligence-agency-info>strong{font-size:15px;color:#fff;line-height:1.8;font-weight:850;overflow-wrap:anywhere}
@@ -1474,6 +1474,8 @@
 .intel-country-selected b{color:#f4d28c}
 .intel-section-description{display:block;max-width:100%;margin:0 0 14px!important;padding:12px 14px;border:1px solid rgba(148,163,184,.16);border-radius:10px;background:rgba(8,19,33,.72);color:#cbd5e1;font-size:12px;line-height:2.05!important;text-align:justify;white-space:normal;overflow-wrap:anywhere;word-break:normal}
 .intel-section-panel{min-width:0;overflow:hidden}
+
+.intelligence-agency-photo{background:#101820!important;border-color:rgba(255,255,255,.22)!important}.intelligence-agency-photo.image-missing:after{content:none!important}
 </style>
 </head>
 <body>
@@ -3567,9 +3569,8 @@
         const agency=INTELLIGENCE_AGENCIES[r.c]||['سازمان اطلاعات ملی','','این نهاد مسئول گردآوری و تحلیل اطلاعات مرتبط با امنیت ملی کشور است.'];
         const established=Boolean(r.intelligence_agency_established);
         const countryInfo = COUNTRIES[r.c] || {};
-        const agencyImage = agency[1] || countryInfo.flag_url || FALLBACK_FLAG;
-        const agencyFallback = countryInfo.flag_url || ('/static/flags/' + String(r.c || '').toUpperCase() + '.svg');
-        const agencyImageError = "if(!this.dataset.fallback){this.dataset.fallback='1';this.src='" + escapeHtml(agencyFallback) + "';}else{this.onerror=null;this.src='/static/flags/default.svg';this.parentElement.classList.add('image-missing');}";
+        const agencyImage = agency[1] || '/static/images/intelligence/agency-placeholder.svg';
+        const agencyImageError = "this.onerror=null;this.src='/static/images/intelligence/agency-placeholder.svg';this.parentElement.classList.add('image-missing');";
         const agencyPhoto = '<div class="intelligence-agency-photo"><img src="' + escapeHtml(agencyImage) + '" alt="نشان سازمان ' + escapeHtml(agency[0]) + '" loading="eager" decoding="async" onerror="' + agencyImageError + '"><span class="agency-country-code">' + escapeHtml(r.c) + '</span></div>';
         const intel=r.intelligence||{},level=Math.max(1,Math.min(10,Number(intel.level)||1)),spies=Number(intel.spies)||0;
         const recruiting=(intel.recruiting||[]).filter(x=>x.status==='training'),missions=(intel.missions||[]).filter(x=>x.status==='active'),completed=(intel.missions||[]).filter(x=>x.status==='completed'&&x.kind!=='influence').slice(-5).reverse();

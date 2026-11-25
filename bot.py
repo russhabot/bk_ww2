@@ -37,7 +37,7 @@ def parse_admin_ids():
         or os.environ.get("ADMIN_ID")
         or ""
     )
-    normalized = raw.replace(";", ",").replace("\\n", ",").replace("\\r", ",")
+    normalized = raw.replace(";", ",").replace("\n", ",").replace("\\r", ",")
     values = []
     for part in normalized.split(","):
         values.extend(part.split())
@@ -2216,6 +2216,148 @@ if dp:
         kset("diplomacy_war_open", "1" if opened else "0")
         await msg.answer("گزینه جنگ در پنل دیپلماسی فعال شد." if opened else "گزینه جنگ در پنل دیپلماسی غیرفعال شد.")
 
+    @dp.message(Command("inteladmin"))
+    async def cmd_inteladmin(msg: Message):
+        """Admin-only controls for testing the fictional intelligence gameplay system."""
+        if not is_admin(msg.from_user.id):
+            return await msg.answer("این دستور فقط برای مدیران بازی در دسترس است.")
+        args = (msg.text or "").split()
+        help_text = (
+            "ابزار آزمایش سازمان اطلاعاتی (فقط ادمین)\n"
+            "/inteladmin establish CODE — تأسیس رایگان برای آزمایش\n"
+            "/inteladmin status CODE — وضعیت سازمان\n"
+            "/inteladmin ready CODE [COUNT] — آماده‌سازی فوری جاسوسان در صف\n"
+            "/inteladmin recruit CODE COUNT — افزودن جاسوس آزاد\n"
+            "/inteladmin capture HOST SOURCE — دستگیری جاسوس نفوذی SOURCE در HOST\n"
+            "/inteladmin release CODE [all|SPY_ID] — آزادی جاسوس بازداشت‌شده\n"
+            "/inteladmin security CODE 0-100 — تنظیم شاخص ضدجاسوسی\n"
+            "/inteladmin level CODE 1-10 — تنظیم سطح سازمان\n"
+            "/inteladmin popularity CODE democracy|fascism|communism VALUE — محبوبیت جریان\n"
+            "/inteladmin finish CODE — تکمیل فوری مأموریت‌ها"
+        )
+        if len(args) < 2 or args[1].lower() in ("help", "راهنما"):
+            return await msg.answer(help_text)
+        action = args[1].lower()
+        if action == "capture":
+            if len(args) != 4:
+                return await msg.answer("استفاده: /inteladmin capture HOST SOURCE")
+            host_code, source_code = args[2].upper(), args[3].upper()
+            source_uid, source = find_player_by_country(source_code)
+            host_uid, host = find_player_by_country(host_code)
+            if not source or not host or host_code == source_code:
+                return await msg.answer("کشور میزبان یا فرستنده پیدا نشد.")
+            source_intel = intelligence_data(source)
+            network = next((item for item in source_intel.get("infiltrations", []) if item.get("status") == "active" and item.get("target_code") == host_code), None)
+            if not network:
+                return await msg.answer("شبکه نفوذ فعالی از این کشور در کشور میزبان وجود ندارد.")
+            spy_ids = list(network.get("spy_ids", []))
+            spies = source_intel.get("spy_roster", [])
+            captured = next((spy for spy in spies if spy.get("id") in spy_ids and spy.get("status") == "infiltrating"), None)
+            if not captured:
+                return await msg.answer("جاسوس فعالی در این شبکه پیدا نشد.")
+            now = int(time.time())
+            captured["status"] = "detained"
+            captured["captured_by"] = host_code
+            captured["captured_at"] = now
+            captured.pop("infiltration_id", None)
+            for spy in spies:
+                if spy.get("id") in spy_ids and spy.get("id") != captured.get("id"):
+                    spy["status"] = "available"
+                    spy.pop("infiltration_id", None)
+            network["status"] = "captured"
+            network["ended_at"] = now
+            network["captured_spy_id"] = captured.get("id")
+            network["result"] = "دستگیری توسط مدیر بازی ثبت شد."
+            source_intel.setdefault("reports", []).append({"type": "capture", "country": host_code, "created_at": now, "result": "یک جاسوس شبکه در کشور میزبان دستگیر شد."})
+            source_intel["reports"] = source_intel["reports"][-10:]
+            pset(source_uid, source)
+            return await msg.answer(f"جاسوس {captured.get('id')} از {source_code} در {host_code} دستگیر شد؛ سایر جاسوسان شبکه بازگشتند.")
+        if len(args) < 3:
+            return await msg.answer(help_text)
+        code = args[2].upper()
+        uid, player = find_player_by_country(code)
+        if not uid or not player:
+            return await msg.answer("کشور فعال و صاحب آن پیدا نشد.")
+        intel = intelligence_data(player)
+        now = int(time.time())
+        if action == "establish":
+            if player.get("intelligence_agency_established"):
+                return await msg.answer("سازمان از قبل تأسیس شده است.")
+            player["intelligence_agency_established"] = True
+            intel.update({"level": 1, "spies": 0, "recruiting": [], "missions": [], "reports": [], "infiltrations": [], "spy_roster": []})
+            pset(uid, player)
+            return await msg.answer(f"سازمان اطلاعاتی {code} به‌صورت آزمایشی تأسیس شد.")
+        if action == "status":
+            roster = intel.get("spy_roster", [])
+            counts = {state: sum(1 for spy in roster if spy.get("status") == state) for state in ("available", "mission", "infiltrating", "detained")}
+            return await msg.answer(f"وضعیت {code}\nسطح: {safe_int(intel.get('level'))}/10\nشاخص ضدجاسوسی: {safe_int(intel.get('security_index'))}/100\nجاسوسان: {safe_int(intel.get('spies'))} | آزاد: {counts['available']} | مأموریت: {counts['mission']} | نفوذ: {counts['infiltrating']} | بازداشت: {counts['detained']}")
+        if not player.get("intelligence_agency_established"):
+            return await msg.answer("سازمان اطلاعاتی این کشور هنوز تأسیس نشده است.")
+        if action == "ready":
+            pending = [item for item in intel.get("recruiting", []) if item.get("status") == "training"]
+            count = max(0, min(len(pending), safe_int(args[3], len(pending)) if len(args) > 3 else len(pending)))
+            for item in pending[:count]:
+                item["finish_at"] = now
+            refresh_intelligence(uid, player)
+            pset(uid, player)
+            return await msg.answer(f"{count} جاسوس در {code} فوراً آماده شد.")
+        if action == "recruit":
+            if len(args) != 4:
+                return await msg.answer("استفاده: /inteladmin recruit CODE COUNT")
+            count = max(0, min(10, safe_int(args[3])))
+            roster = intel.setdefault("spy_roster", [])
+            added = min(count, max(0, min(10, safe_int(intel.get("level"), 1)) - len(roster)))
+            used = {safe_int(spy.get("portrait")) for spy in roster}
+            for index in range(added):
+                portrait = next((slot for slot in range(10) if slot not in used), 0)
+                used.add(portrait)
+                roster.append({"id": "admin-spy-" + str(now) + "-" + str(len(roster) + 1), "portrait": portrait, "status": "available", "recruited_at": now})
+            intel["spies"] = len(roster)
+            pset(uid, player)
+            return await msg.answer(f"{added} جاسوس آزاد به {code} اضافه شد.")
+        if action == "release":
+            selector = args[3] if len(args) > 3 else "all"
+            detained = [spy for spy in intel.get("spy_roster", []) if spy.get("status") == "detained" and (selector.lower() == "all" or spy.get("id") == selector)]
+            for spy in detained:
+                spy["status"] = "available"
+                spy.pop("captured_by", None)
+                spy.pop("captured_at", None)
+            if detained:
+                pset(uid, player)
+            return await msg.answer(f"{len(detained)} جاسوس در {code} آزاد شد.")
+        if action == "security":
+            value = safe_int(args[3], -1) if len(args) == 4 else -1
+            if not 0 <= value <= 100:
+                return await msg.answer("استفاده: /inteladmin security CODE 0-100")
+            intel["security_index"] = value
+            intel["security_last_decay_at"] = now
+            pset(uid, player)
+            return await msg.answer(f"شاخص ضدجاسوسی {code} روی {value}/100 تنظیم شد.")
+        if action == "level":
+            value = safe_int(args[3], -1) if len(args) == 4 else -1
+            if not 1 <= value <= 10:
+                return await msg.answer("استفاده: /inteladmin level CODE 1-10")
+            intel["level"] = value
+            pset(uid, player)
+            return await msg.answer(f"سطح سازمان {code} روی {value} تنظیم شد.")
+        if action == "popularity":
+            if len(args) != 5:
+                return await msg.answer("استفاده: /inteladmin popularity CODE democracy|fascism|communism VALUE")
+            ideology, value = args[3].lower(), safe_int(args[4], -1)
+            if ideology not in INTELLIGENCE_IDEOLOGIES or not 0 <= value <= 100:
+                return await msg.answer("جریان یا مقدار محبوبیت معتبر نیست.")
+            values = party_popularity_for(code)
+            values[ideology] = value
+            normalized = save_party_popularity(code, values)
+            return await msg.answer("محبوبیت جریان‌ها در " + code + " ثبت شد: " + "، ".join(f"{key}: {val}٪" for key, val in normalized.items()))
+        if action == "finish":
+            active = [mission for mission in intel.get("missions", []) if mission.get("status") == "active"]
+            for mission in active:
+                mission["finish_at"] = now
+            refresh_intelligence(uid, player)
+            pset(uid, player)
+            return await msg.answer(f"{len(active)} مأموریت فعال در {code} فوراً تکمیل شد.")
+        return await msg.answer(help_text)
     @dp.message(Command("testintel"))
     async def cmd_testintel(msg: Message):
         """Run intelligence feature smoke tests on disposable in-memory data only."""
