@@ -1597,7 +1597,6 @@ def get_api_state(uid, player, season, membership_info=None):
                 "revolution_path": COUNTRIES[c].get("revolution_path", ""),
                 "ruling_party_fa": COUNTRIES[c].get("ruling_party_fa", ""),
                 "party_popularity": party_popularity_for(c),
-                "security_index": max(0, min(100, safe_int((p.get("intelligence") if isinstance(p.get("intelligence"), dict) else {}).get("security_index"))))
             })
 
     return {
@@ -2225,6 +2224,7 @@ if dp:
         help_text = (
             "ابزار آزمایش سازمان اطلاعاتی (فقط ادمین)\n"
             "/inteladmin establish CODE — تأسیس رایگان برای آزمایش\n"
+            "/inteladmin money CODE AMOUNT — افزودن پول به خزانه کشور\n"
             "/inteladmin status CODE — وضعیت سازمان\n"
             "/inteladmin ready CODE [COUNT] — آماده‌سازی فوری جاسوسان در صف\n"
             "/inteladmin recruit CODE COUNT — افزودن جاسوس آزاد\n"
@@ -2280,6 +2280,15 @@ if dp:
             return await msg.answer("کشور فعال و صاحب آن پیدا نشد.")
         intel = intelligence_data(player)
         now = int(time.time())
+        if action == "money":
+            if len(args) != 4:
+                return await msg.answer("استفاده: /inteladmin money CODE AMOUNT")
+            amount = safe_int(args[3], -1)
+            if amount <= 0 or amount > 1_000_000_000:
+                return await msg.answer("مبلغ باید بین ۱ تا ۱٬۰۰۰٬۰۰۰٬۰۰۰ باشد.")
+            player["money"] = safe_int(player.get("money")) + amount
+            pset(uid, player)
+            return await msg.answer(f"مبلغ {amount:,} دلار به خزانه {code} اضافه شد. موجودی جدید: {safe_int(player.get('money')):,} دلار.")
         if action == "establish":
             if player.get("intelligence_agency_established"):
                 return await msg.answer("سازمان از قبل تأسیس شده است.")
