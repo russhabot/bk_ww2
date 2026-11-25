@@ -29,7 +29,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261125-intelligence-ui-lock-1" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261125-intelligence-picker-test-2" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -1168,7 +1168,7 @@ def intelligence_security_decay_rate(player, now):
     return 3 if at_war else 1
 
 
-def refresh_intelligence(uid, player):
+def refresh_intelligence(uid, player, test_players=None):
     if not isinstance(player, dict) or not player.get("c"):
         return False
     intel = intelligence_data(player)
@@ -1215,7 +1215,7 @@ def refresh_intelligence(uid, player):
         if not isinstance(infiltration, dict) or infiltration.get("status") != "active":
             continue
         target_uid = safe_int(infiltration.get("target_uid"))
-        target = pget(target_uid) or {}
+        target = (test_players or {}).get(target_uid) or pget(target_uid) or {}
         if not target or target.get("alive", True) is False:
             for spy in intel.get("spy_roster", []):
                 if spy.get("id") in infiltration.get("spy_ids", []):
@@ -1442,7 +1442,7 @@ def refresh_intelligence(uid, player):
     return changed
 
 
-def intelligence_action(uid, player, action, body):
+def intelligence_action(uid, player, action, body, test_players=None):
     now = int(time.time())
     intel = intelligence_data(player)
     if action == "intelligence_establish":
@@ -1458,7 +1458,7 @@ def intelligence_action(uid, player, action, body):
     if not player.get("intelligence_agency_established"):
         return "ابتدا باید سازمان اطلاعاتی کشور را تأسیس کنید."
 
-    refresh_intelligence(uid, player)
+    refresh_intelligence(uid, player, test_players=test_players)
     if action == "intelligence_upgrade":
         level = max(1, min(10, safe_int(intel.get("level"), 1)))
         next_level = level + 1
@@ -1517,7 +1517,10 @@ def intelligence_action(uid, player, action, body):
     selected_ids = [spy.get("id") for spy in selected_spies]
     if operation in ("influence", "sources"):
         code = str(body.get("target_code") or "").strip().upper()
-        target_uid, target = find_player_by_country(code)
+        if test_players is not None:
+            target_uid, target = next(((candidate_uid, candidate) for candidate_uid, candidate in test_players.items() if str(candidate.get("c") or "").upper() == code), (None, None))
+        else:
+            target_uid, target = find_player_by_country(code)
         if not code or code == str(player.get("c") or "").upper() or not target_uid or not target or target.get("alive", True) is False:
             return "کشور هدف باید یک کشور فعال و متعلق به فرمانده دیگری باشد."
         if operation == "influence":
@@ -2212,6 +2215,95 @@ if dp:
         opened = parts[1].lower() == "open"
         kset("diplomacy_war_open", "1" if opened else "0")
         await msg.answer("گزینه جنگ در پنل دیپلماسی فعال شد." if opened else "گزینه جنگ در پنل دیپلماسی غیرفعال شد.")
+
+    @dp.message(Command("testintel"))
+    async def cmd_testintel(msg: Message):
+        """Run intelligence feature smoke tests on disposable in-memory data only."""
+        if not is_admin(msg.from_user.id):
+            return await msg.answer("این دستور فقط برای مدیران بازی در دسترس است.")
+
+        owner_code = "IR" if "IR" in COUNTRIES else next(iter(COUNTRIES))
+        target_code = next((code for code, data in COUNTRIES.items()
+                            if code != owner_code and data.get("selectable") != "no"), None)
+        if not target_code:
+            return await msg.answer("کشور آزمایشی مناسبی در کاتالوگ پیدا نشد.")
+
+        test_uid, target_uid = -987654321, -987654322
+        target_player = {
+            "c": target_code, "alive": True, "money": 250000,
+            "power": 100, "satisfaction": 60, "oil": 100,
+            "food": 100, "infantry": 100,
+            "intelligence": {"security_index": 0}
+        }
+        test_players = {target_uid: target_player}
+        sandbox = {
+            "c": owner_code, "alive": True, "money": 1000000000,
+            "satisfaction": 50, "intelligence": {}
+        }
+        checks = []
+
+        def record(label, passed):
+            checks.append((label, bool(passed)))
+
+        try:
+            error = intelligence_action(test_uid, sandbox, "intelligence_establish", {}, test_players)
+            record("تأسیس سازمان", error is None and sandbox.get("intelligence_agency_established"))
+
+            error = intelligence_action(test_uid, sandbox, "intelligence_upgrade", {}, test_players)
+            record("ارتقای سازمان", error is None and safe_int(sandbox.get("intelligence", {}).get("level")) == 2)
+
+            error = intelligence_action(test_uid, sandbox, "intelligence_recruit", {}, test_players)
+            recruiting = sandbox.get("intelligence", {}).get("recruiting", [])
+            record("استخدام جاسوس", error is None and bool(recruiting))
+            if recruiting:
+                recruiting[-1]["finish_at"] = 0
+                refresh_intelligence(test_uid, sandbox, test_players=test_players)
+            intel = intelligence_data(sandbox)
+            record("تکمیل فوری آموزش", safe_int(intel.get("spies")) >= 1)
+
+            roster = intel.setdefault("spy_roster", [])
+            while len(roster) < 5:
+                roster.append({"id": "test-spy-" + str(len(roster) + 1), "portrait": len(roster), "status": "available"})
+            intel["spies"] = len(roster)
+
+            error = intelligence_action(test_uid, sandbox, "intelligence_protest", {}, test_players)
+            record("عملیات ثبات داخلی", error is None and any(m.get("kind") == "protest" for m in intel.get("missions", [])))
+
+            error = intelligence_action(test_uid, sandbox, "intelligence_counterintel", {}, test_players)
+            record("تقویت ضد اطلاعات", error is None and any(m.get("kind") == "counterintel" for m in intel.get("missions", [])))
+
+            error = intelligence_action(test_uid, sandbox, "intelligence_influence", {
+                "target_code": target_code, "ideology": "democracy", "spy_count": 1
+            }, test_players)
+            active_network = next((x for x in intel.get("infiltrations", []) if x.get("status") == "active"), None)
+            record("ایجاد شبکه نفوذ", error is None and active_network is not None)
+            cancel_error = intelligence_action(test_uid, sandbox, "intelligence_cancel_influence", {
+                "infiltration_id": (active_network or {}).get("id", "")
+            }, test_players)
+            record("لغو شبکه و بازگشت جاسوس", cancel_error is None and active_network and active_network.get("status") == "cancelled")
+
+            error = intelligence_action(test_uid, sandbox, "intelligence_sources", {
+                "target_code": target_code, "spy_count": 1
+            }, test_players)
+            source_mission = next((m for m in intel.get("missions", []) if m.get("kind") == "sources"), None)
+            record("اعزام شبکه گردآوری گزارش", error is None and source_mission is not None)
+
+            for mission in intel.get("missions", []):
+                if mission.get("status") == "active":
+                    mission["finish_at"] = 0
+            refresh_intelligence(test_uid, sandbox, test_players=test_players)
+            record("پایان فوری مأموریت‌ها", all(m.get("status") == "completed" for m in intel.get("missions", [])))
+            record("ثبت گزارش اطلاعاتی", any(r.get("country") == target_code for r in intel.get("reports", [])))
+            record("حفظ جاسوسان و وضعیت نهایی", len(intel.get("spy_roster", [])) >= 5 and safe_int(intel.get("level")) == 2)
+        except Exception as exc:
+            record("اجرای آزمون", False)
+            print("[testintel-error]", repr(exc))
+
+        passed = sum(1 for _, ok in checks if ok)
+        lines = [f"گزارش تست سرویس اطلاعاتی: {passed}/{len(checks)} قابلیت موفق"]
+        lines.extend(("✅ " if ok else "❌ ") + label for label, ok in checks)
+        lines.append("این آزمون فقط روی دادهٔ موقت اجرا شد؛ دیتابیس، سیزن، کشورها و پروفایل بازیکنان واقعی تغییر نکردند.")
+        await msg.answer("\n".join(lines))
 
     @dp.message(Command("status"))
     async def cmd_status(msg: Message):
