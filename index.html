@@ -3131,19 +3131,19 @@
     let cachedTelegramInitData = '';
     async function getTelegramInitData() {
       if (cachedTelegramInitData) return cachedTelegramInitData;
-      let webApp = window.Telegram?.WebApp || tg || null;
       for (let attempt = 0; attempt < 50; attempt++) {
-        webApp = window.Telegram?.WebApp || webApp || null;
-        if (webApp) {
-          try { webApp.ready(); } catch (e) {}
-          let value = String(webApp.initData || '').trim();
+        const webApp = window.Telegram?.WebApp || null;
+        try { webApp?.ready?.(); } catch (e) {}
+        let value = '';
+        try {
+          value = String(webApp?.initData || '').trim();
           if (!value && typeof window.__bkInitData === 'function') {
-            try { value = String(window.__bkInitData() || '').trim(); } catch (e) {}
+            value = String(window.__bkInitData() || '').trim();
           }
-          if (value) {
-            cachedTelegramInitData = value;
-            return cachedTelegramInitData;
-          }
+        } catch (e) {}
+        if (value) {
+          cachedTelegramInitData = value;
+          return cachedTelegramInitData;
         }
         await new Promise(resolve => setTimeout(resolve, 100));
       }

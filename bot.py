@@ -1623,7 +1623,7 @@ async def options_handler(request):
     return resp
 
 
-FIX_TAG = '<script src="/static/bk_fix.js?v=20261121auth2"></script>'
+FIX_TAG = '<script src="/static/bk_fix.js?v=20261125auth3"></script>'
 
 
 async def index_handler(request):

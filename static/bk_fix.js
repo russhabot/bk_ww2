@@ -1,50 +1,77 @@
-/* Burnt Kingdoms WW2 - Telegram initData recovery (put this file in static/bk_fix.js) */
+/* Burnt Kingdoms WW2 - Telegram initData recovery */
 (function () {
   'use strict';
   var KEY = 'bk_tg_init';
 
-  function fromHash() {
+  function fromParams(raw) {
     try {
-      var raw = String(location.hash || '').replace(/^#/, '');
-      return new URLSearchParams(raw).get('tgWebAppData') || '';
+      var params = new URLSearchParams(String(raw || '').replace(/^[?#]/, ''));
+      return params.get('tgWebAppData') || '';
     } catch (e) { return ''; }
   }
-  function fromSearch() {
-    try { return new URLSearchParams(location.search).get('tgWebAppData') || ''; } catch (e) { return ''; }
+  function fromHash() { return fromParams(location.hash); }
+  function fromSearch() { return fromParams(location.search); }
+  function stored() {
+    try { return sessionStorage.getItem(KEY) || ''; } catch (e) { return ''; }
   }
-  function stored() { try { return sessionStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
-  function save(v) { try { if (v) sessionStorage.setItem(KEY, v); } catch (e) {} }
-
+  function save(value) {
+    try { if (value) sessionStorage.setItem(KEY, value); } catch (e) {}
+  }
   function getInitData() {
-    var v = '';
-    try { v = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) || ''; } catch (e) {}
-    if (!v) v = fromHash();
-    if (!v) v = fromSearch();
-    if (v) { save(v); return v; }
-    return stored();
+    var value = '';
+    try {
+      value = String(window.Telegram && window.Telegram.WebApp &&
+        window.Telegram.WebApp.initData || '').trim();
+    } catch (e) {}
+    if (!value) value = fromHash();
+    if (!value) value = fromSearch();
+    if (!value) value = stored();
+    if (value) save(value);
+    return value;
   }
+
   window.__bkInitData = getInitData;
-  getInitData(); // capture as early as possible
+  var initialData = getInitData();
 
-  var box = null;
+  // Some Telegram clients expose launch data before the WebApp bridge object is
+  // ready. Provide the small interface this app uses, without bypassing server
+  // signature validation. A real WebApp object is never replaced.
+  try {
+    if (!window.Telegram) window.Telegram = {};
+    if (!window.Telegram.WebApp) {
+      window.Telegram.WebApp = {
+        initData: initialData,
+        ready: function () {},
+        expand: function () {},
+        enableClosingConfirmation: function () {}
+      };
+    } else if (!window.Telegram.WebApp.initData && initialData) {
+      window.Telegram.WebApp.initData = initialData;
+    }
+  } catch (e) {}
+
+  var overlay = null;
   function showProblem() {
-    if (box || !document.body) return;
-    box = document.createElement('div');
-    box.setAttribute('dir', 'rtl');
-    box.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.88);color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font:16px/1.9 sans-serif';
-    box.innerHTML = '<div style="max-width:420px"><div style="font-size:20px;margin-bottom:10px">ورود تلگرام تأیید نشد</div>' +
-      '<div style="opacity:.9">لطفاً بازی را دوباره از داخل ربات و با دکمهٔ «ورود به کارزار جهانی دوم» باز کنید. اگر مشکل ادامه داشت، تلگرام را به‌روزرسانی کنید.</div>' +
+    if (overlay || !document.body) return;
+    overlay = document.createElement('div');
+    overlay.setAttribute('dir', 'rtl');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.88);color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font:16px/1.9 sans-serif';
+    overlay.innerHTML = '<div style="max-width:420px"><div style="font-size:20px;margin-bottom:10px">ورود تلگرام تأیید نشد</div>' +
+      '<div style="opacity:.9">لطفاً بازی را دوباره از داخل ربات و با دکمهٔ ورود باز کنید.</div>' +
       '<button id="bk-retry" style="margin-top:16px;padding:10px 22px;border:0;border-radius:8px;font-size:15px">تلاش دوباره</button></div>';
-    document.body.appendChild(box);
-    var b = document.getElementById('bk-retry');
-    if (b) b.onclick = function () { location.reload(); };
+    document.body.appendChild(overlay);
+    var button = document.getElementById('bk-retry');
+    if (button) button.onclick = function () { location.reload(); };
   }
-  function hideProblem() { if (box && box.parentNode) box.parentNode.removeChild(box); box = null; }
+  function hideProblem() {
+    if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    overlay = null;
+  }
 
-  var origFetch = window.fetch;
+  var originalFetch = window.fetch;
   window.fetch = function (input, init) {
     var url = typeof input === 'string' ? input : ((input && input.url) || '');
-    var isGameApi = /\/api\//.test(url) && !/\/api\/catalog/.test(url);
+    var isGameApi = /\/api\//.test(url) && !/\/api\/catalog(?:\?|$)/.test(url);
     if (isGameApi && init && typeof init.body === 'string') {
       try {
         var body = JSON.parse(init.body);
@@ -54,17 +81,18 @@
         }
       } catch (e) {}
     }
-    var p = origFetch.call(this, input, init);
-    if (!isGameApi) return p;
-    return p.then(function (res) {
+    var request = originalFetch.call(this, input, init);
+    if (!isGameApi) return request;
+    return request.then(function (response) {
       try {
-        if (res.status === 401) {
-          if (document.body) showProblem(); else document.addEventListener('DOMContentLoaded', showProblem);
-        } else if (res.ok) {
+        if (response.status === 401) {
+          if (document.body) showProblem();
+          else document.addEventListener('DOMContentLoaded', showProblem, { once: true });
+        } else if (response.ok) {
           hideProblem();
         }
       } catch (e) {}
-      return res;
+      return response;
     });
   };
 })();
