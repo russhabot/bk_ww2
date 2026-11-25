@@ -29,7 +29,7 @@ load_dotenv()
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")
 # Bump this value when publishing UI changes to avoid Telegram WebView caching the old Mini App.
-WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261123-intelligence-dossier-6" if URL else ""
+WEBAPP_LINK = URL + ("&" if "?" in URL else "?") + "v=20261125-intelligence-ui-lock-1" if URL else ""
 def parse_admin_ids():
     raw = (
         os.environ.get("ADMINS")
@@ -1739,6 +1739,14 @@ async def api_handler(request):
             "must_join": True, "missing": missing_channels, "channels": REQUIRED_CHANNELS,
             "s": get_api_state(uid, pget(uid), season, membership_info)
         }, status=403)
+
+    # The waiting and country-pick phases must not expose management APIs.
+    if season != "live" and action not in {"state", "pick", "claim"}:
+        phase_message = "امکانات مدیریت کشور پس از آغاز رسمی سیزن فعال می‌شوند."
+        return web.json_response({
+            "ok": False, "err": phase_message, "season_locked": True,
+            "s": get_api_state(uid, pget(uid), season, membership_info)
+        }, status=409)
 
     async with ACTION_LOCK:
         player = pget(uid)
